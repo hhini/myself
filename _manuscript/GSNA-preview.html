@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="generator" content="quarto-1.8.24">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+    <title>GSNA 教程</title>
+    <style>
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      div.columns{display: flex; gap: min(4vw, 1.5em);}
+      div.column{flex: auto; overflow-x: auto;}
+      div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+      ul.task-list{list-style: none;}
+      ul.task-list li input[type="checkbox"] {
+        width: 0.8em;
+        margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+        vertical-align: middle;
+      }
+      /* CSS for syntax highlighting */
+      html { -webkit-text-size-adjust: 100%; }
+      pre > code.sourceCode { white-space: pre; position: relative; }
+      pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+      pre > code.sourceCode > span:empty { height: 1.2em; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode > span { color: inherit; text-decoration: inherit; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      pre > code.sourceCode { white-space: pre-wrap; }
+      pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+      }
+      pre.numberSource code
+        { counter-reset: source-line 0; }
+      pre.numberSource code > span
+        { position: relative; left: -4em; counter-increment: source-line; }
+      pre.numberSource code > span > a:first-child::before
+        { content: counter(source-line);
+          position: relative; left: -1em; text-align: right; vertical-align: baseline;
+          border: none; display: inline-block;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+        }
+      pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+      div.sourceCode
+        {   }
+      @media screen {
+      pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+      }
+    </style>
+
+    <style>
+      body.hypothesis-enabled #quarto-embed-header {
+        padding-right: 36px;
+      }
+
+      #quarto-embed-header {
+        height: 3em;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: solid 1px;
+      }
+
+      #quarto-embed-header h6 {
+        font-size: 1.1em;
+        padding-top: 0.6em;
+        margin-left: 1em;
+        margin-right: 1em;
+        font-weight: 400;
+      }
+
+      #quarto-embed-header a.quarto-back-link,
+      #quarto-embed-header a.quarto-download-embed {
+        font-size: 0.8em;
+        margin-top: 1em;
+        margin-bottom: 1em;
+        margin-left: 1em;
+        margin-right: 1em;
+      }
+
+      .quarto-back-container {
+        padding-left: 0.5em;
+        display: flex;
+      }
+
+      .headroom {
+          will-change: transform;
+          transition: transform 200ms linear;
+      }
+
+      .headroom--pinned {
+          transform: translateY(0%);
+      }
+
+      .headroom--unpinned {
+          transform: translateY(-100%);
+      }      
+    </style>
+
+    <script>
+    window.document.addEventListener("DOMContentLoaded", function () {
+
+      var header = window.document.querySelector("#quarto-embed-header");
+      const titleBannerEl = window.document.querySelector("body > #title-block-header");
+      if (titleBannerEl) {
+        titleBannerEl.style.paddingTop = header.clientHeight + "px";
+      }
+      const contentEl = window.document.getElementById('quarto-content');
+      for (const child of contentEl.children) {
+        child.style.paddingTop = header.clientHeight + "px";
+        child.style.marginTop = "1em";
+      }
+
+      // Use the article root if the `back` call doesn't work. This isn't perfect
+      // but should typically work
+      window.quartoBackToArticle = () => {
+        var currentUrl = window.location.href;
+        window.history.back();
+        setTimeout(() => {
+            // if location was not changed in 100 ms, then there is no history back
+            if(currentUrl === window.location.href){              
+                // redirect to site root
+                window.location.href = "index.html";
+            }
+        }, 100);
+      }
+
+      const headroom = new window.Headroom(header, {
+        tolerance: 5,
+        onPin: function () {
+        },
+        onUnpin: function () {
+        },
+      });
+      headroom.init();
+    });
+    </script>
+
+    
+<script src="site_libs/manuscript-notebook/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dc55a5b9e770e841cd82e46aadbfb9b0.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-4d7f0bce1131f3e5f9547cd857cfbfc8.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+     <script async="" src="https://hypothes.is/embed.js"></script>
+<script>
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    document.body.classList.add('hypothesis-enabled');
+  });
+</script>  
+      </head>
+
+  <body class="quarto-notebook quarto-light">
+    <div id="quarto-embed-header" class="headroom fixed-top bg-primary">
+      
+      <a onclick="window.quartoBackToArticle(); return false;" class="btn btn-primary quarto-back-link" href=""><i class="bi bi-caret-left"></i> Back to Article</a>
+      <h6><i class="bi bi-journal-code"></i> GSNA 教程</h6>
+
+            <a href="./GSNA.qmd" class="btn btn-primary quarto-download-embed" download="GSNA.qmd">Download Source</a>
+          </div>
+
+     <header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">GSNA 教程</h1>
+          </div>
+
+    
+    <div class="quarto-title-meta-container">
+      <div class="quarto-title-meta-column-start">
+            <div class="quarto-title-meta-author">
+          <div class="quarto-title-meta-heading">Author</div>
+          <div class="quarto-title-meta-heading">Affiliation</div>
+          
+                <div class="quarto-title-meta-contents">
+            <p class="author">JAYZ </p>
+          </div>
+                <div class="quarto-title-meta-contents">
+                    <p class="affiliation">
+                        The University OF Myself
+                      </p>
+                  </div>
+                    </div>
+        
+        <div class="quarto-title-meta">
+
+                      
+          
+                
+              </div>
+      </div>
+      <div class="quarto-title-meta-column-end quarto-other-formats-target">
+      </div>
+    </div>
+
+
+
+    <div class="quarto-other-links-text-target">
+    </div>  </div>
+</header><div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
+<div id="quarto-sidebar-toc-left" class="sidebar toc-left">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#gsna-教程" id="toc-gsna-教程" class="nav-link active" data-scroll-target="#gsna-教程">🍔GSNA 教程🤗</a>
+  <ul class="collapse">
+  <li><a href="#part-1-the-core-concepts-of-gsea" id="toc-part-1-the-core-concepts-of-gsea" class="nav-link" data-scroll-target="#part-1-the-core-concepts-of-gsea">🤪Part 1 : The Core Concepts of GSEA🤠</a>
+  <ul class="collapse">
+  <li><a href="#lesson-1-the-key-question---moving-beyond-arbitrary-cutoffs" id="toc-lesson-1-the-key-question---moving-beyond-arbitrary-cutoffs" class="nav-link" data-scroll-target="#lesson-1-the-key-question---moving-beyond-arbitrary-cutoffs">Lesson 1: The Key Question - Moving Beyond Arbitrary Cutoffs🥶</a></li>
+  <li><a href="#lesson-1-summary-status-check" id="toc-lesson-1-summary-status-check" class="nav-link" data-scroll-target="#lesson-1-summary-status-check"><strong>Lesson 1: Summary &amp; Status Check</strong></a></li>
+  <li><a href="#lesson-2-the-gsea-algorithm-step-by-step" id="toc-lesson-2-the-gsea-algorithm-step-by-step" class="nav-link" data-scroll-target="#lesson-2-the-gsea-algorithm-step-by-step">Lesson 2: The GSEA Algorithm, Step-by-Step🤩</a></li>
+  <li><a href="#lesson-2-summary-status-check" id="toc-lesson-2-summary-status-check" class="nav-link" data-scroll-target="#lesson-2-summary-status-check"><strong>Lesson 2: Summary &amp; Status Check</strong></a></li>
+  <li><a href="#lesson-3-the-gene-sets---your-biological-prior-knowledge" id="toc-lesson-3-the-gene-sets---your-biological-prior-knowledge" class="nav-link" data-scroll-target="#lesson-3-the-gene-sets---your-biological-prior-knowledge">Lesson 3: The Gene Sets - Your Biological Prior Knowledge🤧</a></li>
+  <li><a href="#lesson-3-summary-status-check" id="toc-lesson-3-summary-status-check" class="nav-link" data-scroll-target="#lesson-3-summary-status-check"><strong>Lesson 3: Summary &amp; Status Check</strong></a></li>
+  </ul></li>
+  <li><a href="#part-2-a-practical-gsea-project-in-r" id="toc-part-2-a-practical-gsea-project-in-r" class="nav-link" data-scroll-target="#part-2-a-practical-gsea-project-in-r">😥<strong>Part 2: A Practical GSEA Project in R😇</strong></a>
+  <ul class="collapse">
+  <li><a href="#lesson-4-project-setup-and-data-preparation" id="toc-lesson-4-project-setup-and-data-preparation" class="nav-link" data-scroll-target="#lesson-4-project-setup-and-data-preparation"><strong>Lesson 4: Project Setup and Data Preparation🙂‍↔︎️</strong></a></li>
+  <li><a href="#lesson-4-summary-status-check" id="toc-lesson-4-summary-status-check" class="nav-link" data-scroll-target="#lesson-4-summary-status-check"><strong>Lesson 4: Summary &amp; Status Check</strong></a></li>
+  <li><a href="#lesson-5-acquiring-gene-sets" id="toc-lesson-5-acquiring-gene-sets" class="nav-link" data-scroll-target="#lesson-5-acquiring-gene-sets"><strong>Lesson 5: Acquiring Gene Sets🙁</strong></a></li>
+  <li><a href="#lesson-5-summary-status-check" id="toc-lesson-5-summary-status-check" class="nav-link" data-scroll-target="#lesson-5-summary-status-check"><strong>Lesson 5: Summary &amp; Status Check</strong></a></li>
+  <li><a href="#lesson-6-running-the-gsea-and-interpreting-the-results-table" id="toc-lesson-6-running-the-gsea-and-interpreting-the-results-table" class="nav-link" data-scroll-target="#lesson-6-running-the-gsea-and-interpreting-the-results-table"><strong>Lesson 6: Running the GSEA and Interpreting the Results Table🤩</strong></a></li>
+  <li><a href="#lesson-6-summary-status-check" id="toc-lesson-6-summary-status-check" class="nav-link" data-scroll-target="#lesson-6-summary-status-check"><strong>Lesson 6: Summary &amp; Status Check</strong></a></li>
+  <li><a href="#lesson-7-visualizing-the-results" id="toc-lesson-7-visualizing-the-results" class="nav-link" data-scroll-target="#lesson-7-visualizing-the-results"><strong>Lesson 7: Visualizing the Results🍬</strong></a></li>
+  <li><a href="#grand-conclusion-of-the-gsea-project" id="toc-grand-conclusion-of-the-gsea-project" class="nav-link" data-scroll-target="#grand-conclusion-of-the-gsea-project"><strong>Grand Conclusion of the GSEA Project</strong></a></li>
+  <li><a href="#then-you-could-to-leverage-the-power-of-the-gsea-method-you-have-already-learned-and-apply-it-strategically-to-different-collections-of-gene-sets-to-go-from-a-high-level-summary-hallmark-to-a-detailed-mechanistic-understanding-kegg-go.-you-dont-need-to-learn-a-new-method-you-just-need-to-swap-out-the-biological-knowledge-base-you-are-testing-against." id="toc-then-you-could-to-leverage-the-power-of-the-gsea-method-you-have-already-learned-and-apply-it-strategically-to-different-collections-of-gene-sets-to-go-from-a-high-level-summary-hallmark-to-a-detailed-mechanistic-understanding-kegg-go.-you-dont-need-to-learn-a-new-method-you-just-need-to-swap-out-the-biological-knowledge-base-you-are-testing-against." class="nav-link" data-scroll-target="#then-you-could-to-leverage-the-power-of-the-gsea-method-you-have-already-learned-and-apply-it-strategically-to-different-collections-of-gene-sets-to-go-from-a-high-level-summary-hallmark-to-a-detailed-mechanistic-understanding-kegg-go.-you-dont-need-to-learn-a-new-method-you-just-need-to-swap-out-the-biological-knowledge-base-you-are-testing-against."><code>Then you could to leverage the power of the GSEA&nbsp;method&nbsp;you have already learned and apply it strategically to different&nbsp;collections of gene sets&nbsp;to go from a high-level summary (Hallmark) to a detailed, mechanistic understanding (KEGG, GO). You don't need to learn a new method; you just need to swap out the biological knowledge base you are testing against.</code></a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+</nav>
+</div>
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+</div>
+<main class="content quarto-banner-title-block" id="quarto-document-content">      
+
+       <section id="gsna-教程" class="level1">
+<h1>🍔GSNA 教程🤗</h1>
+<hr>
+<section id="part-1-the-core-concepts-of-gsea" class="level2">
+<h2 class="anchored" data-anchor-id="part-1-the-core-concepts-of-gsea">🤪Part 1 : The Core Concepts of GSEA🤠</h2>
+<hr>
+<section id="lesson-1-the-key-question---moving-beyond-arbitrary-cutoffs" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-1-the-key-question---moving-beyond-arbitrary-cutoffs">Lesson 1: The Key Question - Moving Beyond Arbitrary Cutoffs🥶</h3>
+<p><strong>Goal:</strong> To understand the limitations of standard “cutoff-based”(基于截至值) enrichment analysis and to grasp the fundamentally different and more powerful question that GSEA asks.</p>
+<section id="the-classic-way-over-representation-analysis-ora" class="level4">
+<h4 class="anchored" data-anchor-id="the-classic-way-over-representation-analysis-ora"><strong>The “Classic” Way: Over-Representation Analysis (ORA)</strong></h4>
+<p>Let’s first revisit the type of enrichment analysis we have already performed in our proteomics and metabolomics projects. This method is formally called <strong>Over-Representation Analysis (ORA)</strong>.</p>
+<ul>
+<li><p><strong>The ORA Workflow:</strong></p>
+<ol type="1">
+<li><p><strong>Start with a universe:</strong> You have a list of all genes/proteins/metabolites detected in your experiment (e.g., 20,000 genes).</p></li>
+<li><p><strong>Apply a strict cutoff:</strong> You apply an arbitrary(任意的) statistical threshold to create a short list of “significant” genes. For example, you select only the genes where the <strong>adjusted p-value &lt; 0.05 AND the |log2 Fold Change| &gt; 1</strong>. This might give you a list of 500 “interesting” genes.</p></li>
+<li><p><strong>Ask the ORA question:</strong> You then use the <code>hypergeometric test</code> to ask: “Is the ‘Apoptosis(细胞凋亡)’ pathway, which has 100 member genes in the universe, surprisingly over-represented in my short list of 500 genes?”</p></li>
+</ol></li>
+<li><p><strong>The Visual Analogy:</strong> Imagine all your genes are marbles in a giant urn. You pull out a handful of marbles that are “significant” (e.g., the red ones). ORA then asks, “Did I get more ‘Apoptosis’ marbles in my hand than I would expect by random chance?”</p></li>
+</ul>
+</section>
+<section id="the-limitations-and-problems-of-the-ora-cutoff-method" class="level4">
+<h4 class="anchored" data-anchor-id="the-limitations-and-problems-of-the-ora-cutoff-method"><strong>The Limitations and Problems of the ORA / Cutoff Method</strong></h4>
+<p>This method is simple and useful, but it has two major conceptual flaws:</p>
+<p><strong>1. The Arbitrary Cutoff:</strong></p>
+<ul>
+<li><p>The choice of a p-value cutoff (0.05) or a fold-change cutoff (1.0) is <strong><em>completely arbitrary</em></strong>. <strong><em>Is a gene with an adjusted p-value of 0.051 truly biologically meaningless? Is a gene with a log2FC of 0.99 truly uninteresting?</em></strong></p></li>
+<li><p><strong>Information Loss:</strong> By applying this strict cutoff, you are <strong><em>throwing away the vast majority of your data</em></strong>. You are completely ignoring the thousands of genes that showed a weaker but still potentially important change. <strong><em>Biology is often about subtle, coordinated shifts, not just blockbuster hits.(生物学通常涉及微妙，协调的变化，而不是仅仅轰动一时的变化)</em></strong></p></li>
+</ul>
+<p><strong>2. The Sensitivity Problem:</strong></p>
+<ul>
+<li><p>Imagine a biological pathway—like a signaling cascade(信号联级)—where every single one of the 20 genes in the pathway is <strong><em>upregulated</em></strong> by a small but consistent amount (e.g., a log2FC of 0.5 for all of them).</p></li>
+<li><p>Because none of these genes passes the arbitrary |log2FC| &gt; 1 threshold, <strong>none of them will make it into your “significant” list.</strong></p></li>
+<li><p>As a result, <strong><em>the ORA method will be completely blind to this clear and important biological signal</em></strong>. It will <strong><em>report that this pathway is not significant</em></strong>, which is clearly false. The method is not sensitive to small but coordinated changes.</p></li>
+</ul>
+</section>
+<section id="the-gsea-solution-a-fundamentally-different-question" class="level4">
+<h4 class="anchored" data-anchor-id="the-gsea-solution-a-fundamentally-different-question"><strong>The GSEA Solution: A Fundamentally Different Question</strong></h4>
+<p>GSEA was designed specifically to overcome these two problems. It does away with arbitrary cutoffs and uses your entire dataset.</p>
+<ul>
+<li><p><strong>The GSEA Workflow (Conceptual):</strong></p>
+<ol type="1">
+<li><p><strong>Start with the universe:</strong> You have your list of all 20,000 genes.</p></li>
+<li><p><strong>Rank the ENTIRE list:</strong> Instead of creating a short list, <em>you rank all 20,000 genes from “most upregulated” at the top to “most downregulated” at the bottom</em>. This ranking is typically based on a metric that combines the fold change and the p-value (like the t-statistic).</p></li>
+<li><p><strong>Ask the GSEA question:</strong> Now, for the ‘Apoptosis’ pathway, GSEA asks a much more elegant question: <strong>“Are the 100 genes belonging to the ‘Apoptosis’ pathway randomly distributed throughout my entire ranked list of 20,000 genes, or do they show a tendency to accumulate at the top (upregulated) or the bottom (downregulated)?”</strong></p></li>
+</ol></li>
+<li><p><strong>The Visual Analogy:</strong> Imagine your 20,000 genes are runners in a marathon, ranked from first to last place. The ‘Apoptosis’ genes are all wearing blue shirts. GSEA asks: “Are the blue-shirted runners spread randomly throughout the entire pack of 20,000 runners, or are they suspiciously clustered together near the finish line?”</p></li>
+</ul>
+</section>
+<section id="why-gsea-is-more-powerful" class="level4">
+<h4 class="anchored" data-anchor-id="why-gsea-is-more-powerful"><strong>Why GSEA is More Powerful</strong></h4>
+<ul>
+<li><p><strong>It is Threshold-Free:</strong> <strong><em>It uses all of your data. No information is thrown away.</em></strong></p></li>
+<li><p><strong>It is More Sensitive:</strong> It can detect those subtle but coordinated changes. In our example of the signaling cascade where all 20 genes had a log2FC of 0.5, ORA would miss it completely. GSEA, however, would easily detect that all 20 of these genes are accumulating together near the top of the ranked list and would report the pathway as highly significant.</p></li>
+</ul>
+</section>
+</section>
+<section id="lesson-1-summary-status-check" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-1-summary-status-check"><strong>Lesson 1: Summary &amp; Status Check</strong></h3>
+<ul>
+<li><p><strong>Conceptually</strong>, we now understand the critical difference between the two main types of enrichment analysis.</p>
+<ul>
+<li><p><strong>ORA (Over-Representation Analysis):</strong> Asks if a pathway is over-represented in a short, pre-defined list of significant genes. It is simple but suffers from arbitrary cutoffs and loss of information.</p></li>
+<li><p><strong>GSEA (Gene Set Enrichment Analysis):</strong> Asks if a pathway’s member genes are non-randomly distributed at the top or bottom of the entire ranked list of all genes. It is threshold-free and more sensitive to subtle, coordinated changes.</p></li>
+</ul></li>
+</ul>
+<hr>
+</section>
+<section id="lesson-2-the-gsea-algorithm-step-by-step" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-2-the-gsea-algorithm-step-by-step">Lesson 2: The GSEA Algorithm, Step-by-Step🤩</h3>
+<p><strong>Goal:</strong> To understand the three logical stages of the GSEA algorithm: Ranking, Calculating the Enrichment Score, and Assessing Significance.</p>
+<section id="step-1-create-a-master-ranked-list-of-all-genes" class="level4">
+<h4 class="anchored" data-anchor-id="step-1-create-a-master-ranked-list-of-all-genes"><strong>Step 1: Create a Master Ranked List of All Genes</strong></h4>
+<p><strong>The Concept:</strong> The foundation of GSEA is a single, ranked list that represents your entire experiment. This list must capture both the <strong>magnitude</strong> (how much did it change?) and the <strong>significance</strong> (how confident are we in this change?) for every single gene you measured.</p>
+<p><strong>The Method:</strong></p>
+<ol type="1">
+<li><p>You start with your differential expression results table (from <code>DESeq2, limma,</code> etc.). This table has a log2 Fold Change (logFC) and a p-value for all 20,000 genes.</p></li>
+<li><p>You cannot simply rank by fold change, because a gene with a huge fold change but a terrible p-value is not reliable. You cannot simply rank by p-value, because a tiny p-value with a near-zero fold change is not biologically interesting.</p></li>
+<li><p>Therefore, you must combine these into a single <strong>ranking metric</strong>. Common and effective choices include:</p>
+<ul>
+<li><p>The <strong>t-statistic</strong> from the <code>limma</code> output.</p></li>
+<li><p>The stat column from the <code>DESeq2</code> output.</p></li>
+<li><p>A manually calculated metric like: <strong><em><code>sign(logFC) * -log10(pvalue).</code></em></strong></p></li>
+</ul></li>
+<li><p>You then rank all 20,000 genes in <strong><em>descending order based on this metric</em></strong>. The result is a single list where the gene with the highest positive metric (most strongly upregulated) is at position #1, and the gene with the most negative metric (most strongly downregulated) is at position #20,000.</p></li>
+</ol>
+</section>
+<section id="step-2-calculate-the-enrichment-score-es" class="level4">
+<h4 class="anchored" data-anchor-id="step-2-calculate-the-enrichment-score-es"><strong>Step 2: Calculate the Enrichment Score (ES)</strong></h4>
+<p><strong>The Concept:</strong> This is the heart of the algorithm. For a single gene set (e.g., the “Hallmark Apoptosis” set, which contains 161 genes), we want to calculate a score that tells us if its members are clustered at the top or bottom of our master ranked list. GSEA does this using an elegant “random walk” method.</p>
+<p><strong>The “Random Walk” Analogy:</strong><br>
+Imagine you are walking from the #1 ranked gene down to the #20,000th gene. You have a pencil and are drawing a graph.</p>
+<ul>
+<li><p>You start your pencil at <strong>zero</strong>.</p></li>
+<li><p>Every time you pass a gene that is <strong>IN</strong> your gene set (a “hit”), you take a big step <strong>UP</strong>. The size of the step is proportional to the gene’s ranking metric (so hits at the very top give bigger steps up).</p></li>
+<li><p>Every time you pass a gene that is <strong>NOT</strong> in your gene set (a “miss”), you take a small step <strong>DOWN</strong>.</p></li>
+</ul>
+<p><strong>The Calculation:</strong></p>
+<ol type="1">
+<li><p>The algorithm walks down the ranked list from gene 1 to 20,000.</p></li>
+<li><p>It keeps a running-sum statistic. When it encounters a gene belonging to the “Apoptosis” set, it increases the running sum. When it encounters a gene not in the set, it decreases the running sum.</p></li>
+<li><p>This creates a “mountain range” plot. If the apoptosis genes are randomly distributed, the line will just jitter(抖动) randomly around zero.</p></li>
+<li><p><strong>However</strong>, if the apoptosis genes are clustered at the top of the list, you will get a series of big steps UP at the beginning, causing the running sum to climb rapidly to a large positive value before it starts to drift back down.</p></li>
+<li><p>If the apoptosis genes are clustered at the bottom, you will get a series of small steps DOWN for a long time, followed by a series of big steps UP at the very end. This will cause the running sum to drift negatively to a large negative value.</p></li>
+</ol>
+<p><strong>The Enrichment Score (ES):</strong> The ES is defined as the <strong>maximum deviation of the running sum from zero(运行总和与零的最大偏差)</strong>.</p>
+<ul>
+<li><p>A large <strong>positive ES</strong> means the gene set is enriched <strong><em>at the top of the list</em></strong> (associated with the <strong><em>“upregulated” phenotype)</em></strong>.</p></li>
+<li><p>A large <strong>negative ES</strong> means the gene set is enriched <strong><em>at the bottom of the list</em></strong> (associated with the <strong><em>“downregulated” phenotype</em></strong>).</p></li>
+<li><p>An ES close to <strong>zero</strong> means the <strong><em>gene set is not enriched</em></strong> (its members are <strong><em>scattered randomly</em></strong>).</p></li>
+</ul>
+<p>(This is the classic GSEA plot we will learn to make. <strong><em>The green line is the “random walk”. The peak of that line is the ES</em></strong>.)</p>
+</section>
+<section id="step-3-assess-the-statistical-significance" class="level4">
+<h4 class="anchored" data-anchor-id="step-3-assess-the-statistical-significance"><strong>Step 3: Assess the Statistical Significance</strong></h4>
+<p><strong>The Concept:</strong> We have an ES for “Apoptosis” (e.g., 0.72). But is that score impressive? Could we have gotten a score that high just by random chance with a random set of 161 genes? We need to calculate a <strong><em>p-value.</em></strong></p>
+<p><strong>The Method: Permutation Testing(排序测试)</strong><br>
+GSEA establishes significance in a very clever and robust way: <strong>it creates its own null distribution by shuffling the data.</strong></p>
+<ol type="1">
+<li><p>The algorithm takes our master ranked list of 20,000 genes.</p></li>
+<li><p>It then <strong>randomly shuffles(打乱) the gene labels</strong>. Now the ranking metrics are <strong><em>associated with the wrong genes</em></strong>. This creates a “random” ranked list.</p></li>
+<li><p>It <strong><em>re-calculates</em></strong> the Enrichment Score for “Apoptosis” using this shuffled list. It records this new, random ES.</p></li>
+<li><p>It repeats this shuffling process <strong>thousands of times</strong> (e.g., 10,000 times), generating a null distribution of 10,000 random Enrichment Scores. This distribution shows what a typical ES looks like for the “Apoptosis” set when there is no real biological signal.</p></li>
+<li><p><strong>The p-value</strong> is then calculated as the fraction of random ES scores from the null distribution that were equal to or more extreme than the actual ES we observed from our real data(然后计算 p 值，作为从零分布中随机 ES 分数中等于或比实际观察到的真实数据 ES 更极端的分数的比例。).</p></li>
+<li><p>Finally, because we are testing thousands of gene sets at once, it calculates a <strong>False Discovery Rate (FDR)</strong> or adjusted p-value to correct for multiple testing. <strong><em>This FDR is the most important value for determining significance.</em></strong></p></li>
+</ol>
+<p><strong>Normalization (NES):</strong> The raw ES is dependent on the size of the gene set. To compare enrichment between a small set and a large set, the score is normalized. This <strong>Normalized Enrichment Score (NES)</strong> is what is typically used for ranking and comparing significant pathways.</p>
+</section>
+</section>
+<section id="lesson-2-summary-status-check" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-2-summary-status-check"><strong>Lesson 2: Summary &amp; Status Check</strong></h3>
+<ul>
+<li><p><strong>Conceptually</strong>, we have dissected the GSEA algorithm into its three essential parts. We understand that it is a <strong>Rank-then-Walk-then-Shuffle(排序-遍历-重排)</strong> process.</p>
+<ol type="1">
+<li><p><strong>Rank:</strong> Create a master list of all genes based on a robust metric.</p></li>
+<li><p><strong>Walk:</strong> Calculate an <strong>Enrichment Score (ES)</strong> by walking down the list and seeing if a gene set’s members accumulate at either end.</p></li>
+<li><p><strong>Shuffle:</strong> Determine the significance of the ES by comparing it to a null distribution created by thousands of <strong>permutations(排列)</strong> of the gene labels.</p></li>
+</ol></li>
+</ul>
+<hr>
+</section>
+<section id="lesson-3-the-gene-sets---your-biological-prior-knowledge" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-3-the-gene-sets---your-biological-prior-knowledge">Lesson 3: The Gene Sets - Your Biological Prior Knowledge🤧</h3>
+<p><strong>Goal:</strong> To understand the concept of a gene set and to become familiar with the Molecular Signatures Database (<code>MSigDB</code>), the gold-standard resource for curated gene sets.</p>
+<section id="concept-1-what-is-a-gene-set" class="level4">
+<h4 class="anchored" data-anchor-id="concept-1-what-is-a-gene-set"><strong>Concept 1: What is a Gene Set?</strong></h4>
+<p>A gene set is simply a <strong>list of genes that share a common biological function, location, or regulation.</strong> It represents a <strong><em>piece of pre-existing</em></strong>, curated(整理过的) biological knowledge. Think of it as a <strong><em>pre-defined “team” of genes.</em></strong></p>
+<ul>
+<li><p><strong>Example 1: A KEGG Pathway Gene Set.</strong> The “KEGG GLYCOLYSIS” gene set would be a list of all the genes that encode the enzymes involved in the glycolysis pathway.</p></li>
+<li><p><strong>Example 2: A GO Term Gene Set.</strong> The “GO DNA REPAIR” gene set would be a list of all genes that have been annotated with the “DNA Repair” Gene Ontology term.</p></li>
+<li><p><strong>Example 3: A Regulatory Gene Set.</strong> A gene set could be a list of all genes that have a binding site for a particular transcription factor (like TP53) in their promoter(启动子) region.</p></li>
+</ul>
+<p>GSEA is a general method. The biological meaning of its output is entirely dependent on the quality and nature of the gene sets you use as input.</p>
+</section>
+<section id="concept-2-the-gold-standard---the-molecular-signatures-database-msigdb" class="level4">
+<h4 class="anchored" data-anchor-id="concept-2-the-gold-standard---the-molecular-signatures-database-msigdb"><strong>Concept 2: The Gold Standard - The Molecular Signatures Database (MSigDB)</strong></h4>
+<p>Manually creating these gene sets would be a monumental(艰巨) task. Thankfully, the Broad Institute (the same group that created GSEA) maintains the <strong>Molecular Signatures Database (MSigDB)</strong>. <strong><em>This is a massive, meticulously curated collection of thousands of gene sets that is freely available to the scientific community.</em></strong></p>
+<p>MSigDB is the canonical(通用) resource for GSEA. It is organized into several major collections, and knowing the main ones is crucial for any bioinformatician.</p>
+</section>
+<section id="the-key-msigdb-collections" class="level4">
+<h4 class="anchored" data-anchor-id="the-key-msigdb-collections"><strong>The Key MSigDB Collections</strong></h4>
+<p>Here are the most important collections you will encounter. Each one is designed to answer a different type of biological question.</p>
+<ul>
+<li><p><strong>H: Hallmark(标志) Gene Sets (The Best Place to Start)</strong></p>
+<ul>
+<li><p><strong>What it is:</strong> This is the smallest and most refined collection, consisting of only <strong>50 gene sets</strong>. Each Hallmark set represents a well-defined, core biological process (e.g., “HALLMARK_APOPTOSIS”, “HALLMARK_INFLAMMATORY_RESPONSE”).</p></li>
+<li><p><strong>How it was made:</strong> The MSigDB curators used a sophisticated computational approach to distill the thousands of overlapping gene sets from other collections down to their essential, non-redundant core.</p></li>
+<li><p><strong>Why you should use it:</strong> It reduces noise and redundancy, making the results much easier to interpret. For most analyses, <strong>starting with the Hallmark collection is the recommended best practice.</strong></p></li>
+</ul></li>
+<li><p><strong>C2: Curated Gene Sets</strong></p>
+<ul>
+<li><p><strong>What it is:</strong> This is a massive collection (over 6,000 sets) gathered from various online pathway databases, publications, and knowledge bases.</p></li>
+<li><p><strong>Sub-collections:</strong> It is divided into important sub-collections:</p>
+<ul>
+<li><p><strong>C2:CP:KEGG:</strong> Gene sets from the famous KEGG pathway database.</p></li>
+<li><p><strong>C2:CP:Reactome:</strong> Gene sets from the highly detailed Reactome pathway database.</p></li>
+<li><p><strong>C2:CP:BioCarta:</strong> Gene sets from the BioCarta pathway database.</p></li>
+</ul></li>
+<li><p><strong>Why you should use it:</strong> When you want to investigate specific, well-known canonical pathways. It’s more detailed than the Hallmark collection but also more redundant (e.g., many KEGG pathways will overlap).</p></li>
+</ul></li>
+<li><p><strong>C5: GO Gene Sets</strong></p>
+<ul>
+<li><p><strong>What it is:</strong> A very large collection (over 10,000 sets) where each gene set corresponds to a Gene Ontology (GO) term.</p></li>
+<li><p><strong>Sub-collections:</strong></p>
+<ul>
+<li><p><strong>C5:GO:BP:</strong> For Biological Process.</p></li>
+<li><p><strong>C5:GO:MF:</strong> For Molecular Function.</p></li>
+<li><p><strong>C5:GO:CC:</strong> For Cellular Component.</p></li>
+</ul></li>
+<li><p><strong>Why you should use it:</strong> When you want to explore biological functions in a more granular and comprehensive way than just looking at pathways. The results can be very detailed but also highly redundant.</p></li>
+</ul></li>
+<li><p><strong>C3: Regulatory Target Gene Sets</strong></p>
+<ul>
+<li><p><strong>What it is:</strong> Gene sets where all the genes are thought to be regulated by a specific transcription factor or microRNA.</p></li>
+<li><p><strong>Why you should use it:</strong> When your primary question is about gene regulation. For example, if your experiment involves knocking out a transcription factor, you would use this collection to see if its known target genes are significantly downregulated.</p></li>
+</ul></li>
+</ul>
+</section>
+</section>
+<section id="lesson-3-summary-status-check" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-3-summary-status-check"><strong>Lesson 3: Summary &amp; Status Check</strong></h3>
+<ul>
+<li><p><strong>Conceptually</strong>, we understand that GSEA’s power comes from leveraging prior biological knowledge in the form of <strong>curated gene sets</strong>.</p></li>
+<li><p>We have been introduced to the <strong>MSigDB database</strong> as the central, authoritative resource for these gene sets.</p></li>
+<li><p><strong>Crucially</strong>, we now know the major MSigDB collections and have a strategic plan for using them:</p>
+<ol type="1">
+<li><p><strong>Always start with the Hallmark (H) collection</strong> for a high-level, easy-to-interpret view of the results.</p></li>
+<li><p>If needed, follow up with more detailed collections like <strong>KEGG/Reactome (C2)</strong> or <strong>Gene Ontology (C5)</strong> to explore more specific hypotheses.</p></li>
+</ol></li>
+</ul>
+<p>We have now completed our tour of the core concepts of GSEA. We understand why it’s better than ORA, how the algorithm works, and what biological knowledge it uses as input.</p>
+<hr>
+</section>
+</section>
+<section id="part-2-a-practical-gsea-project-in-r" class="level2">
+<h2 class="anchored" data-anchor-id="part-2-a-practical-gsea-project-in-r">😥<strong>Part 2: A Practical GSEA Project in R😇</strong></h2>
+<p><strong>Project:</strong> “<strong>Analyzing the Transcriptional Response to Estrogen(雌激素) Treatment in a Breast Cancer Cell Line (MCF7)</strong>.”</p>
+<p><strong>Biological Question:</strong> “Estrogen is a key hormone that drives the growth of certain breast cancers. We want to use GSEA to identify the core biological pathways and hallmark processes that are activated or suppressed in MCF7 cells after estrogen treatment.”</p>
+<p><strong>Our Starting Point:</strong> We will pretend a colleague has already performed the RNA-seq experiment and the differential expression analysis using DESeq2. They have handed us a single <code>CSV</code> file: <code>estrogen_deg_results.csv.</code> This file contains the complete results for all ~20,000 detected genes.</p>
+<hr>
+<section id="lesson-4-project-setup-and-data-preparation" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-4-project-setup-and-data-preparation"><strong>Lesson 4: Project Setup and Data Preparation🙂‍↔︎️</strong></h3>
+<p><strong>Goal:</strong> To set up our R environment, load the differential expression results, and, most importantly, <strong><em>create the master ranked list of genes that will be the primary input for our GSEA.</em></strong></p>
+<section id="chunk-1-project-setup-and-installing-packages" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-1-project-setup-and-installing-packages"><strong>Chunk 1: Project Setup and Installing Packages</strong></h4>
+<p><strong>Explanation:</strong> First, we’ll create an organized project structure. Then, we will install the two key R packages we need for this entire analysis.</p>
+<ul>
+<li><p><strong><code>fgsea</code>:</strong> An R package for running a Fast Preranked(排序) Gene Set Enrichment Analysis. It’s extremely fast and widely used in the community.</p></li>
+<li><p><strong><code>msigdbr</code>:</strong> A brilliant helper package that allows us to download and format gene sets directly from the MSigDB database inside R, saving us from manual downloads.</p></li>
+</ul>
+<p><strong>Action:</strong></p>
+<ol type="1">
+<li><p>On your computer, create a new project folder: <code>Project_GSEA_Estrogen.</code></p></li>
+<li><p>Inside, create the sub-folders: <code>data</code>, <code>scripts</code>, and <code>figures</code>.</p></li>
+<li><p>In RStudio, create a new R Project in this main folder.</p></li>
+<li><p>Create a new R script and save it in the scripts folder as <code>01_gsea_analysis.R.</code></p></li>
+<li><p>In the R console, install the necessary packages:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"fgsea"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"msigdbr"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"tidyverse"</span>) <span class="co"># For data manipulation and plotting</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+</ol>
+</section>
+<section id="chunk-2-loading-the-differential-expression-data" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-2-loading-the-differential-expression-data"><strong>Chunk 2: Loading the Differential Expression Data</strong></h4>
+<p><strong>Explanation:</strong> We need to load our colleague’s results file into R. For this lesson, since we don’t have a real file, I will provide code that creates a realistic, sample data frame. In a real project, you would simply use <code>read.csv()</code> to load your file. We will then inspect the data to understand its structure.</p>
+<p><strong>Action:</strong><br>
+Add the following code to your <code>01_gsea_analysis.R</code> script.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --------------------------------------------------------------------------</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Script: 01_gsea_analysis.R</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Project: GSEA of Estrogen Response in MCF7 Cells</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># --------------------------------------------------------------------------</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the libraries</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fgsea)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(msigdbr)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 1. Load and Prepare the Data ---</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co"># In a real project, you would load your data like this:</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co"># deg_results &lt;- read.csv("data/estrogen_deg_results.csv")</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co"># For this tutorial, we will CREATE a sample data frame that</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co"># looks just like a real differential expression results file.</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>) <span class="co"># for reproducibility</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>deg_results <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">gene_symbol =</span> <span class="fu">paste0</span>(<span class="st">"GENE"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">1000</span>),</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">log2FoldChange =</span> <span class="fu">rnorm</span>(<span class="dv">1000</span>, <span class="dv">0</span>, <span class="fl">1.5</span>),</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">pvalue =</span> <span class="fu">runif</span>(<span class="dv">1000</span>, <span class="dv">0</span>, <span class="dv">1</span>),</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">padj =</span> <span class="fu">p.adjust</span>(<span class="fu">runif</span>(<span class="dv">1000</span>, <span class="dv">0</span>, <span class="dv">1</span>), <span class="at">method =</span> <span class="st">"BH"</span>)</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Let's make some genes look like they are part of an estrogen response</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>deg_results<span class="sc">$</span>log2FoldChange[<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>] <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">50</span>, <span class="dv">2</span>, <span class="fl">0.5</span>)</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>deg_results<span class="sc">$</span>pvalue[<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>] <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">50</span>, <span class="dv">0</span>, <span class="fl">0.01</span>)</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>deg_results<span class="sc">$</span>padj[<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>] <span class="ot">&lt;-</span> <span class="fu">p.adjust</span>(deg_results<span class="sc">$</span>pvalue[<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>], <span class="at">method =</span> <span class="st">"BH"</span>)</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Inspect the loaded data</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(deg_results)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><strong>Run this code.</strong> You now have a data frame called <code>deg_results</code>. Look at the first few rows. You’ll see it has the essential columns: <code>a gene identifier (gene_symbol), a log2FoldChange, and adjusted p-values (padj).</code></li>
+</ul>
+</section>
+<section id="chunk-3-creating-the-ranked-gene-list" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-3-creating-the-ranked-gene-list"><strong>Chunk 3: Creating the Ranked Gene List</strong></h4>
+<p><strong>Explanation:</strong> This is the most critical preparatory step in the entire analysis. As we learned in Lesson 2, GSEA does not take the whole data frame as input. It requires a single, <strong>named, ranked vector</strong>.</p>
+<ul>
+<li><p><strong>The values</strong> in the vector will be our <strong><em>ranking metric</em></strong>.</p></li>
+<li><p><strong>The names</strong> of the vector elements will be the corresponding gene symbols.</p></li>
+</ul>
+<p>We will create this ranked list, handle any potential issues like missing values or duplicate gene names, and then sort it in descending order.</p>
+<p><strong>Action:</strong><br>
+Add this chunk to your script.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 2. Create the Ranked Gene List for GSEA ---</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># First, let's create our ranking metric. A good choice is sign(logFC) * -log10(pvalue)</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># This captures both magnitude/direction and significance.</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>deg_results<span class="sc">$</span>rank_metric <span class="ot">&lt;-</span> <span class="fu">sign</span>(deg_results<span class="sc">$</span>log2FoldChange) <span class="sc">*</span> <span class="sc">-</span><span class="fu">log10</span>(deg_results<span class="sc">$</span>pvalue)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Next, we create the named vector.</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Filter out any genes with NA values in our metric.</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Handle duplicate gene symbols. Some genes might be measured by multiple probes.</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co">#    We will keep the one with the highest absolute rank metric.</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>ranked_genes <span class="ot">&lt;-</span> deg_results <span class="sc">%&gt;%</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(rank_metric)) <span class="sc">%&gt;%</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(gene_symbol) <span class="sc">%&gt;%</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_max</span>(<span class="at">order_by =</span> <span class="fu">abs</span>(rank_metric), <span class="at">n =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Now, pull the metric and gene symbols into the named vector format</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(rank_metric, <span class="at">name =</span> gene_symbol)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Finally, sort the vector in descending order. This is required by fgsea.</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>ranked_genes <span class="ot">&lt;-</span> <span class="fu">sort</span>(ranked_genes, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Let's inspect our final ranked list. This is the direct input for GSEA.</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"--- Our final ranked gene list ---</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(ranked_genes)</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">... (and at the other end) ...</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span>(ranked_genes)</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Total number of ranked genes:"</span>, <span class="fu">length</span>(ranked_genes), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><p><strong>Run this code.</strong></p></li>
+<li><p><strong>Verification:</strong> Inspect the output in your console. You should see a list of numbers (the ranking metric) with gene symbols as their names. The <code>head()</code> output will show the genes with the largest positive metric (our most upregulated genes), and the <code>tail()</code> output will show the genes with the most negative metric (our most downregulated genes). You have successfully created the exact data structure that <code>fgsea</code> needs.</p></li>
+</ul>
+</section>
+</section>
+<section id="lesson-4-summary-status-check" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-4-summary-status-check"><strong>Lesson 4: Summary &amp; Status Check</strong></h3>
+<ul>
+<li><p><strong>Conceptually</strong>, we have put our theoretical knowledge into practice. We understand that the goal of this stage is not just to load data, but to distill it into a master ranked list that captures the full result of our differential expression experiment.</p></li>
+<li><p><strong>Practically</strong>, we have set up our project, installed the necessary tools, loaded our data, and, most importantly, have written the code to convert a standard DEG results table into the specific <strong>named, sorted vector</strong> format required for GSEA.</p></li>
+</ul>
+<hr>
+</section>
+<section id="lesson-5-acquiring-gene-sets" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-5-acquiring-gene-sets"><strong>Lesson 5: Acquiring Gene Sets🙁</strong></h3>
+<p><strong>Goal:</strong> To use the <code>msigdbr</code> R package to download the Hallmark gene sets for Homo sapiens and format them into the specific list structure that the <code>fgsea</code> package requires.</p>
+<section id="chunk-1-understanding-the-msigdbr-package" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-1-understanding-the-msigdbr-package"><strong>Chunk 1: Understanding the <code>msigdbr</code> Package</strong></h4>
+<p><strong>Explanation:</strong> In the past, scientists had to go to the Broad Institute’s website, manually download a <code>.gmt</code> file, and then write code to parse that file. The <code>msigdbr</code> package makes this entire process obsolete and much more reproducible.</p>
+<ul>
+<li><p>It provides a single function, <code>msigdbr()</code>, that connects directly to the MSigDB database.</p></li>
+<li><p>You can specify the species you want (e.g., “Homo sapiens”, “Mus musculus(小家鼠)”).</p></li>
+<li><p>You can specify the category you are interested in (e.g., “H” for Hallmark, “C2” for Curated, “C5” for GO).</p></li>
+<li><p>The function returns a tidy data frame, which is much easier to work with than the old <code>.gmt</code> files.</p></li>
+</ul>
+</section>
+<section id="chunk-2-downloading-the-hallmark-gene-sets" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-2-downloading-the-hallmark-gene-sets"><strong>Chunk 2: Downloading the Hallmark Gene Sets</strong></h4>
+<p><strong>Explanation:</strong> As we discussed in Lesson 3, the Hallmark collection is the best place to start. It provides a high-level, non-redundant view of the most important biological processes. We will use the <code>msigdbr</code> function to fetch this collection for humans.</p>
+<p><strong>Action:</strong><br>
+Add this chunk to your <code>01_gsea_analysis.R</code> script.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 3. Acquire the Gene Sets from MSigDB ---</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># We will use the msigdbr package to get the Hallmark gene sets for humans.</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># msigdbr(species = "Homo sapiens", category = "H")</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Let's pull the data and inspect it</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>hallmark_sets_df <span class="ot">&lt;-</span> <span class="fu">msigdbr</span>(<span class="at">species =</span> <span class="st">"Homo sapiens"</span>, <span class="at">category =</span> <span class="st">"H"</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Inspect the resulting data frame</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(hallmark_sets_df)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><p><strong>Run this code.</strong></p></li>
+<li><p><strong>Verification:</strong> Look at the <code>hallmark_sets_df data</code> frame. You will see it has a very simple and useful structure. <strong><em>Each row represents one gene belonging to one gene set. The key columns are:</em></strong></p>
+<ul>
+<li><p><code>gs_name</code>: The name of the gene set (e.g., “HALLMARK_APOPTOSIS”).</p></li>
+<li><p><code>gene_symbol</code>: The gene that is a member of that set.<br>
+This tidy format is a great starting point.</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="chunk-3-formatting-the-gene-sets-for-fgsea" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-3-formatting-the-gene-sets-for-fgsea"><strong>Chunk 3: Formatting the Gene Sets for <code>fgsea</code></strong></h4>
+<p><strong>Explanation:</strong> The <code>fgsea</code> package is very efficient, and to achieve this speed, it requires the gene sets to be in a specific format: a <strong>named list</strong>.</p>
+<ul>
+<li><p>Each <strong>element</strong> <strong>of the list should be a gene set.</strong></p></li>
+<li><p>The <strong>name</strong> <strong><em>of each list element should be the name of the gene set (e.g., “HALLMARK_APOPTOSIS”).</em></strong></p></li>
+<li><p>The <strong>content</strong> <strong><em>of each list element should be a simple character vector of all the gene symbols belonging to that set.</em></strong></p></li>
+</ul>
+<p>We need to convert the data frame we just downloaded from <code>msigdbr</code> into this list format. While this can be done in several ways in R, using the <code>split()</code> and <code>lapply()</code> functions or a loop, the <code>tidyverse</code> approach with <code>split()</code> is often very concise.</p>
+<p><strong>Action:</strong><br>
+Add this final chunk for the lesson to your script.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The fgsea function requires the gene sets to be in a named list format.</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># We will convert the data frame from msigdbr into this format.</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># The 'split()' function is perfect for this. It splits the 'gene_symbol' column</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># into a list, based on the values in the 'gs_name' column.</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>hallmark_sets_list <span class="ot">&lt;-</span> <span class="fu">split</span>(<span class="at">x =</span> hallmark_sets_df<span class="sc">$</span>gene_symbol, <span class="at">f =</span> hallmark_sets_df<span class="sc">$</span>gs_name)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Let's inspect our final gene set list to verify the format.</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"--- Our final gene set list for fgsea ---</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Look at the first two pathways in the list</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(<span class="fu">head</span>(hallmark_sets_list, <span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><p><strong>Run this code.</strong></p></li>
+<li><p><strong>Verification:</strong> The <code>str()</code> command is our proof. The output in the console will show the structure of our new object, <code>hallmark_sets_list</code>. You should see that it is a “List of 50” (because there are 50 Hallmark sets). When you expand the first element, you will see something like:</p>
+<pre><code>$ HALLMARK_ADIPOGENESIS: chr [1:200] "ACSL1" "SCD" "FASN" ...</code></pre>
+<p>This confirms we have the exact format required: a named list where each element is a vector of gene symbols.</p></li>
+</ul>
+</section>
+</section>
+<section id="lesson-5-summary-status-check" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-5-summary-status-check"><strong>Lesson 5: Summary &amp; Status Check</strong></h3>
+<ul>
+<li><p><strong>Conceptually</strong>, we understand that we need a source of high-quality, curated gene sets to power our GSEA, and that MSigDB is the standard for this.</p></li>
+<li><p><strong>Practically</strong>, we have used the modern and reproducible <code>msigdbr</code> package to programmatically fetch the Hallmark gene sets directly into R. We have also successfully transformed this data into the specific <strong>named list format</strong> required by our analysis tool, <code>fgsea</code>.</p></li>
+</ul>
+<p>We have now prepared both of our key inputs:</p>
+<ol type="1">
+<li><p><code>ranked_genes</code>: Our data-driven ranked list from the experiment.</p></li>
+<li><p><code>hallmark_sets_list</code>: Our knowledge-driven list of biological pathways.</p></li>
+</ol>
+<p>The stage is perfectly set. We are ready to bring these two inputs together and run the GSEA.</p>
+<hr>
+</section>
+<section id="lesson-6-running-the-gsea-and-interpreting-the-results-table" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-6-running-the-gsea-and-interpreting-the-results-table"><strong>Lesson 6: Running the GSEA and Interpreting the Results Table🤩</strong></h3>
+<p><strong>Goal:</strong> To use the <code>fgsea</code> package to run the Gene Set Enrichment Analysis, to understand the structure of the results table it produces, and to identify the statistically significant pathways.</p>
+<section id="chunk-1-running-the-fgsea-function" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-1-running-the-fgsea-function"><strong>Chunk 1: Running the <code>fgsea</code> Function</strong></h4>
+<p><strong>Explanation:</strong> The <code>fgsea</code> package is beautifully designed. The main function, <code>fgsea()</code>, is simple to use because we’ve already done the hard work of formatting our inputs correctly. It takes our list of pathways (<code>hallmark_sets_list</code>), our ranked gene list (<code>ranked_genes</code>), and a few other parameters. <strong><em>One key parameter is <code>nPermSimple</code> (previously <code>nperm</code>), which tells the function how many permutations(排序) to run to build the null distribution for calculating the p-values. A value of 10,000 is a robust choice for a final analysis.</em></strong></p>
+<p><strong>Action:</strong><br>
+Add this chunk to your <code>01_gsea_analysis.R</code> script.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 4. Run the Gene Set Enrichment Analysis ---</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Set a seed for reproducibility of the random permutations</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Run the fgsea algorithm!</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>fgsea_results <span class="ot">&lt;-</span> <span class="fu">fgsea</span>(</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">pathways =</span> hallmark_sets_list,</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">stats =</span> ranked_genes,</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">nPermSimple =</span> <span class="dv">10000</span> <span class="co"># Number of permutations</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Let's inspect the results table</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(fgsea_results)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><strong>Run this code.</strong> The <code>fgsea</code> function is highly optimized and should complete the 10,000 permutations very quickly. The result, <code>fgsea_results</code>, is a data frame (technically a “data.table”) containing the GSEA results for every one of the 50 Hallmark pathways.</li>
+</ul>
+</section>
+<section id="chunk-2-understanding-the-gsea-results-table" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-2-understanding-the-gsea-results-table"><strong>Chunk 2: Understanding the GSEA Results Table</strong></h4>
+<p><strong>Explanation:</strong> The <code>fgsea_results</code> table is the core output of our analysis. To use it, we must understand what each column means. Let’s go through the most important ones.</p>
+<ul>
+<li><p><code>pathway</code>: The name of the gene set from MSigDB (e.g., “HALLMARK_APOPTOSIS”).</p></li>
+<li><p><code>pval</code>: The raw statistical p-value calculated from the permutation test. It tells you the probability of getting an Enrichment Score (ES) as extreme as the one observed, just by random chance.</p></li>
+<li><p><code>padj</code>: The <strong>adjusted p-value</strong> (or FDR, or q-value). This is the p-value after correcting for the fact that we tested 50 different pathways at once (the multiple testing problem). <strong>This is the most important column for determining statistical significance.</strong> <strong><em>A common cutoff is <code>padj &lt; 0.05</code> or <code>padj &lt; 0.1</code></em></strong>.</p></li>
+<li><p><code>ES</code>: The <strong>Enrichment Score</strong>. This is the peak of the “random walk” we discussed in Lesson 2. <strong><em>It reflects the degree to which a gene set is over-represented at the extremes of the ranked list.</em></strong></p></li>
+<li><p><code>NES</code>: The <strong>Normalized Enrichment Score</strong>. This is the most important score for interpretation.</p>
+<ul>
+<li><p>The ES is normalized to account for the size of the gene set, allowing you to compare the results for a small gene set versus a large gene set.</p></li>
+<li><p>The <strong>sign of the NES</strong> is critical:</p>
+<ul>
+<li><p><strong>Positive NES:</strong> The pathway is enriched at the <strong>top</strong> of your ranked list. In our case, this means it’s associated with genes that were <strong>upregulated</strong> by estrogen.</p></li>
+<li><p><strong>Negative NES:</strong> The pathway is enriched at the <strong>bottom</strong> of your ranked list, meaning it’s associated with genes that were <strong>downregulated</strong> by estrogen.</p></li>
+</ul></li>
+</ul></li>
+<li><p><code>size</code>: The number of genes in the pathway after filtering to only the genes present in our dataset.</p></li>
+<li><p><code>leadingEdge</code>: <strong><em>A list of the core member genes of the pathway that contributed most to the ES</em></strong>. We will look at this more in the next lesson.</p></li>
+</ul>
+</section>
+<section id="chunk-3-filtering-and-ordering-the-results" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-3-filtering-and-ordering-the-results"><strong>Chunk 3: Filtering and Ordering the Results</strong></h4>
+<p><strong>Explanation:</strong> The results table is often long and not sorted in the most useful way. Our first analytical task is to <strong><em>filter this table to find the significant pathways and then order them to see the most important biological findings</em></strong>. We will filter by the adjusted <code>p-value (padj)</code> and then sort by the <code>NES</code> to <strong><em>see the top upregulated and downregulated pathways.</em></strong></p>
+<p><strong>Action:</strong><br>
+Add this chunk to your script.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 5. Interpret the Results ---</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># First, let's filter for the significantly enriched pathways</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>significant_pathways <span class="ot">&lt;-</span> fgsea_results <span class="sc">%&gt;%</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(padj <span class="sc">&lt;</span> <span class="fl">0.05</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(NES)) <span class="co"># Sort by NES to see top positive and negative pathways</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the significant results</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"--- Significant Enriched Pathways (padj &lt; 0.05) ---</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(significant_pathways[, .(pathway, NES, padj, size)]) <span class="co"># Show key columns</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Let's separate the top upregulated and downregulated pathways for clarity</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>top_positive_pathways <span class="ot">&lt;-</span> significant_pathways <span class="sc">%&gt;%</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(NES <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>)</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>top_negative_pathways <span class="ot">&lt;-</span> significant_pathways <span class="sc">%&gt;%</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(NES <span class="sc">&lt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>)</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="co"># You can also create a nice summary plot of the top pathways</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>plot_data <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(top_positive_pathways, top_negative_pathways)</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>summary_plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(plot_data, <span class="fu">aes</span>(<span class="at">x =</span> NES, <span class="at">y =</span> <span class="fu">reorder</span>(pathway, NES))) <span class="sc">+</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="fu">aes</span>(<span class="at">fill =</span> NES <span class="sc">&gt;</span> <span class="dv">0</span>)) <span class="sc">+</span></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"TRUE"</span> <span class="ot">=</span> <span class="st">"#d95f02"</span>, <span class="st">"FALSE"</span> <span class="ot">=</span> <span class="st">"#1b9e77"</span>), <span class="at">guide =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Top Enriched Hallmark Pathways in Estrogen Response"</span>,</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Normalized Enrichment Score (NES)"</span>,</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Hallmark Pathway"</span></span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(summary_plot)</span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="st">"figures/01_gsea_summary_plot.png"</span>, summary_plot, <span class="at">width =</span> <span class="dv">10</span>, <span class="at">height =</span> <span class="dv">8</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><p><strong>Run this code.</strong></p></li>
+<li><p><strong>Verification:</strong></p>
+<ol type="1">
+<li><p>The printed table in your console is your first key result. It gives you a clean, easy-to-read list of the pathways that were significantly affected by the treatment. This is a core component of your final report.</p></li>
+<li><p>The bar chart (<code>summary_plot</code>) is your visual proof and a powerful summary figure. It immediately communicates the main findings. The orange bars(条框) are the key processes activated by estrogen, and the green bars are the processes that were suppressed.</p></li>
+</ol></li>
+</ul>
+</section>
+</section>
+<section id="lesson-6-summary-status-check" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-6-summary-status-check"><strong>Lesson 6: Summary &amp; Status Check</strong></h3>
+<ul>
+<li><p><strong>Conceptually</strong>, we now understand the meaning of the key outputs of a GSEA: the padj for significance, and the NES for the magnitude and direction of the enrichment.</p></li>
+<li><p><strong>Practically</strong>, we have successfully run the fgsea function on our data and have written the code to filter, sort, and display the results in both a tabular and a graphical format.</p></li>
+<li><p><strong>Crucially</strong>, we have followed the “Trust, but Verify” principle by inspecting the results table and creating a summary plot that confirms our findings and is suitable for a presentation or publication.</p></li>
+</ul>
+<hr>
+</section>
+<section id="lesson-7-visualizing-the-results" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-7-visualizing-the-results"><strong>Lesson 7: Visualizing the Results🍬</strong></h3>
+<p><strong>Goal:</strong> To understand how to read the classic GSEA enrichment plot and to use <code>fgsea</code> to generate these plots for our top significant pathways.</p>
+<section id="chunk-1-deconstructing-the-gsea-enrichment-plot" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-1-deconstructing-the-gsea-enrichment-plot"><strong>Chunk 1: Deconstructing the GSEA Enrichment Plot</strong></h4>
+<p><strong>Explanation:</strong> The GSEA enrichment plot is one of the most iconic and information-rich visualizations in bioinformatics. It can look intimidating at first, but it’s actually a brilliant summary of the entire GSEA algorithm for a single gene set. Let’s break it down into its three main components, from top to bottom.</p>
+<ol type="1">
+<li><p><strong>The Top Panel (The “Mountain”): The Enrichment Score (ES) Plot.</strong></p>
+<ul>
+<li><p>This is the “random walk” we discussed in Lesson 2.</p></li>
+<li><p>The <strong>y-axis</strong> is the running-sum Enrichment Score(累计丰富分数).</p></li>
+<li><p>The <strong>x-axis</strong> represents the position in your master ranked list of all genes (from most upregulated on the left to most downregulated on the right).</p></li>
+<li><p>The peak (or valley) of this green line is the final ES for the pathway. A peak on the left means the pathway is enriched in upregulated genes. A valley on the right means it’s enriched in downregulated genes.</p></li>
+</ul></li>
+<li><p><strong>The Middle Panel (The “Barcodes”): The Hit Ticks.</strong></p>
+<ul>
+<li><p>This is the simplest but most important part of the plot.</p></li>
+<li><p>Each vertical black line (a “tick”) shows the position of a gene that is a <strong>member of this specific gene set</strong> (“a hit”) within the master ranked list.</p></li>
+<li><p>This panel allows you to see the distribution of the gene set members at a glance. If you see the barcodes clustering on the left side, it visually confirms that the genes in this set tend to be highly ranked (upregulated).</p></li>
+</ul></li>
+<li><p><strong>The Bottom Panel (The “Heatmap”): The Ranking Metric.</strong></p>
+<ul>
+<li><p>This is a heatmap of the ranking metric for all genes in your master list.</p></li>
+<li><p>It’s typically colored red for the highest positive ranks (upregulated) and blue for the most negative ranks (downregulated).</p></li>
+<li><p>This provides a global view of the entire experimental trend and serves as a backdrop for the other two panels.</p></li>
+</ul></li>
+</ol>
+</section>
+<section id="chunk-2-plotting-the-top-upregulated-pathway" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-2-plotting-the-top-upregulated-pathway"><strong>Chunk 2: Plotting the Top Upregulated Pathway</strong></h4>
+<p><strong>Explanation:</strong> The <code>fgsea</code> package provides a simple function, <code>plotEnrichment()</code>, to generate these beautiful plots. All it needs is the specific pathway name you want to visualize and the ranked stats list we already created. Let’s create a plot for our most significantly <strong>upregulated</strong> pathway.</p>
+<p><strong>Action:</strong><br>
+Add this chunk to your 01_gsea_analysis.R script.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 6. Visualize Specific Pathway Results ---</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Let's find the name of our top positively enriched pathway</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>top_pathway_positive <span class="ot">&lt;-</span> significant_pathways <span class="sc">%&gt;%</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(NES <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_max</span>(<span class="at">order_by =</span> NES, <span class="at">n =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(pathway)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Plotting top POSITIVE pathway:"</span>, top_pathway_positive, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the enrichment plot</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>positive_plot <span class="ot">&lt;-</span> <span class="fu">plotEnrichment</span>(</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">pathway =</span> hallmark_sets_list[[top_pathway_positive]],</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">stats =</span> ranked_genes</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span> </span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> top_pathway_positive)</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Display and save the plot</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(positive_plot)</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="fu">paste0</span>(<span class="st">"figures/02_enrichment_plot_"</span>, top_pathway_positive, <span class="st">".png"</span>), positive_plot, <span class="at">width =</span> <span class="dv">7</span>, <span class="at">height =</span> <span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><p><strong>Run this code.</strong></p></li>
+<li><p><strong>Verification:</strong> A new plot will appear. This is your proof.</p>
+<ul>
+<li><p>Observe the <strong>green line</strong>: It should rise sharply on the left side, indicating a positive Enrichment Score.</p></li>
+<li><p>Observe the <strong>barcodes</strong>: You should see a high density of black tick marks clustered on the far left, visually confirming that the member genes of this pathway are highly concentrated among the most upregulated genes in your experiment.</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="chunk-3-plotting-the-top-downregulated-pathway" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-3-plotting-the-top-downregulated-pathway"><strong>Chunk 3: Plotting the Top Downregulated Pathway</strong></h4>
+<p><strong>Explanation:</strong> Now we will do the exact same thing for our most significantly <strong>downregulated</strong> pathway. This demonstrates the symmetry of the analysis.</p>
+<p><strong>Action:</strong><br>
+Add this final chunk to your script.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Now let's plot the top NEGATIVELY enriched pathway</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>top_pathway_negative <span class="ot">&lt;-</span> significant_pathways <span class="sc">%&gt;%</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(NES <span class="sc">&lt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_min</span>(<span class="at">order_by =</span> NES, <span class="at">n =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(pathway)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Plotting top NEGATIVE pathway:"</span>, top_pathway_negative, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the enrichment plot</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>negative_plot <span class="ot">&lt;-</span> <span class="fu">plotEnrichment</span>(</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">pathway =</span> hallmark_sets_list[[top_pathway_negative]],</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">stats =</span> ranked_genes</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span> </span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> top_pathway_negative)</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Display and save the plot</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(negative_plot)</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="fu">paste0</span>(<span class="st">"figures/03_enrichment_plot_"</span>, top_pathway_negative, <span class="st">".png"</span>), negative_plot, <span class="at">width =</span> <span class="dv">7</span>, <span class="at">height =</span> <span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><p><strong>Run this code.</strong></p></li>
+<li><p><strong>Verification:</strong> A second enrichment plot will appear.</p>
+<ul>
+<li><p>Observe the <strong>green line</strong>: It should drift downwards for a long time and form a deep valley on the right side, indicating a negative Enrichment Score.</p></li>
+<li><p>Observe the <strong>barcodes</strong>: You will now see the black tick marks clustered on the <strong>far right</strong>, visually confirming that the members of this pathway are highly concentrated among the most downregulated genes in your experiment.</p></li>
+</ul></li>
+</ul>
+</section>
+</section>
+<section id="grand-conclusion-of-the-gsea-project" class="level3">
+<h3 class="anchored" data-anchor-id="grand-conclusion-of-the-gsea-project"><strong>Grand Conclusion of the GSEA Project</strong></h3>
+<p>We have successfully completed a full, professional GSEA workflow from start to finish. Let’s recap the story we’ve built.</p>
+<ol type="1">
+<li><p><strong>The Concept:</strong> We started by understanding that GSEA is a powerful, threshold-free method that asks if a gene set’s members accumulate at the top or bottom of a ranked list of all our genes.</p></li>
+<li><p><strong>Data Prep:</strong> We loaded our differential expression results and meticulously converted them into the required master <strong>ranked gene list</strong>.</p></li>
+<li><p><strong>Gene Sets:</strong> We programmatically fetched the high-quality <strong>Hallmark gene sets</strong> from the MSigDB database.</p></li>
+<li><p><strong>Running GSEA:</strong> We ran the <code>fgsea</code> algorithm to calculate the NES and FDR for all 50 Hallmark pathways.</p></li>
+<li><p><strong>Interpreting Results:</strong> We created a <strong>summary bar plot</strong> showing the top up- and down-regulated pathways, giving us the high-level biological story.</p></li>
+<li><p><strong>Detailed Visualization:</strong> We generated classic <strong>GSEA enrichment plots</strong> for our top hits, providing the detailed, verifiable evidence of why those pathways were significant.</p></li>
+</ol>
+<p><strong>The Final Result:</strong><br>
+You now have a set of high-quality, publication-ready figures and a statistically robust table that tells a compelling story about your experiment. You can confidently say, for example:</p>
+<p>“Our Gene Set Enrichment Analysis reveals that estrogen treatment in MCF7 cells leads to a significant activation of the ‘HALLMARK_MYC_TARGETS_V1’ and ‘HALLMARK_E2F_TARGETS’ pathways, consistent with increased cell proliferation. Conversely, we observed a significant suppression of the ‘HALLMARK_TNFA_SIGNALING_VIA_NFKB’ pathway…”</p>
+</section>
+<section id="then-you-could-to-leverage-the-power-of-the-gsea-method-you-have-already-learned-and-apply-it-strategically-to-different-collections-of-gene-sets-to-go-from-a-high-level-summary-hallmark-to-a-detailed-mechanistic-understanding-kegg-go.-you-dont-need-to-learn-a-new-method-you-just-need-to-swap-out-the-biological-knowledge-base-you-are-testing-against." class="level3">
+<h3 class="anchored" data-anchor-id="then-you-could-to-leverage-the-power-of-the-gsea-method-you-have-already-learned-and-apply-it-strategically-to-different-collections-of-gene-sets-to-go-from-a-high-level-summary-hallmark-to-a-detailed-mechanistic-understanding-kegg-go.-you-dont-need-to-learn-a-new-method-you-just-need-to-swap-out-the-biological-knowledge-base-you-are-testing-against."><code>Then you could to leverage the power of the GSEA&nbsp;method&nbsp;you have already learned and apply it strategically to different&nbsp;collections of gene sets&nbsp;to go from a high-level summary (Hallmark) to a detailed, mechanistic understanding (KEGG, GO). You don't need to learn a new method; you just need to swap out the biological knowledge base you are testing against.</code></h3>
+</section>
+</section>
+</section>
+     </main>
+<!-- /main column -->  <script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>  </div> <!-- /content --> 
+  
+</body></html>

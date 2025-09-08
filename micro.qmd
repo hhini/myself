@@ -1,0 +1,1936 @@
+---
+title: 微生物组学 教程
+authors:
+  - name: JAYZ
+    affiliation: The University OF Myself
+    roles: writing
+    corresponding: true
+bibliography: references.bib
+---
+
+# 😶‍🌫️微生物组学🤖:Section A: 16S rRNA Gene Profiling - The Community Census
+
+------------------------------------------------------------------------
+
+## **🥞Part 1: Upstream (`dada2`)🤠**
+
+------------------------------------------------------------------------
+
+### **Lesson 1: The Core Concepts & Project Setup😇**
+
+**Goal:** ***`To understand the fundamental principles of 16S sequencing, grasp the key terminology, and set up a structured R project with the necessary tools and data.`***
+
+#### **1. Core Concepts**
+
+-   **What is the 16S rRNA Gene?**
+
+    -   Think of it as a universal "barcode" for bacteria and archaea(古细菌).
+
+    -   It's a gene that codes for a component of the ribosome(编码核糖体), the cell's protein-making machinery.
+
+    -   Every bacterium has this gene, so ***it's a universal target***.
+
+    -   Crucially, the gene has a unique structure: it contains both **"conserved" regions(保守区域)** (nearly identical in all bacteria) and **"hypervariable" regions(高变区域)** (which are different between species).
+
+    -   **The Strategy:** We design ***PCR primers that stick to the conserved regions to amplify*** (make millions of copies of) ***the hypervariable regions in between*** (e.g., the "V4" region). ***The sequence of this hypervariable region acts as a barcode to identify the bacterium***.
+
+-   **What is an "Amplicon"?**
+
+    -   An amplicon is the piece of DNA that is created by the PCR amplification. In our case, it's the \~250 base pair fragment of the V4 hypervariable region of the 16S gene. Our sequencing machine will generate millions of reads of these amplicons.
+
+-   **What is a `.fastq` file?**
+
+    -   This is the raw output file from an Illumina sequencer. It's a text file that contains information for every single read. Each read is represented by four lines:
+
+        1.  **Line 1:** Starts with \@, a unique name/identifier for the read.
+
+        2.  **Line 2:** The raw DNA sequence (the "barcode").
+
+        3.  **Line 3:** Starts with +, sometimes contains the name again.
+
+        4.  **Line 4:** The **Phred Quality Scores**. This is a string of characters (like F#\$JJJ...) that represents the machine's confidence in each base call in the sequence on Line 2. A is low quality, F is high quality. **This quality information is absolutely essential for our analysis.**
+
+-   **The Central Challenge: Errors.**
+
+    -   No sequencing machine is perfect. It will make mistakes (e.g., read an 'A' when it should be a 'G'). If we have two sequences that differ by a single nucleotide, is that a real, rare species, or is it just a sequencing error of a common species? ***Distinguishing true biological variation from technical error is the primary goal of the upstream processing pipeline***.
+
+#### **2. Extending Knowledge: 16S vs. Shotgun**
+
+This is the perfect time to solidify the distinction.
+
+|  |  |  |
+|------------------------|------------------------|------------------------|
+| **Feature** | **16S rRNA Gene Sequencing** | **Shotgun Metagenomics** |
+| **What is sequenced?** | A single "barcode" gene (e.g., V4 region of 16S). | All DNA in the sample (random fragments). |
+| **Primary Question** | **"Who is there?"** (Taxonomic Profiling(分类学分析)) | **"Who is there AND what can they do?"** (Taxonomic + Functional Profiling(分类加功能分析)) |
+| **Primary Output** | Table of bacterial abundances (ASVs). | All genes in the community, ***allowing for functional pathway analysis***. |
+| **Resolution** | Good for Genus/Family level. ***Often poor for Species level.*** | Can provide ***high resolution***, even down to the strain level. |
+| **Cost & Data Size** | Cheaper, less data, easier computation. | More expensive, massive data, requires high-performance computing. |
+| **Analogy** | Taking a **census** of a city (counting how many people of each type live there). | Reading **every book in the city's library** (knowing who lives there and what they are capable of doing). |
+
+#### **3. Practical Application: Setting up our Project**
+
+Let's assume the lab has given us raw sequencing data for a study on the gut microbiome of mice, comparing "Wild Type" (WT) mice to "Knockout" (KO) mice.
+
+**Action 1: Install the Key Packages**\
+The entire modern 16S workflow in R is built around two packages.
+
+-   **`dada2`:** Our upstream engine. It will handle everything from filtering raw reads to generating the final, error-corrected ASV table and assigning taxonomy.
+
+-   **`phyloseq`:** Our downstream analysis and visualization tool.
+
+In RStudio, run these commands:
+
+**codeR**
+
+```         
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("dada2")
+BiocManager::install("phyloseq")
+install.packages("tidyverse") # For data manipulation and plotting
+```
+
+**Action 2: Create the Project Structure and Get Data**
+
+1.  Create a main project folder: `Project_Microbiome_Mouse.`
+
+2.  Inside, create sub-folders: `data_fastq,` *scripts*, `figures`, `data_processed`.
+
+3.  In RStudio, create a new R Project in this main folder.
+
+4.  **Get the data:** We will use a well-known tutorial dataset that is perfect for this. In your `01_dada2_pipeline.R` script (which you should create in the scripts folder), run the following code to download the example data.
+
+    **codeR**
+
+    ```         
+    # This code downloads the tutorial data from the web and places it in a new folder
+    # called 'MiSeq_SOP' inside your project.
+    download.file("https://mothur.s3.us-east-2.amazonaws.com/data/MiSeq_SOP.zip", "MiSeq_SOP.zip")
+    unzip("MiSeq_SOP.zip")
+    file.rename("MiSeq_SOP/raw_data", "data_fastq") # Move the data to our folder
+    # Clean up the downloaded/unzipped files
+    unlink(c("MiSeq_SOP.zip", "MiSeq_SOP"), recursive = TRUE)
+    ```
+
+-   After running this, your data`_fastq` folder will be populated with 20 `.fastq.gz` files. These are paired-end reads (`Forward _R1_ and Reverse _R2_`).
+
+### **Lesson 1: Summary & Status Check**
+
+-   **Conceptually**, we understand that 16S sequencing is a "barcode"-based method to perform a census of a microbial community. We know that the raw data comes in FASTQ format, which contains essential quality scores, and that the primary bioinformatics challenge is to overcome sequencing errors. We have also clearly distinguished this approach from the more comprehensive shotgun metagenomics.
+
+-   **Practically**, we have installed the cornerstone packages for microbiome analysis (`dada2, phyloseq`), set up a clean and organized project directory, and downloaded the raw `FASTQ` files that we will use for the rest of our analysis.
+
+We are now perfectly positioned to take the first and most critical step in handling raw sequencing data: inspecting its quality and filtering out the low-quality reads.
+
+------------------------------------------------------------------------
+
+### **Lesson 2: Quality Control and Filtering🤗**
+
+**Goal:** To visualize the quality scores of our raw sequencing reads, identify potential problems, and use `dada2` to trim low-quality bases and filter out entire reads that do not meet our quality standards.
+
+#### **1. Core Concepts**
+
+-   **What is a Phred Quality Score (Q-score)?**
+
+    -   It's a compact way to represent the ***probability of an error***. The score is logarithmically scaled(对数缩放).
+
+    -   **Q20:** Means a 1 in 100 chance of an incorrect base call (99% accuracy). This is generally considered the minimum acceptable quality.
+
+    -   **Q30:** Means a 1 in 1000 chance of an incorrect base call (99.9% accuracy). This is considered very good.
+
+    -   **Q40:** Means a 1 in 10,000 chance of an incorrect base call (99.99% accuracy). This is excellent.
+
+    -   The characters in Line 4 of a FASTQ file correspond to these numbers.
+
+-   **The Typical Quality Profile of an Illumina Run:**
+
+    -   Sequencing quality is not uniform across the length of a read.
+
+    -   It is typically very high at the beginning of the read.
+
+    -   It gradually ***degrades towards the end of the read***. This ***decay is more pronounced in the reverse reads (\_R2\_) than the forward reads (\_R1\_).(降解在反向读取比在正向读取更加明显)***
+
+    -   This pattern is a known and expected artifact of the sequencing chemistry. Our job is to identify the point where the quality drops below an acceptable threshold (like Q30) and trim the reads at that position.
+
+-   **Filtering vs. Trimming:**
+
+    -   **Trimming:** We ***cut off the low-quality ends of the reads*** (e.g., "keep only the first 240 bases of the forward read").
+
+    -   **Filtering:** We discard an entire read pair if it doesn't meet certain criteria (e.g., "if the read has more than 2 expected errors, throw it away").
+
+#### **2. Extending Knowledge: Paired-End Reads**
+
+Our data is "paired-end." This means for every DNA fragment, the machine sequences it from both ends:
+
+-   A **Forward Read (\_R1\_)** starts from one end.
+
+-   A **Reverse Read (\_R2\_)** starts from the other end.
+
+**Why is this so powerful for 16S?**\
+The V4 region we are sequencing is about 250 base pairs (bp) long. Our Illumina machine can generate reads that are, for example, 250bp long. This means our forward and reverse reads will **overlap** significantly in the middle.
+
+In a later step (Lesson 3), we will ***merge these overlapping reads***. ***This is a massive internal quality check. If the overlapping region of the forward and reverse reads do not perfectly agree, we know there was a sequencing error, and we can discard that read pair***. This dramatically increases the accuracy of our final data. **Our trimming decisions in this lesson must ensure that we leave enough of an overlap between the forward and reverse reads for this merging to work.**
+
+#### **3. Practical Application: The Code in Chunks**
+
+We will now begin writing our `01_dada2_pipeline.R` script.
+
+#### **Chunk 1: Setup and File Path Management**
+
+**Explanation:** We start by loading the `dada2` library and creating sorted lists of our forward and reverse FASTQ files. It is absolutely critical that the ***forward and reverse reads are in the same corresponding*** order for the pipeline to work.
+
+**codeR**
+
+```         
+# --------------------------------------------------------------------------
+# Script: 01_dada2_pipeline.R
+# Project: 16S Analysis of Mouse Gut Microbiome
+# --------------------------------------------------------------------------
+
+# Load the dada2 library
+library(dada2)
+library(tidyverse)
+
+# --- 1. Setup and File Path Management ---
+# Path to our fastq files
+path <- "data_fastq"
+
+# Get a sorted list of all forward reads
+# The pattern argument uses a regular expression to find files ending in "_R1_001.fastq.gz"
+fnFs <- sort(list.files(path, pattern = "_R1_001.fastq.gz", full.names = TRUE))
+
+# Get a sorted list of all reverse reads
+fnRs <- sort(list.files(path, pattern = "_R2_001.fastq.gz", full.names = TRUE))
+
+# Extract sample names from the filenames
+sample.names <- sapply(strsplit(basename(fnFs), "_"), `[`, 1)
+
+# Let's verify that we have matched pairs of files
+cat("Forward reads:\n")
+print(basename(fnFs))
+cat("\nReverse reads:\n")
+print(basename(fnRs))
+```
+
+-   **Action:** Add this chunk to your script and run it.
+
+-   **Verification:** Inspect the printed file lists. Confirm that F3D0_R1... is matched with F3D0_R2..., and so on for all samples. This confirms our file paths are correctly set up.
+
+#### **Chunk 2: Visualizing Read Quality**
+
+**Explanation:** This is our first "Trust, but Verify" step. We will use the `plotQualityProfile` function to visualize the quality scores for our first few samples. This plot is the only way to make an informed decision about our trimming parameters.
+
+**codeR**
+
+```         
+# --- 2. Visualize Raw Read Quality ---
+
+# Plot the quality profile for the first two forward reads
+plotQualityProfile(fnFs[1:2])
+
+# Plot the quality profile for the first two reverse reads
+plotQualityProfile(fnRs[1:2])
+```
+
+-   **Action:** Run this chunk. Two plots will be generated in your RStudio "Plots" pane.
+
+-   **Interpretation and Verification:**
+
+    -   **The x-axis** is the position in the read (base pair).
+
+    -   **The y-axis** is the Phred Quality Score.
+
+    -   **The green line** is the median quality score at that position.
+
+    -   **The orange lines** are the 25th and 75th quartiles.
+
+    -   You are **verifying** the expected quality decay. The forward read plot should show high quality (e.g., \>Q30) that drops off around base 240-250. ***The reverse read plot will show a much sharper and earlier drop-off***, perhaps starting around base 160-170. This plot directly informs our next step.
+
+#### **Chunk 3: Filtering and Trimming**
+
+**Explanation:** Based on the quality plots, we will now choose our parameters and run the main filtering function, `filterAndTrim`. We will create a new sub-directory (filtered) to store the clean reads, ensuring we never overwrite our raw data.
+
+**codeR**
+
+```         
+# --- 3. Filter and Trim Reads ---
+
+# Create a folder to store the filtered reads
+filtered_path <- file.path(path, "filtered")
+if (!file.exists(filtered_path)) {
+  dir.create(filtered_path)
+}
+
+# Create the full file paths for the filtered output
+filtFs <- file.path(filtered_path, paste0(sample.names, "_F_filt.fastq.gz"))
+filtRs <- file.path(filtered_path, paste0(sample.names, "_R_filt.fastq.gz"))
+
+# Based on our quality plots, we choose our trimming parameters.
+# Forward reads look good out to position 240.
+# Reverse reads drop in quality around position 160.
+# We also set a max number of "Expected Errors" (maxEE). A good default is 2.
+# This is more robust than using an average quality score.
+# truncQ = 2 will trim any reads with a quality score of 2 or less.
+out <- filterAndTrim(fnFs, filtFs, fnRs, filtRs,
+                     truncLen = c(240, 160),
+                     maxN = 0,
+                     maxEE = c(2, 2),
+                     truncQ = 2,
+                     rm.phix = TRUE,
+                     compress = TRUE,
+                     multithread = TRUE) # Use multithreading to speed up
+
+# Let's look at the output table to see how many reads we kept
+head(out)
+```
+
+-   **Action:** Run this chunk. This is a key processing step and may take a few minutes. `dada2` is now reading every single sequence from your raw files, applying your trimming and filtering rules, and writing the clean reads to the new filtered folder.
+
+-   **Verification:** The out table is our proof. It shows a summary for each sample, with a column for reads.in (the number of raw reads we started with) and a column for reads.out (the number of reads that passed our filters). A good filtering step will ***retain a high percentage (e.g., \>70%) of the reads***. If reads.out is zero or very low for any sample, it indicates a problem with that sample or that our filtering parameters were too aggressive.
+
+### **Lesson 2: Summary & Status Check**
+
+-   **Conceptually**, we understand that raw sequencing reads have variable quality, especially at the ends, and that paired-end reads must have sufficient overlap after trimming to be useful.
+
+-   **Practically**, we have set up our file paths, visualized the quality of our raw data, and made informed decisions on trimming and filtering parameters.
+
+-   **Crucially**, we have followed the "Trust, but Verify" principle by plotting the quality profiles to guide our parameter choices and by inspecting the summary table from filterAndTrim to confirm the outcome of the operation.
+
+------------------------------------------------------------------------
+
+### **Lesson 3: The `dada2` Algorithm - Denoising and Inferring ASVs🥰**
+
+**Goal:** ***`To understand the conceptual shift from OTUs to ASVs, to learn how the DADA2 algorithm works, and to apply it to our filtered reads to generate a high-resolution feature table of Amplicon Sequence Variants (ASVs).`***
+
+#### **1. Core Concepts**
+
+-   **The Old Way: OTUs (Operational Taxonomic Units(操作单元分类))**
+
+    -   Older methods (like `QIIME 1, mothur`) used a ***clustering approach***. They would take all the sequencing reads and group them together based on a ***similarity threshold***, typically 97%.
+
+    -   Each cluster was called an **OTU**. The most abundant sequence within the cluster was chosen as the "representative sequence."
+
+    -   **The Problem:** This 97% threshold was ***arbitrary***. ***It incorrectly lumped together distinct species that had very similar 16S genes***, and, more importantly, ***it treated real biological variants and sequencing errors exactly the same***. It was impossible to tell them apart, leading to a loss of resolution and an inflation of diversity.
+
+-   **The New Way: ASVs (Amplicon Sequence Variants(扩增子序列变体))**
+
+    -   The `dada2` algorithm takes a completely different, more powerful approach called **denoising(去噪)**.
+
+    -   Instead of clustering similar reads, it aims to infer the **original, error-free biological sequences** that were in the sample before the PCR and sequencing errors were introduced.
+
+    -   These inferred, perfect sequences are called **ASVs**. ***Each ASV is unique and is treated as a distinct biological entity, resolved down to the single-nucleotide level***.
+
+    -   **The Power:** An ASV is a reusable, universal "label." The ASV sequence for a specific Lactobacillus(乳酸杆菌) strain found in your mouse study will be the exact same ASV sequence found in a human study from a different lab, allowing for direct, high-resolution comparison across experiments. This was impossible with study-specific OTU clusters.
+
+-   **How the dada2 Algorithm Works (The Magic)**
+
+    1.  **Step 1: Learn the Error Rates.** This is the key innovation. The algorithm first looks at the abundance of all unique reads and their quality scores. ***It knows that a true biological sequence should be more abundant than a sequence that is just a one-off error***. ***By modeling the relationship between abundance and quality, it builds a highly accurate, sample-specific model of the sequencing error rates*** (e.g., "What is the probability that the machine reads a 'G' when the true base was an 'A', given a quality score of 30?").
+
+    2.  **Step 2: Denoise by Partitioning.** For each unique read, the algorithm uses this error model to calculate the probability that it could have been generated from a more abundant "parent" sequence. It then "partitions(分区)" the reads, ***collapsing the likely error-reads into the true parent sequences they came from***.
+
+    3.  **Step 3: Merge Paired-End Reads.** After denoising the forward and reverse reads independently, it merges them. This is a final, powerful quality check. If the denoised forward and reverse reads do not have a perfect overlap, the pair is discarded.
+
+    4.  **Step 4: Remove Chimeras.** During PCR, two different DNA strands can sometimes get stuck together, creating an artificial "chimera(嵌合体)" sequence. ***The final step identifies and removes these chimeras, leaving us with a clean table of high-confidence ASVs***.
+
+#### **2. Practical Application: The Code in Chunks**
+
+We continue in our `01_dada2_pipeline.R` script.
+
+#### **Chunk 1: Learn the Error Rates**
+
+**Explanation:** We will apply the first step of the `dada2` algorithm: building the error models. We do this independently for the forward and reverse reads. This is a computationally intensive step.
+
+**codeR**
+
+```         
+# --- 4. Learn Error Rates ---
+
+# We use the filtered read paths we created in the last lesson
+filtFs <- list.files("data_fastq/filtered", pattern = "_F_filt.fastq.gz", full.names = TRUE)
+filtRs <- list.files("data_fastq/filtered", pattern = "_R_filt.fastq.gz", full.names = TRUE)
+
+# This function builds the error model based on the data
+# It will take some time to run.
+errF <- learnErrors(filtFs, multithread = TRUE)
+errR <- learnErrors(filtRs, multithread = TRUE)
+```
+
+-   **Action:** Run this code block. `dada2` is now iterating through your filtered data to build its statistical model of sequencing errors.
+
+**Verification:** How do we know if the error model is good? We can plot it.
+
+**codeR**
+
+```         
+# We can visualize the error rates to ensure they make sense.
+# The red line is the expected error rate based on the quality score.
+# The black dots are the observed error rates from our data.
+# The black line is the fitted error model.
+# A good model will have the black line closely tracking the black dots.
+plotErrors(errF, nominalQ = TRUE)
+plotErrors(errR, nominalQ = TRUE)
+```
+
+-   **Action:** Run this plotting code.
+
+-   **Verification:** The plots are our proof. The black line (our model) should be a good fit to the observed data points (the black dots). The error rates should generally decrease as the quality score increases, and the rates for each type of substitution (e.g., A-\>C, G-\>T) should be distinct. ***This confirms that the algorithm has successfully learned the unique error properties of our sequencing run***.
+
+#### **Chunk 2: Denoise, Merge, and Create the ASV Table**
+
+**Explanation:** Now we apply the full pipeline: denoising using the error models, merging the paired reads, and removing chimeras to create our final, clean ASV count table.
+
+**codeR**
+
+```         
+# --- 5. Denoise, Merge, and Build ASV Table ---
+
+# Apply the core denoising algorithm
+dadaFs <- dada(filtFs, err = errF, multithread = TRUE)
+dadaRs <- dada(filtRs, err = errR, multithread = TRUE)
+
+# Merge the denoised forward and reverse reads
+mergers <- mergePairs(dadaFs, filtFs, dadaRs, filtRs, verbose = TRUE)
+
+# Construct the ASV sequence table
+# This is our first key output: a table of counts with samples as rows
+# and ASV sequences as columns.
+seqtab <- makeSequenceTable(mergers)
+dim(seqtab) # Check the dimensions (samples x ASVs)
+
+# Remove chimeras
+seqtab.nochim <- removeBimeraDenovo(seqtab, method = "consensus", multithread = TRUE, verbose = TRUE)
+dim(seqtab.nochim) # Check the dimensions again to see how many chimeras were removed
+
+# Let's see what percentage of our merged reads were non-chimeric
+sum(seqtab.nochim) / sum(seqtab)
+```
+
+-   **Action:** Run this block. This is the main computational engine of the entire script and will take the most time.
+
+-   **Verification:** The output of the `dim()` commands and the final percentage calculation is our proof.
+
+    1.  The dimensions of `seqtab` tell you how many ASVs were found before chimera removal.
+
+    2.  The dimensions of `seqtab.nochim` tell you the final count. The number of ASVs should decrease, but not catastrophically.
+
+    3.  The final percentage should be high (typically \>80%). This verifies that the PCR process was clean and didn't generate an excessive number of chimeric artifacts. A low percentage (\<50%) would be a major red flag.
+
+### **Lesson 3: Summary & Status Check**
+
+-   **Conceptually**, we have made the crucial leap from noisy, clustered OTUs to high-resolution, denoised **ASVs**. We understand the logic of the `dada2` algorithm: it learns the specific error patterns in our data and uses that model to infer the original, error-free biological sequences.
+
+-   **Practically**, we have executed the core `dada2` pipeline: learning error rates, denoising, merging reads, and removing chimeras.
+
+-   **Crucially**, we have followed the "Trust, but Verify" principle at each stage:
+
+    -   We **plotted the error models** to confirm they were a good fit.
+
+    -   We **inspected the number of chimeras removed** to verify the quality of our data and the success of the final filtering step.
+
+We have now achieved a major milestone. The `seqtab.nochim` object is our **final feature table**. It is a table of counts of every unique microbial sequence for every sample. The next and final step of the upstream pipeline is to give these anonymous sequences a name.
+
+Excellent. We have successfully generated our high-resolution feature table of Amplicon Sequence Variants (ASVs). The `seqtab.nochim` object represents the 'what' and 'how much' of our microbial community. The final upstream step is to figure out the 'who'—to assign a taxonomic identity to each of these ASVs.
+
+------------------------------------------------------------------------
+
+### **Lesson 4: Taxonomic Assignment🤖**
+
+**Goal:** ***`To take our list of unique ASV sequences and assign a taxonomic classification (from Kingdom down to Genus, and sometimes Species) to each one by comparing it against a curated reference database.`***
+
+#### **1. Core Concepts**
+
+-   **The "Look-up" Problem:** We have a list of several hundred unique, error-free 16S V4 sequences (our ASVs). ***We now need to look them up to find out which known bacteria they belong to***.
+-   **The Need for a Reference Database:** To do this, we need a massive, curated database of known 16S sequences from well-characterized organisms. ***This database serves as our "phone book" or "encyclopedia."***
+-   **Popular Reference Databases:**
+    -   **SILVA:** A very comprehensive, high-quality, and regularly updated database of ribosomal RNA genes. It is one of the most popular choices for modern microbiome analysis.
+    -   **Greengenes:** Another classic and widely used database, though it has not been updated as recently as SILVA.
+    -   **RDP (Ribosomal Database Project):** A database that provides a unique classification algorithm.
+    -   **Choice Matters:** The choice of database will influence your results. For this tutorial, we will use **SILVA**, as it is a common and robust choice.
+-   **The Algorithm (`assignTaxonomy`):** The `dada2` function `assignTaxonomy` uses a **naive Bayesian classifier**. You don't need to know the deep math, but the concept is intuitive:
+    1.  It takes one of your ASV sequences.
+    2.  ***It compares "words" (short subsequences of length 8, called k-mers) from your ASV to the k-mers present in all the sequences in the reference database***.
+    3.  Based on which reference sequences share the most k-mers with your ASV, it calculates the probability (the "confidence") that your ***ASV belongs to a certain taxonomic group at each level*** (Kingdom(界), Phylum(门), Class(纲), Order(目), Family(科), Genus(属)).
+    4.  It assigns the taxonomy down to the lowest level for which it has a high confidence (typically \>80%).
+
+#### **2. Extending Knowledge: The Limits of Resolution**
+
+-   **Why does it stop at Genus?** The V4 region of the 16S gene is excellent for distinguishing between different genera (e.g., *Lactobacillus* vs. *Bifidobacterium*). However, ***for many types of bacteria, the V4 sequences of closely related species within the same genus are*** **identical or nearly identical**. The barcode simply isn't variable enough to tell them apart reliably.
+-   **The "NA" Problem:** If the algorithm cannot assign a taxonomy at a certain level with high confidence, it will return an `NA` (Not Available). It is extremely common and **perfectly normal** to have many of your ASVs assigned to a Genus of `NA`. **This is not an error; it is the algorithm being honest about the limits of the data. It means "I am confident this is in the *Lachnospiraceae(毛螺菌)* family, but I cannot be sure which genus it is."**
+-   **Assigning Species:** `dada2` has an extra function called `addSpecies` ***that can attempt to assign species by looking for perfect, exact matches to reference sequences***. This should be used ***with caution***, as it is only r***eliable for species that are well-defined by their V4 sequence***.
+
+#### **3. Practical Application: The Code in Chunks**
+
+We continue in our `01_dada2_pipeline R` script.
+
+#### **Chunk 1: Download the Reference Database**
+
+**Explanation:** The SILVA database is large. We need to download a version that has been pre-formatted for `dada2`. We will download it directly from the web. **You only need to do this once.** After it's downloaded, you can just point to the file in the future.
+
+``` r
+# --- 6. Assign Taxonomy ---
+
+# DADA2 requires a specific formatted reference database.
+# We will download the SILVA database (version 138.1).
+# This is a large file (~50 MB). You only need to run this once!
+# If you have it already, you can comment out these lines.
+download.url <- "https://zenodo.org/record/4587955/files/silva_nr99_v138.1_train_set.fa.gz?download=1"
+db.path <- "silva_nr99_v138.1_train_set.fa.gz"
+if (!file.exists(db.path)) {
+  download.file(download.url, db.path, method = "auto")
+}
+```
+
+-   **Action:** Add this chunk to your script and run it. It will download the database file to your main project folder.
+
+#### **Chunk 2: Run the Taxonomic Assignment**
+
+**Explanation:** Now we will run the main `assignTaxonomy` function. It takes our final, chimera-free ASV table (`seqtab.nochim`) and the path to the reference database as input.
+
+``` r
+# Now, run the taxonomic assignment.
+# This can be computationally intensive and may take several minutes.
+taxa <- assignTaxonomy(seqtab.nochim, db.path, multithread = TRUE)
+
+# Let's inspect the output. It's a matrix with ASVs as rows and
+# taxonomic ranks as columns.
+head(taxa)
+```
+
+-   **Action:** Run this code. `dada2` is now comparing every one of your unique ASV sequences against the entire SILVA database.
+-   **Verification:** The `head(taxa)` command is our proof. It will print the first few rows of the resulting `taxa` matrix. You should see columns for Kingdom, Phylum, Class, Order, Family, and Genus. You will likely see some `NA` values, which, as we discussed, is perfectly normal and expected. This confirms the function ran correctly and produced the expected output format.
+
+#### **Chunk 3 (Optional but Recommended): Add Species-level assignment**
+
+**Explanation:** We can make an attempt at species-level assignment using `addSpecies`. This function looks for exact sequence matches between our ASVs and the reference database.
+
+``` r
+# (Optional) Attempt to assign species-level taxonomy
+# We need to download a species-level database for this.
+species.url <- "https://zenodo.org/record/4587955/files/silva_species_assignment_v138.1.fa.gz?download=1"
+species.db.path <- "silva_species_assignment_v138.1.fa.gz"
+if (!file.exists(species.db.path)) {
+  download.file(species.url, species.db.path, method = "auto")
+}
+
+taxa <- addSpecies(taxa, species.db.path)
+
+# Let's look at the result again. There will be a new 'Species' column.
+# Most values will likely be NA.
+head(taxa)
+```
+
+-   **Action:** Run this chunk to download the second database and perform the species assignment.
+-   **Verification:** Look at the `head(taxa)` output again. You will see a new `Species` column. You can verify that it worked by finding a row where a species was assigned and seeing that the `Genus` column is also filled in.
+
+### **Lesson 4: Summary & Status Check**
+
+-   **Conceptually**, we understand that taxonomic assignment is a "look-up" process that compares our ASV sequences to a reference database like SILVA. We know that the `dada2` algorithm uses a naive Bayesian classifier to do this, and we are critically aware of the limitations of 16S data for providing reliable species-level resolution.
+-   **Practically**, we have downloaded the necessary reference databases and have successfully run the `assignTaxonomy` and `addSpecies` functions.
+-   **Crucially**, we have followed the "Trust, but Verify" principle by inspecting the output `taxa` matrix at each step, confirming that it has the expected structure and content.
+
+**We have now reached the end of the entire upstream DADA2 pipeline.** We have successfully transformed our raw, noisy FASTQ files into two clean, essential data tables: 1. **`seqtab.nochim`:** Our ASV count table ("who is there and how much"). 2. **`taxa`:** Our taxonomy table ("what are their names?").
+
+The next part of our journey is to take these objects, combine them with our sample metadata, and begin the exciting downstream analysis of the community's ecology.
+
+------------------------------------------------------------------------
+
+## **Part 2: The Downstream Analysis - From Counts to Ecology and Statistics🥶**
+
+------------------------------------------------------------------------
+
+### **Lesson 5: Creating the `phyloseq` Object🍱**
+
+**Goal:** ***To understand the conceptual brilliance of the `phyloseq` object and to combine our disparate(不同) data tables (ASV counts, taxonomy, sample metadata) into a single, cohesive, and powerful `phyloseq` object that will serve as the foundation for all our downstream analyses.***
+
+#### **1. Core Concepts: The Problem of "Data Wrangling" in Bioinformatics**
+
+Before **`phyloseq`**, microbiome analysis in R was ***a messy and error-prone process***. A bioinformatician would have, at minimum, three separate data objects:
+
+1.  **The Count Table:** A matrix where rows are microbes (OTUs/ASVs) and columns are samples.
+
+2.  **The Taxonomy Table:** A matrix where rows are microbes and columns are taxonomic ranks (Kingdom, Phylum...).
+
+3.  **The Sample Metadata:** A data frame where rows are samples and columns are experimental variables (e.g., "Treatment", "Age", "Genotype").
+
+**The Challenge:** The bioinformatician was personally responsible for keeping these three tables **perfectly synchronized**.
+
+-   If you filtered out a sample from the count table, you had to remember to also remove the corresponding row from the metadata.
+
+-   If you removed a low-abundance microbe from the count table, you had to remember to also remove its corresponding row from the taxonomy table.
+
+-   Forgetting one of these steps would lead to mismatched data, incorrect plots, and invalid statistical results. This "data wrangling" was tedious and a major source of errors.
+
+#### **2. The phyloseq Solution: A Cohesive, Self-Aware Object**
+
+The creator of the `phyloseq` package, Paul McMurdie, solved this problem with a brilliant object-oriented design.
+
+-   **The `phyloseq` Object:** Think of a `phyloseq` object not as a table, but as a **smart container or a "lab notebook."** You put your individual data tables into it once, at the very beginning. From that point on, the `phyloseq` object itself handles all the synchronization.
+
+    -   If you use a `phyloseq` command to filter out a sample, the object automatically removes that sample from **both** the count table and the metadata.
+
+    -   If you use a `phyloseq` command to select only the "Firmicutes" phylum, the object automatically subsets **both** the count table and the taxonomy table, keeping them perfectly matched.
+
+-   **The Components (or "Slots"):** A `phyloseq` object has several "slots" to hold different types of data. The three essential ones are:
+
+    1.  **`otu_table`:** The ASV count table.
+
+    2.  **`tax_table`:** The taxonomy table.
+
+    3.  **`sample_data`:** The sample metadata.
+
+    -   It can also hold a phylogenetic tree(发育树) in a `phy_tree` slot, which is crucial for certain diversity metrics we will discuss later.
+
+**The Power:** This design completely eliminates the class of "wrangling(争论·)" errors described above. It lets the scientist focus on the biological questions instead of the tedious task of data bookkeeping. It ensures that all analyses, subsets, and plots are internally consistent and valid.
+
+#### **3. Practical Application: Building Our phyloseq Object**
+
+Let's create a new R script for our downstream analysis.
+
+-   **Action:** In RStudio, create a new script in your scripts folder named `02_phyloseq_analysis.R.`
+
+#### **Chunk 1: Setup and Loading Data**
+
+**Explanation:** We will start our new script by loading the necessary libraries. We then need to load the key outputs from our `dada2` script: the ASV count table (`seqtab.nochim`) and the taxonomy table (`taxa`). We also need to create a simple metadata data frame for our samples.
+
+**codeR**
+
+```         
+# --------------------------------------------------------------------------
+# Script: 02_phyloseq_analysis.R
+# Project: 16S Analysis of Mouse Gut Microbiome
+# --------------------------------------------------------------------------
+
+# Load the libraries
+library(phyloseq)
+library(tidyverse)
+
+# --- 1. Load DADA2 Outputs and Create Metadata ---
+
+# For a real workflow, you would save your DADA2 outputs at the end of the
+# previous script and load them here.
+# e.g., save(seqtab.nochim, taxa, file = "data_processed/dada2_outputs.RData")
+# load("data_processed/dada2_outputs.RData")
+
+# For this continuous tutorial, we will assume 'seqtab.nochim' and 'taxa'
+# are in our R environment from the last lesson.
+
+# Create the sample metadata data frame.
+# This is information about our samples.
+# The sample names in our 'seqtab.nochim' are like "F3D0", "F3D1", etc.
+# From the study's notes, we know which ones are WT and which are KO.
+sample_names <- rownames(seqtab.nochim)
+genotype <- sapply(strsplit(sample_names, "D"), `[`, 1) # Extract the "F3" vs "M1" part
+
+# Let's pretend "F3" is WT and "M1" is KO for this example
+genotype[genotype == "F3"] <- "WT"
+genotype[genotype == "M1"] <- "KO"
+
+sample_df <- data.frame(Genotype = genotype)
+rownames(sample_df) <- sample_names
+
+# Let's inspect our three separate data components
+cat("--- ASV Count Table ---\n")
+print(str(seqtab.nochim))
+cat("\n--- Taxonomy Table ---\n")
+print(str(taxa))
+cat("\n--- Sample Metadata ---\n")
+print(str(sample_df))
+```
+
+-   **Action:** Add this chunk to your new script and run it.
+
+-   **Verification:** You have now created the three essential, separate data components. The `str()` commands let you verify the structure of each one. Notice that the row names of the count table and the metadata match, and the row names of the count table and the taxonomy table are the full DNA sequences, which also match. This consistent naming is what allows `phyloseq` to link them.
+
+#### **Chunk 2: Assembling the `phyloseq` Object**
+
+**Explanation:** This is the key step. We use the main `phyloseq()` constructor function. We provide our three components as input, and it will intelligently assemble them into our single, powerful `phyloseq` object.
+
+**codeR**
+
+```         
+# --- 2. Assemble the phyloseq Object ---
+
+# We need to make sure the components are in the right format for phyloseq
+otu_table_ps <- otu_table(seqtab.nochim, taxa_are_rows = FALSE) # Important: samples are rows here
+tax_table_ps <- tax_table(taxa)
+sample_data_ps <- sample_data(sample_df)
+
+# Now, create the phyloseq object
+ps <- phyloseq(otu_table_ps, tax_table_ps, sample_data_ps)
+
+# Let's inspect our final, beautiful phyloseq object
+print(ps)
+```
+
+-   **Action:** Run this chunk.
+
+-   **Verification:** The `print(ps)` command is our proof. The output is a neat summary that tells you exactly what is inside your "lab notebook." It will say something like:
+
+    **codeCode**
+
+    ```         
+    phyloseq-class experiment-level object
+    otu_table()   OTU Table:         [ 182 taxa and 10 samples ]
+    sample_data() Sample Data:       [ 10 samples by 1 sample variables ]
+    tax_table()   Taxonomy Table:    [ 182 taxa by 7 taxonomic ranks ]
+    ```
+
+<!-- -->
+
+-   This confirms that phyloseq has successfully imported and linked all your data. Notice how the number of taxa (182) and samples (10) are consistent across the different components. The object is now synchronized.
+
+### **Lesson 5: Summary & Status Check**
+
+-   **Conceptually**, we have learned about the critical problem of data synchronization in bioinformatics and have understood how the `phyloseq` object provides an elegant and robust solution by acting as a "smart container" for our data.
+
+-   **Practically**, we have loaded our upstream results from `dada2`, created a sample metadata table, and have successfully assembled these components into a single, cohesive `phyloseq` object.
+
+-   **Crucially**, we have followed the "Trust, but Verify" principle by inspecting the individual components before assembly and by printing the final phyloseq object to verify that it was constructed correctly and that all the data is internally consistent.
+
+------------------------------------------------------------------------
+
+### **Lesson 6: Alpha and Beta Diversity Analysis😻**
+
+**Goal:** ***`To understand the ecological concepts of alpha and beta diversity, to calculate these metrics using phyloseq, and to statistically test whether the diversity differs between our experimental groups (Wild Type vs. Knockout).`***
+
+#### **1. Core Concepts: The Language of Ecology**
+
+Ecologists have two primary ways of thinking about diversity.
+
+**Concept 1: Alpha Diversity ("Within-Sample" Diversity)**
+
+-   **The Question:** How ***diverse*** is the microbial community within a single sample?
+
+-   **The Analogy:** Imagine you are standing in a single forest patch (one sample). Alpha diversity tells you about the richness and evenness of the trees in that patch alone.
+
+-   **Key Metrics:**
+
+    1.  **Richness (e.g., "Observed ASVs"):** The simplest metric. It's just a count of ***how many different species (ASVs) are present in the sample***. A sample with 100 ASVs is "richer" than one with 50.
+
+    2.  **Evenness(均匀度) & Richness Combined (e.g., "Shannon" or "Simpson" indices(香农指数和辛普森指数)):** These are more sophisticated metrics. They consider both the number of species (richness) and their relative abundances (evenness). A community where 10 species each make up 10% of the community is considered more diverse than a community where 1 species makes up 91% and the other 9 species make up 1% each, even though their richness is the same. The **Shannon index** is the ***most*** ***common and is a good measure of overall diversity***.
+
+**Concept 2: Beta Diversity ("Between-Sample" Diversity)**
+
+-   **The Question:** How different are the microbial communities between two or more samples?
+
+-   **The Analogy:** Imagine you are comparing two different forest patches (two samples). Beta diversity is a single number that quantifies how dissimilar the tree communities are between those two patches.
+
+-   **Key Metrics (Dissimilarity Indices(差异指数)):** There are many ways to calculate this, but they all result in a "distance" or "dissimilarity" value. ***A value of 0 means the samples are identical; a value of 1 means they share no species.***
+
+    1.  **Jaccard Distance (Unweighted):** This metric only cares about the **presence or absence** of species. It ignores abundance. It is useful for focusing on rare species.
+
+    2.  **Bray-Curtis Dissimilarity (Weighted):** ***This is the most common and robust metric.*** It considers **both presence/absence and the relative abundance** of each species. It is more influenced by the dominant members of the community.
+
+-   **Visualization and Testing:** We calculate the Bray-Curtis dissimilarity between every possible pair of our samples, which results in a "distance matrix." Since we can't look at a giant matrix of numbers, we use **ordination methods** (like PCA's cousin, **Principal Coordinates Analysis - PCoA**) to visualize this distance matrix in a 2D plot. We then use a statistical test called **PERMANOVA** to ask, "Is the average distance between samples within the same group (e.g., WT to WT) significantly smaller than the average distance between different groups (e.g., WT to KO)?"
+
+#### **2. Practical Application: The Code in Chunks**
+
+We will now write our code in the `02_phyloseq_analysis.R` script, starting with the `ps` object.
+
+#### **Chunk 1: Alpha Diversity Calculation and Plotting**
+
+**Explanation:** The `phyloseq` package makes calculating alpha diversity incredibly easy. We will use the `estimate_richness()` function to calculate several metrics at once and then plot the results using a boxplot to visually compare the diversity between our WT and KO groups.
+
+**codeR**
+
+```         
+# --- 3. Alpha Diversity Analysis ---
+
+# The plot_richness function is a convenient wrapper to calculate and plot.
+# We will specify our x-axis variable ("Genotype") and the metrics we want ("Observed", "Shannon").
+alpha_plot <- plot_richness(ps, x = "Genotype", measures = c("Observed", "Shannon")) +
+  geom_boxplot(aes(fill = Genotype), alpha = 0.7) +
+  labs(title = "Alpha Diversity")
+
+# Display the plot
+print(alpha_plot)
+ggsave("figures/01_alpha_diversity.png", alpha_plot, width = 8, height = 5)
+```
+
+-   **Action:** Add this chunk to your script and run it.
+
+-   **Verification:** The `boxplot` is our first key result. You can visually inspect it. For example, do the Shannon diversity values for the KO group look consistently lower than for the WT group? This plot gives us our first hint of a biological difference.
+
+#### **Chunk 2: Alpha Diversity Statistical Testing**
+
+**Explanation:** A plot isn't enough; we need a p-value. We will extract the alpha diversity values and perform a simple statistical test (a Wilcoxon rank-sum test, which is a non-parametric version of a t-test) to see if the observed difference is statistically significant.
+
+**codeR**
+
+```         
+# Extract the alpha diversity measures into a data frame
+alpha_div <- estimate_richness(ps)
+alpha_div$Genotype <- sample_data(ps)$Genotype
+
+# Run the statistical test for Shannon diversity
+wilcox_test_shannon <- wilcox.test(Shannon ~ Genotype, data = alpha_div)
+
+# Print the result
+cat("--- Wilcoxon Test for Shannon Diversity ---\n")
+print(wilcox_test_shannon)
+```
+
+-   **Action:** Run this chunk.
+
+-   **Verification:** The printed output is our proof. Look at the **p-value**. If it is less than 0.05, you can confidently conclude that there is a statistically significant difference in the within-sample diversity between your WT and KO mice.
+
+#### **Chunk 3: Beta Diversity Calculation and Visualization**
+
+**Explanation:** Now we'll analyze the between-sample diversity. The workflow is: 1) calculate the Bray-Curtis distance matrix, 2) perform ordination (PCoA) on that matrix, and 3) create a plot to visualize the result. `phyloseq` streamlines(简化) this entire process.
+
+**codeR**
+
+```         
+# --- 4. Beta Diversity Analysis ---
+
+# First, we perform the PCoA ordination using the Bray-Curtis distance
+pcoa_bray <- ordinate(ps, method = "PCoA", distance = "bray")
+
+# Now, we create the plot
+beta_plot <- plot_ordination(ps, pcoa_bray, color = "Genotype") +
+  geom_point(size = 4, alpha = 0.8) +
+  stat_ellipse(aes(group = Genotype), type = "t") + # Add ellipses around the groups
+  labs(title = "Beta Diversity (PCoA of Bray-Curtis Distances)") +
+  theme_bw() +
+  coord_fixed() # Important for ordination plots
+
+# Display the plot
+print(beta_plot)
+ggsave("figures/02_beta_diversity_pcoa.png", beta_plot, width = 7, height = 6)
+```
+
+-   **Action:** Run this chunk.
+
+-   **Verification:** The PCoA plot is our proof. This is the direct analog to the PCA plot from our metabolomics lesson. A strong biological effect will be visible as a **clear separation or clustering** of the WT points away from the KO points. ***If the ellipses(椭圆) for the two groups do not overlap much, it's a strong visual indicator that the overall community composition is different between the genotypes.***
+
+#### **Chunk 4: Beta Diversity Statistical Testing (PERMANOVA)**
+
+**Explanation:** The PCoA plot is a visualization, not a statistical test. The formal test for a significant difference in community composition is a **PERMANOVA** (Permutational Multivariate Analysis of Variance). We use the `adonis2` function from the `vegan` package for this.
+
+**codeR**
+
+```         
+# We need the 'vegan' package for this test
+library(vegan)
+
+# Calculate the Bray-Curtis distance matrix
+dist_matrix <- phyloseq::distance(ps, method = "bray")
+
+# Run the PERMANOVA test
+# The formula '~ Genotype' means we are testing the effect of the 'Genotype' variable.
+permanova_result <- adonis2(dist_matrix ~ Genotype, data = sample_df)
+
+# Print the result
+cat("\n--- PERMANOVA Test for Beta Diversity ---\n")
+print(permanova_result)
+```
+
+-   **Action:** Run this final chunk.
+
+-   **Verification:** The output table is our definitive proof. Look for the row corresponding to your variable ("Genotype") and find its Pr(\>F) value. This is the **p-value**. ***If it is less than 0.05, you have strong statistical evidence that the overall microbial community composition is significantly different between your WT and KO groups, validating what you saw in the PCoA plot.***
+
+### **Lesson 6: Summary & Status Check**
+
+-   **Conceptually**, we have defined and distinguished between the two pillars of ecological diversity: **alpha diversity** (within-sample richness/evenness) and **beta diversity** (between-sample dissimilarity).
+
+-   **Practically**, we have used `phyloseq` and associated packages to calculate, visualize, and statistically test for differences in both alpha and beta diversity.
+
+-   **Crucially**, we have followed the "Trust, but Verify" principle for each concept:
+
+    -   For alpha diversity, we complemented our **boxplot visualization** with a **Wilcoxon test p-value**.
+
+    -   For beta diversity, we complemented our **PCoA plot visualization** with a **PERMANOVA p-value**.
+
+------------------------------------------------------------------------
+
+### **Lesson 7: Differential Abundance Analysis🐼**
+
+**Goal:** ***`To use a statistically robust method to identify specific ASVs (or higher taxonomic ranks like Genus) that are significantly different in their relative abundance between our experimental groups (WT vs. KO).`***
+
+#### **1. Core Concepts: The Challenge of Compositional Data**
+
+As we just discussed, this is the most statistically nuanced part of the analysis. Let's formalize why simple tests fail and how specialized tools solve the problem.
+
+-   **The Problem with Standard Tests (e.g., t-test, limma):**
+
+    1.  **Compositionality & Library Size:** These tests assume the data is ***absolute and comparable*** on a raw scale. ***They are completely fooled by differences in sequencing depth (library size)***.
+
+    2.  **Sparsity (Many Zeros):** Microbiome data is full of zeros. ***A specific microbe might be absent in one entire group***. This sparsity(稀疏性) breaks the statistical assumptions (like normality) of many standard tests.
+
+    3.  **Highly Skewed Data:** The data is not a nice bell curve. It's usually dominated by a few very abundant taxa and a long tail of rare taxa.
+
+-   **The Solution: Specialized Models for Count Data**
+
+    -   To solve this, we borrow powerful tools from the field of ***RNA-seq analysis(bulk)***, which faces the exact same problems (count data, library size issues, sparsity).
+
+    -   The leading tool for this is **DESeq2**. ***It is a gold standard for differential expression analysis in RNA-seq and has been shown to be very effective and robust for microbiome data as well***.
+
+    -   **How DESeq2 Works (The Magic):**
+
+        1.  **Normalization:** This is the key. DESeq2 has a brilliant internal normalization method. It calculates a "size factor" for each sample. ***It assumes that most microbes do not change between conditions and uses the median of ratios between samples to find the `sample-specific technical scaling factor(技术缩放因子)`***. It then uses this to correct the counts before any statistical testing. This effectively solves the "library size" problem.
+
+        2.  **Modeling the Data:** It uses a statistical model called the **Negative Binomial distribution**, which is perfectly suited for count data that is noisy and has many low values.
+
+        3.  **Statistical Testing:** It then performs a robust statistical test (the Wald test) on the normalized, modeled data to get a log2 fold change, a p-value, and an adjusted p-value for every single microbe.
+
+#### **2. Practical Application: The Code in Chunks**
+
+We will continue in our `02_phyloseq_analysis.`R script.
+
+#### **Chunk 1: Install DESeq2 and Prepare the Data**
+
+**Explanation:** DESeq2 is a Bioconductor package. The great news is that there are helper functions that make it incredibly easy to convert our `phyloseq` object directly into the object that DESeq2 needs.
+
+**codeR**
+
+```         
+# --- 5. Differential Abundance Analysis with DESeq2 ---
+
+# Install DESeq2 if you don't have it
+if (!requireNamespace("DESeq2", quietly = TRUE))
+    BiocManager::install("DESeq2")
+
+# Load the library
+library(DESeq2)
+
+# The phyloseq object 'ps' is our starting point.
+```
+
+-   **Action:** Install and load the `DESeq2` package.
+
+#### **Chunk 2: Convert to DESeq2 Object and Run the Analysis**
+
+**Explanation:** This is where the magic of package integration happens. We will convert our `phyloseq` object into a DESeq dataset and then run the main `DESeq()` function. This single function performs the normalization, model fitting, and statistical testing for all ASVs at once. Because we want to find differences at the Genus level, we'll first merge our ASVs that belong to the same genus.
+
+**codeR**
+
+```         
+# First, let's agglomerate our ASVs to the Genus level for a clearer analysis
+ps_genus <- tax_glom(ps, taxrank = "Genus", NArm = FALSE)
+
+# Convert the phyloseq object to a DESeq2 object
+# The design formula '~ Genotype' tells DESeq2 that we want to test for
+# differences based on the 'Genotype' column in our metadata.
+dds <- phyloseq_to_deseq2(ps_genus, design = ~ Genotype)
+
+# Run the main DESeq2 analysis
+# This single command does all the hard work: normalization, dispersion estimation, and testing.
+dds <- DESeq(dds)
+
+# Get the results table
+# We specify the contrast: we want the comparison of "KO" versus "WT"
+res <- results(dds, contrast = c("Genotype", "KO", "WT"))
+
+# Let's inspect the results table
+head(res)
+```
+
+-   **Action:** Run this chunk.
+
+-   **Verification:** The `head(res)` command is our proof. It prints the DESeq2 results table. You will see a familiar structure with columns for `log2FoldChange`, `pvalue`, and `padj` (adjusted p-value). The row names, however, will be generic ("OTU1", etc.). ***We need to add our taxonomy back in***.
+
+#### **Chunk 3: Format and Visualize the Results**
+
+**Explanation:** ***The raw DESeq2 results are not very user-friendly. We need to convert the table into a nice data frame, add our taxonomy information back in, and filter for the significant hits.*** Then, we will create a bar plot to visualize the most significant differentially abundant genus.
+
+**codeR**
+
+```         
+# First, convert the results table to a data frame
+res_df <- as.data.frame(res)
+
+# Add the taxonomy information to our results
+# The taxonomy is still stored in our phyloseq object
+tax_info <- as.data.frame(tax_table(ps_genus))
+res_df <- merge(res_df, tax_info, by = "row.names")
+colnames(res_df)[1] <- "ASV_ID" # Rename the first column
+
+# Now, filter for the significant results (e.g., padj < 0.1)
+significant_genera <- res_df %>%
+  filter(padj < 0.1) %>%
+  arrange(log2FoldChange) # Sort by fold change
+
+cat("\n--- Significantly Different Genera (padj < 0.1) ---\n")
+print(significant_genera[, c("Genus", "log2FoldChange", "padj")])
+
+# Let's create a plot for the most significant genus
+top_hit <- significant_genera %>% slice(1) # Get the top hit (most downregulated in this case)
+
+# We need to go back to our phyloseq object to get the actual abundance data
+# for this genus to plot it.
+plot_abundance(ps_genus, taxa_names(ps_genus)[top_hit$ASV_ID], "Genotype") +
+  geom_boxplot(aes(fill=Genotype)) +
+  labs(title = paste("Abundance of Genus:", top_hit$Genus), y = "Normalized Abundance") +
+  theme(axis.text.x = element_text(angle=45, hjust=1))
+```
+
+-   **Action:** Run this final chunk.
+
+-   **Verification:**
+
+    1.  The printed table of `significant_genera` is your primary result. It's the list of specific microbes that are statistically different between your groups.
+
+    2.  The `boxplot` is your visual proof for your top hit. It directly plots the (normalized) abundance of that one genus in all your samples. You should see a clear difference in the height of the boxes between the WT and KO groups, visually confirming the result from the DESeq2 statistical test.
+
+### **Grand Conclusion of the 16S Microbiome Project**
+
+We have successfully completed the entire 16S analysis workflow, from raw sequences to a final biological conclusion.
+
+1.  **Upstream (dada2):** We processed raw FASTQ reads, performed rigorous QC, and used the DADA2 algorithm to generate a high-resolution, error-corrected table of **ASV** counts and their corresponding **taxonomy**.
+
+2.  **Downstream (phyloseq):**
+
+    -   We created a cohesive **phyloseq object**.
+
+    -   We performed **alpha and beta diversity analyses**, proving with statistics (Wilcoxon test and PERMANOVA) that the overall diversity and composition of the communities were significantly different.
+
+    -   Finally, we used the robust **DESeq2** method to perform **differential abundance testing**, identifying the specific genera that were driving the observed community-level differences.
+
+**The Final Hypothesis:**\
+Based on our results, we could now write a clear conclusion:
+
+"***`The gut microbial communities of Knockout mice exhibit significantly lower alpha diversity compared to Wild Type controls. Furthermore, the overall community composition is distinct between the genotypes (PERMANOVA p < 0.05). Differential abundance analysis revealed that this shift is driven by a significant depletion of a specific genus, for example, Akkermansia(阿克曼氏菌), in the Knockout mice, suggesting a potential role for our knockout gene in maintaining a healthy gut ecosystem.`***"
+
+------------------------------------------------------------------------
+
+# **🤩Section B: Shotgun Metagenomic Profiling - The Functional Blueprint🎠**
+
+------------------------------------------------------------------------
+
+## **😜Part 3: Upstream - From Reads to Genes and Genomes🍜**
+
+------------------------------------------------------------------------
+
+### **Lesson 8: The Core Concepts of Shotgun Metagenomics🐞**
+
+**Goal:** To understand the fundamental principles of shotgun metagenomics, its key advantages and challenges, and the conceptual shift from analyzing a single gene to analyzing a catalog of *all* genes in the community.
+
+#### **1. Core Concepts**
+
+-   **What is Shotgun Metagenomics?**
+    -   Instead of amplifying one specific gene (like 16S), this method involves ***taking the entire collection of DNA from a sample*** (the "metagenome"(宏基因组)), physically shattering(破碎) it into millions of small, random fragments, and then sequencing all of these fragments.
+    -   The result is a massive collection of sequencing reads that represent a random sampling of *all the genetic material* from *all the organisms* in the sample—bacteria, archaea, viruses, and even fungi(真菌).
+    -   **The Analogy:** If 16S analysis is taking a census of a city, shotgun metagenomics is like collecting every single page from every book in the city's library, shredding them all, mixing them together, and then trying to figure out not only which books were there, but also what stories were written in them.
+-   **The Key Advantages (The "Why"):**
+    1.  **Functional Potential:** This is the #1 advantage. Because we sequence all the genes, we can identify the **functional potential** of the community. We can answer questions like: "Does this microbial community have the genes to produce butyrate(丁酸)?" or "Is the abundance of antibiotic resistance genes higher in the treated group?" This is impossible with 16S data.
+    2.  **Higher Taxonomic Resolution:** Since we have information from the entire genome, not just one small gene region, ***we can often distinguish between very closely related species and even different strains of the same species***.
+    3.  **Unbiased View:** It captures information from viruses, fungi, and other microbes that do not have the 16S gene, ***providing a more complete picture of the entire microbial ecosystem***.
+-   **The Central Challenge (The "How"):**
+    -   **Assembly:** The primary bioinformatics challenge is **metagenomic assembly**. We have millions of short, scrambled reads (like the shredded pages of the library books) coming from hundreds of different genomes. ***The goal of assembly is to computationally stitch these short reads back together into longer, contiguous sequences*** (called **"contigs"**), like taping the shredded pages back together to form sentences and paragraphs. This is a massive and complex puzzle.
+
+#### **2. Extending Knowledge: Metagenome-Assembled Genomes (MAGs)(宏基因组组装基因组)**
+
+-   The ultimate goal of metagenomic assembly is to **not just create random contigs, but to group the contigs that belong to the *same original organism***.
+-   A **Metagenome-Assembled Genome (MAG)** is a collection of contigs that are computationally inferred to have come from a single, distinct microbial genome.
+-   **How it's done:** After assembling contigs, bioinformaticians use properties like sequence composition (the pattern of A's, T's, C's, and G's) and read coverage depth across different samples to "bin" the contigs into putative genomes.
+-   **The Power of MAGs:** This is the holy grail of metagenomics. From a complex environmental sample, you can computationally reconstruct the entire genome of a previously unknown, uncultured bacterium. This allows you to discover novel organisms and their complete metabolic capabilities directly from the environment. Creating MAGs is an advanced topic, but it is the exciting frontier of the field.
+
+#### **3. Practical Application: A New Computational Environment**
+
+The sheer scale of shotgun data (often billions of reads per study) means that we typically cannot analyze it on a standard laptop using R alone. The upstream processing is almost always performed on a **High-Performance Computing (HPC) cluster** ***using a series of powerful, command-line based bioinformatics tools.***
+
+-   **The Environment:** We will be "working" in a ***Linux command-line environment.***
+-   **The Tools:** Our "workbench" will consist of a set of famous, standalone bioinformatics programs that we call from the command line, often linked together in a script. Key examples include `FastQC`, `Trimmomatic`, `Bowtie2`, `MEGAHIT`, and `Prodigal`.
+-   **The Workflow Manager:** Because a shotgun pipeline involves many sequential steps, bioinformaticians often use workflow managers like `Snakemake` or `Nextflow` to automate and manage the entire process.
+
+**Let's Set Up Our Project for This New Environment**
+
+**Project:** "Functional Characterization of the Gut Microbiome in Response to a High-Fat Diet in Mice.(高脂饮食对对小鼠肠道微生物群落的影响)"
+
+**Action 1: Create the Project Structure (on a Linux server/HPC)** Even on a server, a clean structure is vital. You would log into your server and type these commands:
+
+``` bash
+# Create the main project directory
+mkdir Project_Metagenome_HFD
+
+# Change into the new directory
+cd Project_Metagenome_HFD
+
+# Create our standard sub-folders
+mkdir 00-raw_reads
+mkdir 01-qc_reads
+mkdir 02-host_removed
+mkdir 03-assembly
+mkdir 04-gene_prediction
+mkdir 05-taxonomy
+mkdir 06-functional_annotation
+mkdir scripts
+```
+
+-   **Verification:** Use the `ls -F` command to see your new directory structure. It should list all the folders you just created.
+
+**Action 2: Get the Data** For shotgun data, you would typically download it from a public repository like ***the NCBI Sequence Read Archive (SRA)*** using a specialized tool. For our lesson, we will pretend we have downloaded a small subset of paired-end reads and placed them in our `00-raw_reads` folder.
+
+The files would look like this: \* `Control_1_R1.fastq.gz`, `Control_1_R2.fastq.gz` \* `HFD_1_R1.fastq.gz`, `HFD_1_R2.fastq.gz` \* ...and so on.
+
+### **Lesson 8: Summary & Status Check**
+
+-   **Conceptually**, we have established the fundamental principles of shotgun metagenomics. We understand its primary advantage—the ability to assess **functional potential**—and its primary challenge—the complexity of **metagenomic assembly**. We have also been introduced to the advanced concept of **MAGs**.
+-   **Practically**, we have acknowledged the shift in computational environment from a local RStudio session to a **command-line interface on an HPC cluster**. We have set up a project directory structure that is perfectly suited for a multi-step bioinformatics pipeline.
+
+We have defined the landscape of our new challenge. We are now ready to take the first practical step in any sequencing analysis: performing quality control on the raw reads and, crucially for shotgun data, removing the host DNA.
+
+------------------------------------------------------------------------
+
+### **Lesson 9: Quality Control and Host Read Removal🥰**
+
+**Goal:** ***`To assess the quality of our raw shotgun reads, trim and filter them to remove low-quality data, and then to identify and remove all reads that originate from the host organism (in our case, the mouse), leaving us with a clean set of purely microbial reads`***.
+
+#### **1. Core Concepts**
+
+-   **Quality Control (QC):**
+
+    -   **The "Why":** This is identical to the logic in our 16S pipeline. ***Raw Illumina reads have decreasing quality towards their ends, and the run can produce low-quality reads or reads containing artificial "adapter" sequences. These artifacts can severely corrupt our downstream assembly.***
+
+    -   **The "How":** We use a two-step process:
+
+        1.  **FastQC:** A tool that generates a ***comprehensive HTML report summarizing the quality metrics for a FASTQ file***. It's our primary diagnostic tool.
+
+        2.  **Trimmomatic (or `fastp`):** A tool that takes the raw reads and performs cleaning operations based on the FastQC report, such as trimming adapters, cutting off low-quality ends, and filtering out short reads.
+
+-   **Host DNA Removal(宿主DNA去除):**
+
+    -   **The "Why":** This is the crucial new step for shotgun data. Our sample is ***from a mouse gu***t, but the sample itself is ***mostly mouse tissue***. When we extract DNA, we get a massive amount of mouse DNA mixed with a relatively small amount of microbial DNA. ***It is not uncommon for \>90% of the sequencing reads to be from the host.***
+
+    -   **The Consequence:** If we try to assemble this mixed data, two bad things will happen:
+
+        1.  We will waste an enormous amount of computational time trying to assemble the mouse genome.
+
+        2.  Worse, reads from conserved genes that are similar between the mouse and bacteria could be incorrectly assembled together, ***creating chimeric contigs that corrupt our entire analysis***.
+
+    -   **The "How" (The Subtraction Method):** The standard method is to ***perform a mapping-based subtraction(基于映射的减法)***. We take all our QC'd reads and a***lign them against the host's reference genome*** (e.g., the mouse mm10 genome). ***Any read that successfully maps to the host genome is discarded***. The reads that fail to map are, by definition, the non-host (microbial) reads that we want to keep.
+
+#### **2. Practical Application: The Command-Line Workflow**
+
+We are now working in the terminal on our HPC cluster, inside our project directory.
+
+#### **Chunk 1: Assess Initial Quality with FastQC**
+
+**Explanation:** We first run FastQC on our raw, paired-end reads. This will generate an HTML report for each file that we can view in a web browser to diagnose quality issues.
+
+``` bash
+# --- 1. Initial Quality Assessment ---
+
+# Create a directory for the QC reports
+mkdir -p 01-qc_reads/fastqc_raw
+
+# Run FastQC on all raw read files (*_R?.fastq.gz)
+# The -o flag specifies the output directory.
+fastqc 00-raw_reads/*.fastq.gz -o 01-qc_reads/fastqc_raw
+```
+
+-   **Action:** Run this command in your terminal.
+
+-   **Verification:** You would then use a tool like `scp` or `FileZilla` to download the HTML files from the `01-qc_reads/fastqc_raw` directory to your local computer and open them in a web browser. You are looking for the "Per base sequence quality" plot to see where quality drops off, and the "Adapter Content" plot to see if any artificial sequences need to be removed. This inspection informs the parameters for the next step.
+
+#### **Chunk 2: Trim and Filter with `Trimmomatic`**
+
+**Explanation:** Based on our FastQC report, we now clean the reads. Trimmomatic is a powerful tool that takes the paired-end reads as input and performs a series of cleaning steps. The output will be two sets of files: "paired" reads (where both the forward and reverse read survived the filtering) and "unpaired" reads (where only one of the pair survived). For assembly, we are most interested in the paired reads.
+
+``` bash
+# --- 2. Quality Trimming and Filtering ---
+
+# We will loop through our control samples as an example.
+# In a real workflow, you would do this for all samples.
+# Let's assume our sample is "Control_1"
+SAMPLE="Control_1"
+
+# Run Trimmomatic
+trimmomatic PE -threads 8 \
+  00-raw_reads/${SAMPLE}_R1.fastq.gz \
+  00-raw_reads/${SAMPLE}_R2.fastq.gz \
+  01-qc_reads/${SAMPLE}_R1.paired.fastq.gz \
+  01-qc_reads/${SAMPLE}_R1.unpaired.fastq.gz \
+  01-qc_reads/${SAMPLE}_R2.paired.fastq.gz \
+  01-qc_reads/${SAMPLE}_R2.unpaired.fastq.gz \
+  ILLUMINACLIP:adapters.fa:2:30:10 \
+  SLIDINGWINDOW:4:20 \
+  MINLEN:50
+```
+
+-   **Action:** Run this command (after creating a small `adapters.fa` file with the adapter sequences, which are standard for Illumina).
+
+-   **Verification:** Trimmomatic produces a summary to the screen telling you how many read pairs it started with, how many were kept as pairs, and how many were dropped. ***A high survival rate is a good sign.*** You can also re-run FastQC on the new \*`.paired.fastq.gz` files to confirm that the quality issues have been resolved.
+
+-   🛠️ How to Create `adapters.fa`
+
+    You have a few options depending on your sequencing platform and library prep kit:
+
+    #### 1. **Use Predefined Adapter Files**
+
+    Trimmomatic provides adapter files in its distribution:
+
+    -   `TruSeq3-PE.fa` (for paired-end Illumina TruSeq)
+
+    -   `TruSeq3-SE.fa` (for single-end)
+
+    -   `NexteraPE-PE.fa` (for Nextera kits)
+
+    If you installed Trimmomatic via conda or downloaded it manually, these files are usually in the `adapters/` directory. You can copy one and rename it to `adapters.fa`:
+
+bash
+
+````         
+```         
+cp /path/to/Trimmomatic/adapters/TruSeq3-PE.fa adapters.fa 
+```
+
+#### 2. **Create Your Own from Kit Documentation**
+
+If you're using a custom kit or platform, check the documentation for adapter sequences. Then format them like this:
+
+fasta
+
+```         
+>Adapter1 AGATCGGAAGAGCACACGTCTGAACTCCAGTCA 
+>Adapter2 AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT 
+```
+
+Save this as `adapters.fa`.
+
+#### 3. **Extract from FastQC Reports**
+
+If you ran FastQC on your raw reads, look at the “**`Adapter Content`**” section. It often shows the adapter sequence detected. You can copy that and build your own file.
+````
+
+#### **Chunk 3: Remove Host DNA with `Bowtie2`**
+
+**Explanation:** This is the subtraction step. We will use the ultra-fast aligner `Bowtie2`. First, we need a pre-built `Bowtie2` ***index of the host genome*** (the mouse mm10 genome), which is usually provided by the HPC system administrator. We then align our clean, paired reads against this index. The key is to use flags that tell Bowtie2 to output only the reads that **fail** to align.
+
+``` bash
+# --- 3. Host DNA Removal ---
+
+# Path to the pre-built mouse genome index
+MOUSE_GENOME_INDEX="/path/to/bowtie2_indexes/mm10"
+
+# Align the QC'd reads to the mouse genome and keep only the UNALIGNED pairs.
+# --very-fast-local : A parameter set for speed.
+# --un-conc-gz : This is the key flag. It tells bowtie2 to write the read pairs
+#                that failed to align concordantly to the specified output files.
+bowtie2 -p 8 -x $MOUSE_GENOME_INDEX \
+  -1 01-qc_reads/${SAMPLE}_R1.paired.fastq.gz \
+  -2 01-qc_reads/${SAMPLE}_R2.paired.fastq.gz \
+  --un-conc-gz 02-host_removed/${SAMPLE}.microbial.fastq.gz \
+  -S /dev/null # We don't care about the aligned reads, so we send the alignment file to a black hole.
+```
+
+-   **Action:** Run this command. This is a computationally intensive step. Bowtie2 is comparing every single read against the entire mouse genome.
+
+-   ***Build Your Own Index***
+
+````         
+1.  **Download the mm10 FASTA file** From UCSC:
+
+    bash
+
+    ```         
+    wget http://hgdownload.soe.ucsc.edu/goldenPath/mm10/bigZips/mm10.fa.gz gunzip mm10.fa.gz 
+    ```
+
+2.  **Build the Bowtie2 index**
+
+    bash
+
+    ```         
+    bowtie2-build mm10.fa mm10 
+    ```
+
+    This will generate files like:
+
+    
+
+    ```bash        
+    mm10.1.bt2
+    mm10.2.bt2
+    mm10.3.bt2
+    mm10.4.bt2
+    mm10.rev.1.bt2
+    mm10.rev.2.bt2
+    ```
+
+### 🧪 How to Use It in Your Pipeline
+
+Here’s the command to align and remove host reads:
+
+
+
+```bash         
+bowtie2 -p 8 -x /path/to/mm10 \
+  -1 01-qc_reads/Control_1_R1.paired.fastq.gz \
+  -2 01-qc_reads/Control_1_R2.paired.fastq.gz \
+  --un-conc-gz 02-host_removed/Control_1.microbial.fastq.gz \
+  -S /dev/null
+```
+
+-   `-x`: Path to the index prefix(索引前缀的路径) (not the full filename)
+
+-   `--un-conc-gz`: Writes only the unaligned read pairs (i.e., microbial reads)
+
+-   `-S /dev/null`: Discards aligned reads—we don’t need them
+````
+
+-   **Verification:** After the command finishes, `bowtie2` prints a summary report to the screen. This is your critical proof. It will look something like this:
+
+    **codeCode**
+
+    ```         
+    10000000 reads; of these:
+      10000000 (100.00%) were paired; of these:
+        9500000 (95.00%) aligned concordantly exactly 1 time
+        ...
+      450000 (4.50%) aligned concordantly >1 times
+      50000 (0.50%) failed to align concordantly.
+    ```
+
+-   This report tells you that **99.5%** of the reads were from the host (mouse) and were discarded. *Only **0.5%** of the reads were microbial*. The files written to the `02-host_removed` directory now contain only this precious 0.5% of the data. This is a totally realistic result and it proves why this step is absolutely non-negotiable.
+
+### **Lesson 9: Summary & Status Check**
+
+-   **Conceptually**, we understand the dual necessity of first cleaning the raw reads of technical artifacts (low quality, adapters) and then cleaning them of biological contamination (host DNA). We know that the host removal step works by subtracting any read that maps to the host genome.
+
+-   **Practically**, we have used a standard bioinformatics toolchain (`FastQC, Trimmomatic, Bowtie2`) to perform these essential cleaning steps.
+
+-   **Crucially**, we have followed the "Trust, but Verify" principle throughout:
+
+    -   We used `FastQC` reports to **verify** the initial quality and guide our trimming.
+
+    -   We used the `Trimmomatic` summary to **verify** the success of the filtering.
+
+    -   We used the final `Bowtie2` alignment report to **verify** the percentage of host contamination, proving how critical this step was.
+
+We have now successfully navigated the most important data cleaning phase. The FASTQ files in our `02-host_removed` directory are small, clean, and purely microbial. We are finally ready to tackle the great puzzle of metagenomics: assembling these reads into genes and genomes.
+
+------------------------------------------------------------------------
+
+### **Lesson 10: Metagenomic Assembly and Gene Prediction🥵**
+
+**Goal:** ***`To take our millions of short, clean, purely microbial reads and computationally reconstruct them into long, contiguous DNA sequences ("contigs"). Then, to scan these contigs to predict the locations of protein-coding genes, thereby creating our "metagene catalog."`***
+
+#### **1. Core Concepts: The Assembly Puzzle**
+
+-   **The Fundamental Problem:** We have millions of short reads (\~150 bp each) that are like tiny, random snippets(小片段) of text from hundreds of different books (genomes), all mixed together. Our goal is to tape these snippets back together to reconstruct the original sentences and paragraphs (the contigs).
+
+-   **How is this even possible? Overlap.** The only way to connect two reads is if they overlap. If Read A ends with ...ATGC and Read B starts with ATGC..., we can infer that they belong next to each other. ***The assembler's job is to find all of these overlaps among billions of possible pairs.***
+
+    When you're dealing with **unknown genomes** (like in metagenomics), you **don’t have a reference** to align to. So instead of asking “Where does this read belong on a known genome?”, you're asking:
+
+    > “Can I reconstruct the genome from scratch using only these fragments?”
+
+    This is where **overlap** becomes essential.
+
+    When you're dealing with **unknown genomes** (like in metagenomics), you **don’t have a reference** to align to. So instead of asking “Where does this read belong on a known genome?”, you're asking:
+
+    > “Can I reconstruct the genome from scratch using only these fragments?”
+
+    This is where **overlap** becomes essential.
+
+-   **The de Bruijn Graph(德布鲁因图): The Modern Solution.** Trying to compare every read to every other read is computationally impossible. Modern assemblers use a much more elegant and efficient approach called a **de Bruijn graph**.
+
+    1.  **Step 1: Shred(拆分) the Reads into k-mers.** The algorithm first breaks every single read into even smaller, overlapping "words" of a fixed size, k (e.g., k=21). These are called **k-mers**. For example, the sequence ATGCGT would be broken into the k-mers ATGCG, TGCGT.
+
+    2.  **Step 2: Build the Graph.** It then builds a massive graph data structure. Each unique k-mer from our entire dataset becomes a **node** in the graph. An **edge** is drawn from one node to another if those two k-mers overlap and were found next to each other in the original reads.
+
+    3.  **Step 3: Find the Paths.** The graph now represents all the connectivity in our data. An ideal, error-free genome would form a simple, unambiguous path through this graph. The assembler's job is to walk along these paths. Each unambiguous path it can trace through the graph is "read out" as a final, long **contig**.
+
+-   **The Metagenomic Challenge:** Why is this harder than assembling a single genome? Because ***reads from different species can have similar sequences*** (e.g., conserved housekeeping genes). This creates "bubbles" and "tangles" in the de Bruijn graph where paths diverge and converge, making it hard for the assembler to find a single, unambiguous path. ***This is why metagenomic assemblies are often more fragmented (resulting in more, shorter contigs) than single-genome assemblies***.
+
+#### **2. Core Concepts: Gene Prediction**
+
+-   **The "Why":** Once we have our beautiful, long contigs, they are still just strings of A's, T's, C's, and G's. We need to find the parts of these strings that are actual, functional genes. This is the goal of gene prediction.
+
+-   **The "How" (Prodigal):** We use a specialized tool like **Prodigal** (PROkaryotic Dynameic Programming Genefinding ALgorithm(原核生物动态编程基因查找算法)). ***It is incredibly good at finding genes in bacterial and archaeal DNA***. It works by scanning the contigs for statistical signals that indicate a gene, such as:
+
+    1.  **Open Reading Frames (ORFs):** Long stretches of DNA that start with a "start codon" (like ATG) and end with a "stop codon" (like TAA, TAG, or TGA) without any stop codons in between.
+
+    2.  **Ribosome Binding Sites (RBS):** Specific sequence patterns (like the Shine-Dalgarno sequence) that appear just upstream of a start codon, which is where the ribosome binds to start making a protein.
+
+-   **The Output:** The output of Prodigal is our **metagene catalog**. This is typically two files: a FASTA file containing the predicted amino acid (protein) sequences of all the genes, and a FASTA file of their corresponding nucleotide (DNA) sequences. This catalog is the foundational dataset for our downstream functional analysis.
+
+#### **3. Practical Application: The Command-Line Workflow**
+
+This is a two-step, computationally massive process. ***These commands would be run on an HPC cluster and could take many hours or even days to complete.***
+
+#### **Chunk 1: Metagenomic Assembly with MEGAHIT**
+
+**Explanation:** `MEGAHIT` is a very popular metagenomic assembler because it is extremely fast and memory-efficient. ***It is a great choice for large and complex datasets***. We will run it on our cleaned, paired-end, host-removed microbial reads.
+
+``` bash
+# --- 4. Metagenomic Assembly ---
+
+# We need to combine our microbial reads from all samples into two large files
+# (one for all R1 reads, one for all R2 reads) for a "co-assembly".
+# This generally produces better results than assembling each sample individually.
+cat 02-host_removed/*_R1.microbial.fastq.gz > 02-host_removed/ALL_R1.fastq.gz
+cat 02-host_removed/*_R2.microbial.fastq.gz > 02-host_removed/ALL_R2.fastq.gz
+
+# Run MEGAHIT on the combined, cleaned reads
+# -1 and -2 specify the paired-end read files.
+# -o specifies the output directory.
+# --presets meta-large is an option set optimized for complex metagenomes.
+megahit -1 02-host_removed/ALL_R1.fastq.gz \
+        -2 02-host_removed/ALL_R2.fastq.gz \
+        -o 03-assembly/megahit_assembly \
+        --presets meta-large -t 16 # Use 16 CPU threads
+```
+
+-   **Action:** Run this command. `MEGAHIT` will start its multi-step assembly process.
+
+-   **Verification:** `MEGAHIT` produces a log file and, upon completion, a key output file: `03-assembly/megahit_assembly/final.contigs.fa`. This FASTA file contains all the reconstructed contigs. A crucial verification step is to run a tool like `QUAST` on this file, which generates a rich report on the assembly statistics (e.g., N50, number of contigs, total assembly size). ***A good N50 value (meaning half of the assembly is in contigs of this size or larger) is a key indicator of a successful assembly***.
+
+#### **Chunk 2: Gene Prediction with Prodigal**
+
+**Explanation:** Now we take the `final.contigs.fa` file from `MEGAHIT` and run `Prodigal` on it to find all the genes. We run it in "meta" mode, which is optimized for metagenomic data.
+
+``` bash
+# --- 5. Gene Prediction ---
+
+# Run Prodigal on our final contigs
+# -i : input contigs file
+# -o : output file for gene coordinates
+# -a : output file for the translated protein sequences (amino acids)
+# -d : output file for the gene sequences (nucleotides)
+# -p meta : run in metagenomic mode
+prodigal -i 03-assembly/megahit_assembly/final.contigs.fa \
+         -o 04-gene_prediction/predicted_genes.gff \
+         -a 04-gene_prediction/predicted_proteins.faa \
+         -d 04-gene_prediction/predicted_genes.fna \
+         -p meta
+```
+
+-   **Action:** Run this command. `Prodigal` is very fast and will likely finish in a few minutes.
+
+    Prodigal doesn’t need a reference genome because it relies on **intrinsic signals** within the DNA sequence itself. Here's what it looks for:
+
+    #### 1. **Start and Stop Codons(密码子)**
+
+    -   Genes begin with a **start codon** (usually ATG) and end with a **stop codon** (TAA, TAG, or TGA).
+
+    -   Prodigal ***scans for these patterns and evaluates the likelihood that the region between them is a real gene.***
+
+    #### 2. **Coding Potential**
+
+    -   Real genes tend to have **non-random codon usage**.
+
+    -   Prodigal uses **Markov models** to detect regions that statistically resemble known coding sequences.
+
+    #### 3. **Ribosome Binding Sites (RBS)**
+
+    -   In prokaryotes, genes often have an RBS upstream of the start codon.
+
+    -   Prodigal looks for these motifs to strengthen its prediction.
+
+    #### 4. **Reading Frame Consistency**
+
+    -   It checks whether the sequence maintains a consistent reading frame (no premature stop codons).
+
+    -   This helps distinguish real genes from random ORFs.
+
+    #### 5. **Metagenomic Mode (**`-p meta`**)**
+
+    -   In metagenomic mode, Prodigal relaxes some assumptions (like gene density or operon structure) to handle fragmented and diverse contigs.
+
+    ***Even though you don’t know which organism a contig comes from, the rules of gene structure are surprisingly `conserved` across bacteria and archaea. Prodigal leverages these rules to make educated predictions.***
+
+    ***Think of it like this: even if you don’t know the language, you can often guess where sentences begin and end based on punctuation and rhythm. Prodigal does something similar—but with DNA.***
+
+***But the most important thing is Prokaryotes(原核生物) do not have exons***
+
+-   **Verification:** The proof is in the output files. You can use the `grep` and `wc -l` commands to verify the contents:
+
+    ``` bash
+    # Count how many contigs are in the input
+    grep ">" 03-assembly/megahit_assembly/final.contigs.fa | wc -l
+
+    # Count how many genes were predicted (should be a MUCH larger number)
+    grep ">" 04-gene_prediction/predicted_proteins.faa | wc -l
+    ```
+
+-   Seeing that `Prodigal` found many thousands or millions of genes from your assembled contigs is direct proof that the gene prediction step was successful. The `predicted_proteins.faa` file is your **final metagene catalog**.
+
+### **Lesson 10: Summary & Status Check**
+
+-   **Conceptually**, we have tackled the most difficult part of metagenomics. We understand the logic of **de Bruijn graph assembly** for reconstructing contigs from short reads, and the principles of **gene prediction** for identifying ORFs and other signals in those contigs.
+
+-   **Practically**, we have used two gold-standard, command-line tools (`MEGAHIT` and `Prodigal`) to perform these computationally intensive tasks.
+
+-   **Crucially**, we have followed the "Trust, but Verify" principle by defining clear verification steps for each stage: using `QUAST` to check assembly quality and using simple grep commands to confirm that we have successfully generated our metagene catalog.
+
+We have successfully processed our raw reads into a massive, annotated list of all the protein-coding genes present in our microbial community. This is a monumental achievement. The hard-core, heavy-lifting bioinformatics is now complete. We are finally ready to move to the downstream analysis and ask the two key questions: "Who is there?" and "What are they doing?"
+
+------------------------------------------------------------------------
+
+## **🎃Part 4: Downstream - Functional and Taxonomic Analysis🧉**
+
+------------------------------------------------------------------------
+
+### **Lesson 11: Taxonomic Profiling🛫**
+
+**Goal:** ***`To take our raw, clean microbial reads for each sample and rapidly determine the taxonomic identity and relative abundance of the organisms present, from the Kingdom down to the Species and even Strain level.`***
+
+#### **1. Core Concepts**
+
+-   **The Challenge:** How do you identify an organism from a random, 150 bp fragment of its DNA? Unlike 16S, ***we don't have a universal barcode. Any read could come from anywhere in the genome***.
+
+-   **The "k-mer" Based Solution:** The modern solution is incredibly fast and clever. It relies on the idea that ***every microbial genome has a "fingerprint" composed of the unique short DNA "words" (k-mers) it contains.***
+
+    -   **Step 1: Build a Massive Database.** Scientists pre-process thousands of reference genomes from public databases (like NCBI RefSeq). For every genome, they create a comprehensive list of all the k-mers (e.g., all 31-base-pair sequences) it contains. ***This huge database maps millions of unique k-mers to the specific genomes they came from.***
+
+    -   **Step 2: The Kraken2 Algorithm.** A tool like **Kraken2** is a highly efficient implementation of this idea. When you give it one of your sequencing reads, it does the following:
+
+        1.  It breaks the read down into its constituent k-mers.
+
+        2.  For each k-mer, ***it looks it up in its massive database to find which genomes contain that k-mer.***
+
+        3.  It finds the "Lowest Common Ancestor" (LCA)(最低共同祖先). If some k-mers in a read match E. coli strain A and others match E. coli strain B, Kraken2 won't guess. It will confidently assign the read to the E. coli species level, which is the lowest taxonomic level that is unambiguously supported by the data.
+
+    -   **The Output:** Kraken2 processes millions of reads per minute. For each read, ***it assigns a taxonomic ID***. It then generates a summary report that tells you, for each sample, the percentage and number of reads that were assigned to each taxon (e.g., 15% Bacteroides thetaiotaomicron, 10% Akkermansia muciniphila, etc.).
+
+-   **Why use reads instead of contigs?** We use the pre-assembly reads for this because the process is very fast and it gives us the most sensitive view of the community, including low-abundance organisms that may not have assembled well into large contigs.
+
+#### **2. Practical Application: The Command-Line Workflow**
+
+We will use `Kraken2` for classification and a helper tool called Bracken to improve the accuracy of our abundance estimates.
+
+#### **Chunk 1: Download the `Kraken2` Database**
+
+**Explanation:** This is a crucial, one-time setup step. The Kraken2 database is very large (many gigabytes) and contains the pre-processed k-mer information for thousands of reference genomes. ***You would typically download a standard, pre-built database***.
+
+``` bash
+# --- 6. Taxonomic Profiling with Kraken2 ---
+
+# This is a one-time command to download a pre-built database.
+# We will use the "Standard" database which includes RefSeq bacteria, archaea, and viral genomes.
+# The database will be stored in a directory called 'kraken2_db'.
+kraken2-build --standard --db kraken2_db --threads 16
+```
+
+-   **Action:** You would run a command like this once on your HPC cluster. It will take a long time to download and build. For all future projects, you can simply point to this same database directory.
+
+#### **Chunk 2: Run `Kraken2` on All Samples**
+
+**Explanation:** Now we will loop through our cleaned, host-removed read files and run `Kraken2` on each one. The output will be a report file for each sample.
+
+``` bash
+# Set path to our database
+KRAKEN_DB="kraken2_db"
+
+# Loop through our microbial read files for each sample
+for SAMPLE in Control_1 Control_2 HFD_1 HFD_2; do # A loop for all samples
+
+  echo "Running Kraken2 on sample: $SAMPLE"
+
+  kraken2 --db $KRAKEN_DB --threads 16 --paired \
+    --report 05-taxonomy/${SAMPLE}.report \
+    02-host_removed/${SAMPLE}.microbial_1.fastq.gz \
+    02-host_removed/${SAMPLE}.microbial_2.fastq.gz > 05-taxonomy/${SAMPLE}.kraken2_output
+
+done
+```
+
+-   **Action:** Run this loop in your terminal. `Kraken2` will process each sample, which can take some time depending on the file size.
+
+-   **Verification:** Inspect one of the output report files (`Control_1.report`). It's a text file with a clear, tab-delimited format. Each line represents a taxon, and the columns show the percentage of reads assigned to that taxon, the number of reads, and its taxonomic rank (e.g., 'S' for species, 'G' for genus). This confirms the run was successful.
+
+#### **Chunk 3: Refine Abundances with Bracken**
+
+**Explanation:** Kraken2 is ***very conservative*** and often assigns reads to a higher taxonomic level (like Genus) if it's not certain about the species. **`Bracken`** (Bayesian Reestimation of Abundance with KrakEN) is a post-processing tool that uses statistical methods to ***distribute those higher-level reads down to the most likely species, giving a more accurate species-level abundance estimate***.
+
+``` bash
+# Run Bracken on the Kraken2 report files to get better species-level estimates
+for SAMPLE in Control_1 Control_2 HFD_1 HFD_2; do
+
+  echo "Running Bracken on sample: $SAMPLE"
+
+  bracken -d $KRAKEN_DB -i 05-taxonomy/${SAMPLE}.report \
+    -o 05-taxonomy/${SAMPLE}.bracken \
+    -r 150 # Specify the read length
+done
+```
+
+-   **Action:** Run this loop. `Bracken` is very fast.
+
+-   **Verification:** Inspect one of the new \*`.bracken` output files. It will look similar to the `Kraken2` report but with more reads assigned at the species level. This is your refined taxonomic profile for that sample.
+
+#### **Chunk 4: Combine all reports into a single table**
+
+**Explanation:** The final step is to combine the individual sample reports from `Bracken` into a single, master abundance table (Species by Samples) that we can use for downstream statistical analysis in R.
+
+``` bash
+# We can use a helper script often provided with KrakenTools to do this
+# This command merges all the Bracken output files into one abundance matrix
+combine_bracken_outputs.py --files 05-taxonomy/*.bracken -o 05-taxonomy/taxonomic_abundance_matrix.tsv
+```
+
+-   **Action:** Run this command.
+
+-   **Verification:** The proof is the final output file: ***`taxonomic_abundance_matrix.tsv`***. This is a clean, tab-separated table. The rows are species, the columns are your samples, and the cells contain the estimated read counts. This is the **direct analog** of the `seqtab.nochim` table from our 16S pipeline.
+
+### **Lesson 11: Summary & Status Check**
+
+-   **Conceptually**, we understand the power of the k-mer based approach for rapid and sensitive taxonomic classification of shotgun reads. We know that Kraken2 performs the initial classification and Bracken refines the abundance estimates.
+
+-   **Practically**, we have used a command-line workflow to download a reference database, run Kraken2 and Bracken on all our samples, and combine the results into a single, unified abundance table.
+
+-   **Crucially**, we have followed the "Trust, but Verify" principle by inspecting the intermediate report files and by confirming that our final output is a clean, well-formatted abundance matrix ready for the next stage.
+
+------------------------------------------------------------------------
+
+### **Lesson 12: Functional Annotation😏**
+
+**Goal:** ***`To take our massive list of predicted protein sequences (the metagene catalog) and assign a biological function to each gene. We will then use this information to create a functional profile for each of our samples, quantifying the abundance of different biological pathway`***s.
+
+#### **1. Core Concepts**
+
+-   **The "Why":** The microbial community in our sample acts as a single, complex metabolic engine. While knowing the names of the species is important, ***it's often more powerful to know what biochemical functions the entire engine is capable of performing***. For example, two different gut communities might be composed of entirely different species, but they might both have a high abundance of genes for digesting fiber. The function is conserved even if the species are different. This is the level of insight we want to achieve.
+
+-   **The "How" - Homology-Based Annotation(基于同源性的注释):** The process is conceptually similar to a BLAST search, but performed on a massive scale.
+
+    1.  **Start with the Metagene Catalog:** We have our `predicted_proteins.faa` file from `Prodigal`, which contains millions of protein sequences.
+
+    2.  **Compare to a Functional Database:** We ***compare each of our predicted protein sequences against a massive, curated database of proteins with known functions.***
+
+    3.  **Transfer by Homology:** If one of our unknown proteins is ***highly similar in sequence to a known protein in the database*** (i.e., they are "homologs"), ***we infer that our protein likely has the same or a very similar function***. We "transfer" the annotation from the known protein to our predicted gene.
+
+-   **Key Functional Databases:**
+
+    -   **KEGG (Kyoto Encyclopedia of Genes and Genomes):** The `gold standard` for pathway analysis. Each protein in KEGG is assigned a "K number" (e.g., K00844 for hexokinase(己糖激酶), and these ***K numbers are organized into well-defined metabolic pathway maps***. Annotating against KEGG is the most common goal.
+
+    -   **eggNOG (evolutionary genealogy of genes: Non-supervised Orthologous Groups):** A database that groups genes into "orthologous groups" based on their evolutionary relationships. It provides a very broad functional classification.
+
+    -   **CAZy (Carbohydrate-Active enZYmes Database):** A highly specialized database focused just on enzymes that build, modify, or break down carbohydrates. It's essential for studies involving fiber digestion, for example.
+
+-   **The Final Output:** After annotating all of our genes, we need to create a **functional abundance table**. To do this, we need to know how many reads from each sample map back to each gene. We perform a mapping step:
+
+    1.  We align the raw reads from each sample against our metagene catalog.
+
+    2.  We count how many reads from Sample A map to Gene 1, Gene 2, etc.
+
+    3.  We can then ***sum the counts for all the genes that were annotated with the same function*** (e.g., all genes with K number K00844).
+
+    4.  The final result is a table ***where rows are functions*** (e.g., KEGG Orthology groups or Pathways) ***and columns are our samples, with the cells containing the (normalized) counts***.
+
+#### **2. Practical Application: The Command-Line Workflow**
+
+This is a multi-step, computationally intensive process. We will use a highly optimized tool called `MMseqs2` for the homology search, as it is much faster than traditional `BLAST`.
+
+#### **Chunk 1: Annotate Genes against a Functional Database**
+
+**Explanation:** We will take our predicted protein sequences and search them against the KEGG database using `MMseqs2`. This will create a table that links our gene IDs to the KEGG Orthology (KO) IDs they match.
+
+``` bash
+# --- 7. Functional Annotation ---
+
+# Let's assume we have downloaded a pre-formatted MMseqs2 KEGG database.
+KEGG_DB="/path/to/mmseqs_kegg_db"
+PROTEINS="04-gene_prediction/predicted_proteins.faa"
+ANNOTATION_RESULTS="06-functional_annotation/gene_to_kegg.tsv"
+#Run the MMseqs2 search
+#This is a very fast alternative to BLAST. It creates an alignment table 
+mmseqs easy-search $PROTEINS $KEGG_DB $ANNOTATION_RESULTS tmp_mmseqs_dir --threads 16
+```
+
+-   **Action:** Run this command.`MMseqs2`will perform the massive homology search.
+
+-   **Verification:** Inspect the output file`gene_to_kegg.tsv`. It will be a tab-separated table. Column 1 will be your gene ID from`Prodigal`, and Column 2 will be the KO number (e.g.,`K00844\`) that it matched in the KEGG database. This confirms the annotation worked.
+
+#### **Chunk 2: Quantify Gene Abundance in Each Sample**
+
+**Explanation:** Now that we know the function of each gene in our catalog, we need to know how abundant each gene is in each of our samples. We do this by mapping the raw, clean reads from each sample back to the catalog.
+
+``` bash
+# --- 8. Quantify Gene Abundance ---
+
+# First, we need to create an index of our nucleotide gene catalog for the aligner.
+
+GENES_DNA="04-gene_prediction/predicted_genes.fna" bowtie2-build \$GENES_DNA 04-gene_prediction/gene_catalog_index
+
+# Now, loop through each sample, map its reads to the catalog, and count them.
+
+for SAMPLE in Control_1 Control_2 HFD_1 HFD_2; do
+
+echo "Quantifying genes for sample: $SAMPLE"
+
+# Align reads to the gene catalog 
+bowtie2 -p 8 -x 04-gene_prediction/gene_catalog_index\
+   -1 02-host_removed/${SAMPLE}.microbial_1.fastq.gz \
+   -2 02-host_removed/${SAMPLE}.microbial_2.fastq.gz\
+   -S 06-functional_annotation/\${SAMPLE}.sam
+
+# Convert SAM to BAM and count reads per gene 
+# This is a standard bioinformatics pipeline using samtools. 
+samtools view -bS 06-functional_annotation/${SAMPLE}.sam | samtools sort - > 06-functional_annotation/${SAMPLE}.sorted.bam 
+samtools idxstats 06-functional_annotation/${SAMPLE}.sorted.bam > 06-functional_annotation/${SAMPLE}.counts.tsv
+
+done
+```
+
+-   **Action:** Run this block. This is a major computational step involving aligning all the reads for every sample.
+
+-   **Verification:** Inspect one of the `*.counts.tsv` files. It will be a simple table with three columns: Gene ID, Gene Length, and **Read Count**. This confirms you have successfully quantified the abundance of every gene in that sample.
+
+#### **Chunk 3: Create the Final Functional Abundance Table**
+
+**Explanation:** We now have all the pieces: a mapping of genes to functions (`gene_to_kegg.tsv`) and the counts for each gene in each sample (`*.counts.tsv`). The final step is to combine this information to create a single table of **function abundance**. We would typically use a Python or R script to do this final aggregation.
+
+The logic of the script would be:
+
+1.  Read the `gene_to_kegg.tsv` file.
+
+2.  For each sample, read its `*.counts.tsv` file.
+
+3.  Create an empty table where rows are KEGG Orthology (KO) IDs and columns are samples.
+
+4.  For each gene, find its KO annotation and its count in the current sample. Add that count to the corresponding KO's total for that sample.
+
+5.  After processing all genes and all samples, write out the final KO abundance table.
+
+-   **The Output:** The final, critical output is a file like `functional_abundance_matrix.tsv`. The rows are KOs, the columns are your samples, and the cells are the total read counts for that function in that sample.
+
+### **Lesson 12: Summary & Status Check**
+
+-   **Conceptually**, we understand that functional profiling is the key advantage of shotgun metagenomics. We know the process involves **annotating** our predicted genes via homology search against a database like KEGG, and then **quantifying** the abundance of these functions by mapping reads from each sample back to the gene catalog.
+
+-   **Practically**, we have used a standard command-line toolchain (`MMseqs2`, `bowtie2`, `samtools`) to perform these annotation and quantification steps.
+
+-   **Crucially**, we have followed the "Trust, but Verify" principle by defining clear outputs and verification methods for each stage, culminating in our final **functional abundance matrix**.
+
+We have now successfully answered the second key question, "What can they do?" We have generated the two primary data matrices needed for a complete metagenomic analysis:
+
+1.  `taxonomic_abundance_matrix.tsv` (from Lesson 11)
+
+2.  `functional_abundance_matrix.tsv` (from this lesson)
+
+We are finally ready for the grand finale, where we take these two tables and perform the same kinds of downstream statistical analyses we learned for 16S data.
+
+------------------------------------------------------------------------
+
+### **Lesson 13: Integrated Analysis🤫**
+
+**Goal:** ***`To take our taxonomic and functional abundance matrices, import them into R, and perform a comprehensive downstream analysis, including diversity assessment and differential abundance testing, to generate an integrated view of the community's response to the high-fat diet.`***
+
+#### **1. Core Concepts: The Convergence of Downstream Analysis**
+
+-   **The Beautiful Simplicity:** The most important concept to grasp is that, despite the vastly different and more complex upstream processing, the **final output matrices from shotgun metagenomics are conceptually identical to the ASV table from our 16S pipeline.**
+
+    -   **Taxonomic Table:** Rows are taxa (Species), columns are samples, cells are counts.
+
+    -   **Functional Table:** Rows are functions (KEGG Orthologs), columns are samples, cells are counts.
+
+-   **The Implication:** This means we do not need to learn a completely new set of downstream statistical tools. We can apply the **exact same powerful and robust workflow** that we have already mastered. This workflow includes:
+
+    1.  **Creating a `phyloseq` object** for easy data handling and exploration.
+
+    2.  **Calculating alpha and beta diversity** to assess community-level changes.
+
+    3.  **Using `DESeq2` for differential abundance testing** to find the specific features (whether taxa or functions) that are significantly different between our groups.
+
+-   **The Power of Integration:** The true power of shotgun data comes from performing this analysis on both tables. This allows us to connect the two views of the microbiome. For example, we might find that the **species** Faecalibacterium prausnitzii is significantly depleted in the high-fat diet group, AND that the **function** "butyrate production pathway" is also significantly depleted. Since F. prausnitzii is a famous butyrate producer, we have now linked a taxonomic change to a functional consequence, creating a much more compelling biological story.
+
+#### **2. Practical Application: The R Workflow**
+
+We will now be working in R, in a new script. This workflow will look remarkably familiar.
+
+-   **Action:** In RStudio, create a new script in your scripts folder named `02_shotgun_analysis.R`.
+
+#### **Chunk 1: Load Data and Create `phyloseq` Objects**
+
+**Explanation:** We will load our two final abundance matrices and our sample metadata. Then, we will create two separate `phyloseq` objects: one for the taxonomic analysis and one for the functional analysis.
+
+``` r
+# --- 1. Load Data and Setup ---
+library(phyloseq)
+library(tidyverse)
+library(DESeq2)
+library(vegan)
+
+# Load the taxonomic abundance matrix
+tax_counts <- read.delim("05-taxonomy/taxonomic_abundance_matrix.tsv", row.names = 1)
+
+# Load the functional abundance matrix
+func_counts <- read.delim("06-functional_annotation/functional_abundance_matrix.tsv", row.names = 1)
+
+# Create the sample metadata
+sample_df <- data.frame(
+  Condition = c("Control", "Control", "HFD", "HFD")
+)
+rownames(sample_df) <- c("Control_1", "Control_2", "HFD_1", "HFD_2")
+
+
+# --- 2. Create phyloseq Objects ---
+
+# Create the TAXONOMIC phyloseq object
+ps_tax <- phyloseq(otu_table(tax_counts, taxa_are_rows = TRUE), 
+                   sample_data(sample_df))
+
+# Create the FUNCTIONAL phyloseq object
+ps_func <- phyloseq(otu_table(func_counts, taxa_are_rows = TRUE),
+                    sample_data(sample_df))
+
+print("Taxonomic Phyloseq Object:")
+print(ps_tax)
+print("Functional Phyloseq Object:")
+print(ps_func)
+```
+
+-   **Action:** Run this chunk.
+-   **Verification:** The `print` commands confirm that you have successfully created two distinct `phyloseq` objects, one for each analytical dimension of your data.
+
+#### **Chunk 2: Beta Diversity Analysis (on both profiles)**
+
+**Explanation:** We can now ask if the overall community structure is different between the Control and HFD groups from both a taxonomic and a functional perspective. We will use the exact same `PCoA` + `PERMANOVA` workflow we used for 16S.
+
+``` r
+# --- 3. Beta Diversity Analysis ---
+
+# A) Taxonomic Beta Diversity
+pcoa_tax <- ordinate(ps_tax, method = "PCoA", distance = "bray")
+plot_tax <- plot_ordination(ps_tax, pcoa_tax, color = "Condition") + 
+            labs(title = "Taxonomic Beta Diversity (PCoA)") + theme_bw()
+dist_tax <- phyloseq::distance(ps_tax, method = "bray")
+permanova_tax <- adonis2(dist_tax ~ Condition, data = sample_df)
+
+# B) Functional Beta Diversity
+pcoa_func <- ordinate(ps_func, method = "PCoA", distance = "bray")
+plot_func <- plot_ordination(ps_func, pcoa_func, color = "Condition") + 
+             labs(title = "Functional Beta Diversity (PCoA)") + theme_bw()
+dist_func <- phyloseq::distance(ps_func, method = "bray")
+permanova_func <- adonis2(dist_func ~ Condition, data = sample_df)
+
+# Print the plots and results
+print(plot_tax)
+print("Taxonomic PERMANOVA:")
+print(permanova_tax)
+
+print(plot_func)
+print("Functional PERMANOVA:")
+print(permanova_func) 
+```
+
+-   **Action:** Run this chunk.
+
+-   **Verification:** You will get two `PCoA` plots and two `PERMANOVA` results. You might see, for example, a significant separation in the taxonomic plot (p \< 0.05), but a less clear or non-significant separation in the functional plot. This would be a fascinating result, suggesting that even though the species have changed, the overall community function is stable (a concept known as functional redundancy).
+
+#### **Chunk 3: Differential Abundance Analysis (on both profiles)**
+
+**Explanation:** Finally, we pinpoint the specific features that are changing. We will use the robust `DESeq2` pipeline on both our taxonomic and functional count tables.
+
+``` r
+# --- 4. Differential Abundance Analysis ---
+
+# A) Differential Abundance of TAXA (Species)
+dds_tax <- phyloseq_to_deseq2(ps_tax, design = ~ Condition)
+dds_tax <- DESeq(dds_tax)
+res_tax <- results(dds_tax, contrast = c("Condition", "HFD", "Control"))
+significant_taxa <- as.data.frame(res_tax) %>% filter(padj < 0.1)
+
+# B) Differential Abundance of FUNCTIONS (KOs)
+dds_func <- phyloseq_to_deseq2(ps_func, design = ~ Condition)
+dds_func <- DESeq(dds_func)
+res_func <- results(dds_func, contrast = c("Condition", "HFD", "Control"))
+significant_functions <- as.data.frame(res_func) %>% filter(padj < 0.1)
+
+# Print the key findings
+cat("\n--- Differentially Abundant Species ---\n")
+print(head(significant_taxa))
+
+cat("\n--- Differentially Abundant Functions (KOs) ---\n")
+print(head(significant_functions))
+```
+
+-   **Action:** Run this final analysis chunk.
+
+-   **Verification:** The printed tables are your final, key results.
+
+    1.  The `significant_taxa` table gives you the ***list of specific species that increase or decrease in response to the high-fat diet.***
+
+    2.  The `significant_functions` table gives you the ***list of specific KEGG Orthologs (and by extension, pathways) that are changing.*** This is where you can make powerful connections, as described in the Core Concepts.
+
+### **Grand Conclusion of the Entire Microbiome Curriculum**
+
+We have completed the full journey through both major methods of microbiome analysis.
+
+1.  **16S Analysis:** We learned it is a powerful and cost-effective method for getting a **community census** ("who is there"). We mastered the modern, ASV-based `dada2` workflow for upstream processing and the `phyloseq` ecosystem for downstream ecological analysis.
+
+2.  **Shotgun Metagenomics:** We then advanced to the more comprehensive shotgun method, which provides a **functional blueprint** ("what can they do"). We learned about the formidable upstream bioinformatics challenges on the command line (QC, host removal, assembly, gene prediction) and saw how the downstream analysis converges, allowing us to apply the same robust statistical tools to both the taxonomic and functional profiles.
+
+**The Final Integrated Hypothesis:**\
+By combining the results from this last lesson, you can now form a truly powerful and complete hypothesis:
+
+"***`A high-fat diet significantly alters the gut microbial community structure in mice (Taxonomic PERMANOVA, p<0.05). This shift is characterized by a significant depletion of the species Faecalibacterium prausnitzii (DESeq2, padj<0.1). Functionally, this corresponds to a significant depletion of genes in the butyrate production pathway (e.g., KO K00922; DESeq2, padj<0.1), a key anti-inflammatory metabolite. This suggests that the detrimental effects of a high-fat diet may be mediated, in part, by the loss of key butyrate-producing species and their associated functions.`***"
+
+That is an outstanding question. You have successfully learned the "standard pipeline," which is the essential foundation for any microbiome study. Now you are asking the question that a real researcher asks: **"What else can I do? What are the deeper, more interesting questions I can ask of this rich dataset?"**
+
+The downstream analyses we performed (diversity, differential abundance) are just the beginning. They tell you *what* changed. The more advanced analyses we will discuss now help you understand *how* and *why*, and allow you to explore the data from many different creative angles.
+
+Let's structure this as a menu of advanced downstream research avenues, extending the knowledge from our previous lessons。
+
+------------------------------------------------------------------------
+
+# **🫤A Menu of Advanced Downstream Microbiome Analyses🤤**
+
+------------------------------------------------------------------------
+
+## **Category 1: Deeper Ecological Patterns and Community Structure🥵**
+
+*These analyses go beyond simple beta diversity to understand the relationships* between\* microbes.\*
+
+1.  **Co-occurrence Network Analysis**
+    -   **The Question:** Which microbes are consistently ***found together*** ("friends") and which are ***never found*** ***together*** ("foes") across my samples? Do these relationships change between my Control and High-Fat Diet groups?
+    -   **The Logic:** You calculate the ***correlation*** (e.g., SparCC, Spearman) between the abundance of every microbe and every other microbe. ***A strong positive correlation implies a potential synergistic or co-dependent relationship. A strong negative correlation implies competition or niche exclusion(利基排斥).***
+    -   **The Output:** A ***network graph where microbes are nodes and significant correlations are edges***. This can reveal "keystone species" (highly connected nodes) or "guilds" (tightly clustered groups of microbes that may perform a similar function).
+    -   **Tools:** R packages like `SpiecEasi`, `NetCoMi`.
+2.  **Longitudinal Analysis (Time-Series Data)**
+    -   **The Question:** If my experiment ***took place over time*** (e.g., samples taken every week), how does the community change? How stable is it? How does it respond to a perturbation(干扰) (like a course of antibiotics) and does it recover?
+    -   **The Logic:** Instead of just comparing two static groups, you use statistical models that account for the time component. ***This allows you to analyze trajectories of change***.
+    -   **The Output:** Plots showing how diversity or the abundance of specific microbes changes over time. You can identify microbes that are "early responders" vs. "late responders."
+    -   **Tools:** R packages like `lme4` (for linear mixed-effects models), `metageNRA`.
+3.  **Source Tracking Analysis**
+    -   **The Question:** Where did the microbes in my samples come from? For example, in a study of a baby's gut microbiome, how much of it came from the mother's gut, the mother's skin, or the hospital environment?
+
+    -   **The Logic:** You provide a set of "source" samples (e.g., mother's skin) and "sink" samples (e.g., baby's gut). The algorithm uses a statistical model to estimate the proportion of the community in each sink sample that can be attributed to each source.
+
+    -   **The Output:** A bar chart showing the breakdown of microbial sources for each of your samples.
+
+    -   **Tools:** R packages like `FEAST`, `SourceTracker`.
+
+## **Category 2: Advanced Functional and Genomic Analysis (Shotgun Specific)🤨**
+
+*These analyses leverage the unique power of shotgun data to go beyond just pathway names.*
+
+1.  **Metagenome-Assembled Genome (MAG) Analysis**
+    -   **The Question:** ***Can I reconstruct the full genomes of the most important (or even novel) bacteria in my samples?*** What unique functional capabilities do these specific organisms have?
+    -   **The Logic:** As we discussed, this involves "binning" your assembled contigs into putative genomes (MAGs). ***Once you have a high-quality MAG, it's like having the complete blueprint for that organism.***
+    -   **The Output:** You can run specialized analyses on each MAG to find, for example, antibiotic resistance gene clusters, pathways for producing novel antibiotics or vitamins (`antiSMASH`), or their complete metabolic map. This is a discovery-driven analysis.
+2.  **Strain-Level Analysis**
+    -   **The Question:** I see *E. coli* is abundant in both my Control and High-Fat Diet groups. But is it the *exact same strain* of *E. coli*, or have different strains taken over?
+    -   **The Logic:** ***This requires very high-resolution tools that look at the pattern of single nucleotide polymorphisms (SNPs)*** within the genomes of specific species.
+    -   **The Output:** ***A profile of the different strains present in each sample***. This is critical for epidemiological studies (tracking an infection) or for understanding if functional differences are occurring at the sub-species level.
+    -   **Tools:** `StrainPhlAn`, `inStrain`, `PanPhlAn`.
+3.  **Metabolic Pathway Reconstruction**
+    -   **The Question:** Instead of just getting a list of enriched KEGG pathways, can I build a complete, community-wide metabolic model? Can I predict which metabolites the community should be able to produce or consume?
+    -   **The Logic:** Tools like `HUMAnN` (The HMP Unified Metabolic Analysis Network) are designed for this. ***They not only identify which pathways are present but also how complete they are and which species are contributing to each step.***
+    -   **The Output:** A highly detailed profile of community-wide metabolic potential that can be directly linked to metabolomics data.
+
+------------------------------------------------------------------------
+
+## **Category 3: Multi-omics Integration and Predictive Modeling🫡**
+
+*This is the frontier, where you connect the microbiome to other data types to build a holistic, systems-level understanding.*
+
+1.  **Microbiome + Metabolomics Integration**
+    -   **The Question:** We found that the species *F. prausnitzii* went down and the metabolite butyrate also went down. Are these events statistically linked?
+    -   **The Logic:** ***You use correlation analysis (e.g., Spearman correlation) to build a network that connects specific microbes to specific metabolites.***
+    -   **The Output:** A "multi-omic" network that might show a strong positive correlation between the abundance of *F. prausnitzii* and the concentration of butyrate, providing a strong mechanistic hypothesis.
+    -   **Tools:** R packages like `mixOmics`.
+2.  **Microbiome + Host Transcriptomics Integration**
+    -   **The Question:** ***How did the host's gut cells respond to the change in the microbiome?***
+    -   **The Logic:** You correlate the abundance of specific microbes with the expression levels of host genes (from an RNA-seq experiment on the same samples).
+    -   **The Output:** ***You might find that the abundance of an inflammatory bacterium is strongly correlated with the upregulation of host immune response genes*** (like interleukins(白细胞介素) or TNF-alpha), demonstrating the direct impact of the microbiome on the host.
+3.  **Machine Learning and Biomarker Discovery**
+    -   **The Question:** ***Can I use the microbiome profile to predict if a person is healthy or has a disease? Can I identify a small panel of microbes that could serve as a diagnostic biomarker?***
+    -   **The Logic:** You use your microbiome data (either taxonomic or functional profiles) as "features" to train a machine learning model (e.g., ***Random Forest, LASSO regression***). You train the model on a "training set" of samples and then test its predictive accuracy on a separate "testing set."
+    -   **The Output:** A predictive model and a measure of its accuracy (e.g., an AUC curve). ***The model can also report which microbes were the most important "features" for making the prediction, revealing your top biomarker candidates.***
+
+This menu of downstream analyses shows that our standard pipeline is really just the entry point. The real power and excitement come from using the processed data to explore these deeper ecological, functional, and integrative questions.

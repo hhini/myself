@@ -1,0 +1,1717 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.24">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>GWAS 教程</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dc55a5b9e770e841cd82e46aadbfb9b0.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-4d7f0bce1131f3e5f9547cd857cfbfc8.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script async="" src="https://hypothes.is/embed.js"></script>
+<script>
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    document.body.classList.add('hypothesis-enabled');
+  });
+</script>
+
+
+<meta name="citation_title" content="GWAS 教程">
+<meta name="citation_author" content="JAYZ ">
+<meta name="citation_language" content="en">
+<meta name="citation_reference" content="citation_title=Literate Programming;,citation_author=Donald E. Knuth;,citation_publication_date=1984-05;,citation_cover_date=1984-05;,citation_year=1984;,citation_fulltext_html_url=https://doi.org/10.1093/comjnl/27.2.97;,citation_issue=2;,citation_doi=10.1093/comjnl/27.2.97;,citation_issn=0010-4620;,citation_volume=27;,citation_journal_title=Comput. J.;,citation_publisher=Oxford University Press, Inc.;">
+</head>
+
+<body class="quarto-light">
+
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">GWAS 教程</h1>
+          </div>
+
+    
+    <div class="quarto-title-meta-container">
+      <div class="quarto-title-meta-column-start">
+            <div class="quarto-title-meta-author">
+          <div class="quarto-title-meta-heading">Author</div>
+          <div class="quarto-title-meta-heading">Affiliation</div>
+          
+                <div class="quarto-title-meta-contents">
+            <p class="author">JAYZ </p>
+          </div>
+                <div class="quarto-title-meta-contents">
+                    <p class="affiliation">
+                        The University OF Myself
+                      </p>
+                  </div>
+                    </div>
+        
+        <div class="quarto-title-meta">
+
+                      
+          
+                
+              </div>
+      </div>
+      <div class="quarto-title-meta-column-end quarto-other-formats-target">
+      <div class="quarto-alternate-formats"><div class="quarto-title-meta-heading">Other Formats</div><div class="quarto-title-meta-contents"><p><a href="index.docx"><i class="bi bi-file-word"></i>MS Word</a></p></div><div class="quarto-title-meta-contents"><p><a href="index-meca.zip" data-meca-link="true"><i class="bi bi-archive"></i>MECA Bundle</a></p></div></div></div>
+    </div>
+
+
+
+    <div class="quarto-other-links-text-target">
+    </div>  </div>
+</header><div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
+<div id="quarto-sidebar-toc-left" class="sidebar toc-left">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#gwas-教程" id="toc-gwas-教程" class="nav-link active" data-scroll-target="#gwas-教程">GWAS 教程 ❤️😍</a>
+  <ul class="collapse">
+  <li><a href="#genome-wide-association-studies-definition" id="toc-genome-wide-association-studies-definition" class="nav-link" data-scroll-target="#genome-wide-association-studies-definition">Genome Wide Association Studies Definition</a></li>
+  <li><a href="#the-main-process-of-gwas" id="toc-the-main-process-of-gwas" class="nav-link" data-scroll-target="#the-main-process-of-gwas">The main process of GWAS</a>
+  <ul class="collapse">
+  <li><a href="#data-collection" id="toc-data-collection" class="nav-link" data-scroll-target="#data-collection">Data collection</a></li>
+  <li><a href="#genetyping" id="toc-genetyping" class="nav-link" data-scroll-target="#genetyping">Genetyping</a></li>
+  </ul></li>
+  <li><a href="#the-journey-from-person-to-data-file" id="toc-the-journey-from-person-to-data-file" class="nav-link" data-scroll-target="#the-journey-from-person-to-data-file">The journey from person to data file😎</a>
+  <ul class="collapse">
+  <li><a href="#stage-1-the-biological-source-and-lab-technology" id="toc-stage-1-the-biological-source-and-lab-technology" class="nav-link" data-scroll-target="#stage-1-the-biological-source-and-lab-technology">stage 1: <strong>The Biological Source and Lab Technology</strong></a></li>
+  <li><a href="#the-core-data-types-what-the-bioinformatician-actually-works-with" id="toc-the-core-data-types-what-the-bioinformatician-actually-works-with" class="nav-link" data-scroll-target="#the-core-data-types-what-the-bioinformatician-actually-works-with">The Core Data Types: What the Bioinformatician Actually Works With</a></li>
+  <li><a href="#where-does-this-data-come-from-data-sources" id="toc-where-does-this-data-come-from-data-sources" class="nav-link" data-scroll-target="#where-does-this-data-come-from-data-sources">Where Does This Data Come From? (Data Sources)</a></li>
+  </ul></li>
+  <li><a href="#qc" id="toc-qc" class="nav-link" data-scroll-target="#qc">QC😘</a>
+  <ul class="collapse">
+  <li><a href="#step-1-initial-missingness-filters-the-first-pass" id="toc-step-1-initial-missingness-filters-the-first-pass" class="nav-link" data-scroll-target="#step-1-initial-missingness-filters-the-first-pass">Step 1: Initial Missingness Filters (The First Pass)</a></li>
+  <li><a href="#step-2-core-snp-quality-filters" id="toc-step-2-core-snp-quality-filters" class="nav-link" data-scroll-target="#step-2-core-snp-quality-filters">Step 2: Core SNP Quality Filters</a></li>
+  <li><a href="#step-3-core-individual-quality-filters" id="toc-step-3-core-individual-quality-filters" class="nav-link" data-scroll-target="#step-3-core-individual-quality-filters">Step 3: Core Individual Quality Filters</a></li>
+  <li><a href="#step-4-relatedness-and-population-structure相关性和种群结构" id="toc-step-4-relatedness-and-population-structure相关性和种群结构" class="nav-link" data-scroll-target="#step-4-relatedness-and-population-structure相关性和种群结构">Step 4: Relatedness and Population Structure(相关性和种群结构)</a></li>
+  </ul></li>
+  <li><a href="#pca" id="toc-pca" class="nav-link" data-scroll-target="#pca">PCA 😉</a>
+  <ul class="collapse">
+  <li><a href="#part-1-the-why---understanding-the-problem-of-population-stratification人口分层" id="toc-part-1-the-why---understanding-the-problem-of-population-stratification人口分层" class="nav-link" data-scroll-target="#part-1-the-why---understanding-the-problem-of-population-stratification人口分层">Part 1: The “Why” - Understanding the Problem of Population Stratification（人口分层）</a></li>
+  <li><a href="#part-2-the-what---a-conceptual-understanding-of-pca" id="toc-part-2-the-what---a-conceptual-understanding-of-pca" class="nav-link" data-scroll-target="#part-2-the-what---a-conceptual-understanding-of-pca">Part 2: The “What” - A Conceptual Understanding of PCA</a></li>
+  <li><a href="#part-3-the-how---a-practical-step-by-step-workflow" id="toc-part-3-the-how---a-practical-step-by-step-workflow" class="nav-link" data-scroll-target="#part-3-the-how---a-practical-step-by-step-workflow">Part 3: The “How” - A Practical Step-by-Step Workflow</a></li>
+  <li><a href="#part-4-the-whats-next---visualization-and-action" id="toc-part-4-the-whats-next---visualization-and-action" class="nav-link" data-scroll-target="#part-4-the-whats-next---visualization-and-action">Part 4: The “What’s Next” - Visualization and Action</a></li>
+  </ul></li>
+  <li><a href="#association-test-and-visualization" id="toc-association-test-and-visualization" class="nav-link" data-scroll-target="#association-test-and-visualization">Association test and Visualization🤣</a>
+  <ul class="collapse">
+  <li><a href="#part-1-the-core-concept---the-statistical-model" id="toc-part-1-the-core-concept---the-statistical-model" class="nav-link" data-scroll-target="#part-1-the-core-concept---the-statistical-model">Part 1: The Core Concept - The Statistical Model</a></li>
+  <li><a href="#part-2-choosing-the-right-test" id="toc-part-2-choosing-the-right-test" class="nav-link" data-scroll-target="#part-2-choosing-the-right-test">Part 2: Choosing the Right Test</a></li>
+  <li><a href="#part-3-the-how---practical-implementation-with-plink" id="toc-part-3-the-how---practical-implementation-with-plink" class="nav-link" data-scroll-target="#part-3-the-how---practical-implementation-with-plink">Part 3: The “How” - Practical Implementation with PLINK</a></li>
+  <li><a href="#part-4-understanding-the-output---the-summary-statistics-file" id="toc-part-4-understanding-the-output---the-summary-statistics-file" class="nav-link" data-scroll-target="#part-4-understanding-the-output---the-summary-statistics-file">Part 4: Understanding the Output - The Summary Statistics File</a></li>
+  <li><a href="#part-5-defining-a-hit---the-genome-wide-significance-threshold" id="toc-part-5-defining-a-hit---the-genome-wide-significance-threshold" class="nav-link" data-scroll-target="#part-5-defining-a-hit---the-genome-wide-significance-threshold">Part 5: Defining a “Hit” - The Genome-Wide Significance Threshold</a></li>
+  <li><a href="#visualization" id="toc-visualization" class="nav-link" data-scroll-target="#visualization">Visualization</a></li>
+  <li><a href="#part-1-the-manhattan-plot曼哈顿图---visualizing-your-results" id="toc-part-1-the-manhattan-plot曼哈顿图---visualizing-your-results" class="nav-link" data-scroll-target="#part-1-the-manhattan-plot曼哈顿图---visualizing-your-results">Part 1: The Manhattan Plot(曼哈顿图) - Visualizing Your Results</a></li>
+  <li><a href="#part-2-the-q-q-plot---a-critical-diagnostic-check" id="toc-part-2-the-q-q-plot---a-critical-diagnostic-check" class="nav-link" data-scroll-target="#part-2-the-q-q-plot---a-critical-diagnostic-check">Part 2: The Q-Q Plot - A Critical Diagnostic Check</a></li>
+  </ul></li>
+  <li><a href="#variant-annotation-test" id="toc-variant-annotation-test" class="nav-link" data-scroll-target="#variant-annotation-test">Variant Annotation Test 🤯</a>
+  <ul class="collapse">
+  <li><a href="#part-1-the-why---most-gwas-hits-are-not-obvious" id="toc-part-1-the-why---most-gwas-hits-are-not-obvious" class="nav-link" data-scroll-target="#part-1-the-why---most-gwas-hits-are-not-obvious">Part 1: The “Why” - Most GWAS Hits Are Not Obvious</a></li>
+  <li><a href="#part-2-the-types-of-annotation---what-information-are-we-looking-for" id="toc-part-2-the-types-of-annotation---what-information-are-we-looking-for" class="nav-link" data-scroll-target="#part-2-the-types-of-annotation---what-information-are-we-looking-for">Part 2: The Types of Annotation - What Information Are We Looking For?</a></li>
+  <li><a href="#part-3-the-how---tools-of-the-trade" id="toc-part-3-the-how---tools-of-the-trade" class="nav-link" data-scroll-target="#part-3-the-how---tools-of-the-trade">Part 3: The “How” - Tools of the Trade</a></li>
+  <li><a href="#the-need-for-conversion-why-vcf" id="toc-the-need-for-conversion-why-vcf" class="nav-link" data-scroll-target="#the-need-for-conversion-why-vcf">The Need for Conversion: Why VCF?</a></li>
+  <li><a href="#practical-workflow-from-plink-bed-to-vcf" id="toc-practical-workflow-from-plink-bed-to-vcf" class="nav-link" data-scroll-target="#practical-workflow-from-plink-bed-to-vcf">Practical Workflow: From PLINK BED to VCF</a></li>
+  </ul></li>
+  <li><a href="#advanced-process" id="toc-advanced-process" class="nav-link" data-scroll-target="#advanced-process">❤️Advanced Process 🤠</a>
+  <ul class="collapse">
+  <li><a href="#part-1-fine-mapping---pinpointing-the-causal-variant精确定位因果变量" id="toc-part-1-fine-mapping---pinpointing-the-causal-variant精确定位因果变量" class="nav-link" data-scroll-target="#part-1-fine-mapping---pinpointing-the-causal-variant精确定位因果变量">Part 1: Fine-Mapping - Pinpointing the Causal Variant(精确定位因果变量)</a></li>
+  </ul></li>
+  <li><a href="#polygenic-risk-scoresprs多基因风险评分" id="toc-polygenic-risk-scoresprs多基因风险评分" class="nav-link" data-scroll-target="#polygenic-risk-scoresprs多基因风险评分">Polygenic Risk Scores(PRS)(多基因风险评分)🙄</a>
+  <ul class="collapse">
+  <li><a href="#part-2-polygenic-risk-scores-prs" id="toc-part-2-polygenic-risk-scores-prs" class="nav-link" data-scroll-target="#part-2-polygenic-risk-scores-prs">Part 2: Polygenic Risk Scores (PRS)</a></li>
+  </ul></li>
+  <li><a href="#mr" id="toc-mr" class="nav-link" data-scroll-target="#mr">MR🤷‍♀️</a>
+  <ul class="collapse">
+  <li><a href="#part-3-mendelian-randomization-mr" id="toc-part-3-mendelian-randomization-mr" class="nav-link" data-scroll-target="#part-3-mendelian-randomization-mr">Part 3: Mendelian Randomization (MR)</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+<div class="quarto-alternate-notebooks"><h2>Notebooks</h2><ul><li><a href="metabolim-preview.html"><i class="bi bi-journal-code"></i>代谢组学教程</a></li><li><a href="proteomic-preview.html"><i class="bi bi-journal-code"></i>蛋白质组学教程</a></li><li><a href="micro-preview.html"><i class="bi bi-journal-code"></i>微生物组学 教程</a></li><li><a href="GSNA-preview.html"><i class="bi bi-journal-code"></i>GSNA 教程</a></li></ul></div></nav>
+</div>
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+</div>
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+  
+
+
+<section id="gwas-教程" class="level1">
+<h1>GWAS 教程 ❤️😍</h1>
+<section id="genome-wide-association-studies-definition" class="level2">
+<h2 class="anchored" data-anchor-id="genome-wide-association-studies-definition">Genome Wide Association Studies Definition</h2>
+<p>Genome-Wide Association Studies, abbreviated as GWAS, represent a scientific methodology aimed at elucidating(阐明) potential associations between genetic loci, namely the genome, and specific traits or diseases. Through meticulous analysis of millions, even tens of millions, of genetic variations within an organism’s genome, GWAS endeavors to identify genetic loci significantly associated with particular phenotypes or diseases.</p>
+</section>
+<section id="the-main-process-of-gwas" class="level2">
+<h2 class="anchored" data-anchor-id="the-main-process-of-gwas">The main process of GWAS</h2>
+<section id="data-collection" class="level3">
+<h3 class="anchored" data-anchor-id="data-collection">Data collection</h3>
+<p>DNA samples are systematically collected from individuals, along with recording their phenotypic information, which includes demographic data such as possible disease conditions, age, and gender.</p>
+<p>For GWAS, typically large sample sizes are required to identify reproducible genome-wide significant association loci. Determining sample sizes can be facilitated(辅助) using software tools such as CATS or GPC. The phenotypes involved can be either binary traits or quantitative traits. Additionally, the study design can be population-based or family-based.</p>
+</section>
+<section id="genetyping" class="level3">
+<h3 class="anchored" data-anchor-id="genetyping">Genetyping</h3>
+<p>Genotyping of each individual’s genes is carried out using existing GWAS arrays or sequencing strategies.</p>
+<p>Microarray technology is commonly employed for genotyping <strong>common variants</strong>, or next-generation sequencing methods such as WES or WGS are utilized to cover <strong>rare variants</strong>. Given the high cost of WGS (whole genome sequencing), genotyping based on microarrays is currently the most commonly used method. However, WGS theoretically allows for the determination of nearly every genotype in the entire genome, and thus, with the ongoing development of low-cost WGS technologies, it is expected to become the mainstream method in the coming years.</p>
+<hr>
+</section>
+</section>
+<section id="the-journey-from-person-to-data-file" class="level2">
+<h2 class="anchored" data-anchor-id="the-journey-from-person-to-data-file">The journey from person to data file😎</h2>
+<section id="stage-1-the-biological-source-and-lab-technology" class="level3">
+<h3 class="anchored" data-anchor-id="stage-1-the-biological-source-and-lab-technology">stage 1: <strong>The Biological Source and Lab Technology</strong></h3>
+<ol type="1">
+<li><p><strong>The Source Material: DNA</strong></p>
+<ul>
+<li><p>The journey starts with collecting biological samples from thousands of individuals in a study cohort (e.g., 5,000 people with Type 2 Diabetes and 5,000 healthy controls).</p></li>
+<li><p>The most common sources are <strong>blood</strong> or <strong>saliva(唾沫)</strong>.</p></li>
+<li><p>In a lab, DNA is extracted from these samples. This high-purity DNA is the raw material for genotyping.</p></li>
+</ul></li>
+<li><p><strong>The Technology: Genotyping Arrays (or “SNP Chips”)</strong></p>
+<ul>
+<li><p>For a GWAS, we don’t typically sequence the entire genome for every person, as that would be too expensive and slow for large cohorts. Instead, we use a technology called a <strong>genotyping array(基因分型技术)</strong>.</p></li>
+<li><p>Think of an array as a small glass slide or “chip” with a grid containing millions of microscopic probes.</p></li>
+<li><p>Each probe is a short, synthetic piece of DNA designed to stick to a specific, known SNP location in the human genome.</p></li>
+<li><p>When an individual’s DNA is washed over this chip, the DNA fragments bind to their matching probes. A laser scanner then reads which version of the SNP (which allele) is present at each location based on a fluorescent signal.</p></li>
+<li><p>The output of this scanning process is a set of raw intensity files (e.g., .IDAT files from Illumina arrays). These files are then processed by specialized software (like Illumina’s GenomeStudio) to “call” the genotype for each person at each SNP.</p></li>
+</ul></li>
+</ol>
+<p>This “genotype calling” step is what translates the biological signal into the digital data that the bioinformatician receives.</p>
+</section>
+<section id="the-core-data-types-what-the-bioinformatician-actually-works-with" class="level3">
+<h3 class="anchored" data-anchor-id="the-core-data-types-what-the-bioinformatician-actually-works-with">The Core Data Types: What the Bioinformatician Actually Works With</h3>
+<p>As a bioinformatician, you will rarely work with the raw intensity files. Your starting point is the “called” genotype data, which is most commonly delivered in the&nbsp;<strong>PLINK file format</strong>. This is not one file, but a set of three files that work together, all sharing the same prefix (前缀)(e.g.,&nbsp;my_gwas_data).</p>
+<p>This three-file system efficiently separates the different kinds of information: the people, the genetic markers, and the actual genetic data.</p>
+<section id="the-.fam-file-sample-and-phenotype-information" class="level4">
+<h4 class="anchored" data-anchor-id="the-.fam-file-sample-and-phenotype-information">1. The .fam File: Sample and Phenotype Information</h4>
+<p>This is a plain-text, space-delimited(空格分隔) file that describes the <strong>individuals</strong> in your study. Each row represents one person. It has <strong>six required columns</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><strong>Column</strong></td>
+<td><strong>Name</strong></td>
+<td><strong>Description</strong></td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td><strong>Family ID (FID)</strong></td>
+<td>An ID for the family. In many studies, this is the same as the Individual ID.</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td><strong>Individual ID (IID)</strong></td>
+<td>A <strong>unique identifier</strong> for each person. This is the most important key.</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>Paternal ID</td>
+<td>The IID of the person’s father (or 0 if unknown).</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>Maternal ID</td>
+<td>The IID of the person’s mother (or 0 if unknown).</td>
+</tr>
+<tr class="even">
+<td>5</td>
+<td><strong>Sex</strong></td>
+<td>1 = Male, 2 = Female, 0 = Unknown.</td>
+</tr>
+<tr class="odd">
+<td>6</td>
+<td><strong>Phenotype</strong></td>
+<td>The trait you are studying. -9 = Missing, 0 = Missing, 1 = Control, 2 = Case. For quantitative traits, this column would hold the measured value (e.g., 175.3 for height in cm).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example .fam file:</strong></p>
+<p><strong>codeCode</strong></p>
+<pre><code>FAM001  HG001  0  0  1  2
+FAM002  HG002  0  0  2  2
+FAM003  HG003  0  0  1  1
+FAM004  HG004  0  0  2  1</code></pre>
+<p>This file tells us we have 4 people. HG001 and HG002 are cases (phenotype=2), while HG003 and HG004 are controls (phenotype=1).</p>
+</section>
+<section id="the-.bim-file-variant-snp-information" class="level4">
+<h4 class="anchored" data-anchor-id="the-.bim-file-variant-snp-information">2. The&nbsp;.bim&nbsp;File: Variant (SNP) Information</h4>
+<p>This is a plain-text file that contains the “map” information for your&nbsp;<strong>genetic markers</strong>. Each row represents one SNP.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><strong>Column</strong></td>
+<td><strong>Name</strong></td>
+<td><strong>Description</strong></td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td><strong>Chromosome Code</strong></td>
+<td>The chromosome the SNP is on (1-22, X, Y).</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td><strong>SNP Identifier</strong></td>
+<td>A unique name for the SNP, often an “rs” ID from the dbSNP database.</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>Genetic Distance (cM)</td>
+<td>Position in centiMorgans (厘摩）(often just 0, as it’s not used in GWAS).</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td><strong>Base-pair Position</strong></td>
+<td>The physical position of the SNP on the chromosome (e.g., position 752566).</td>
+</tr>
+<tr class="even">
+<td>5</td>
+<td><strong>Allele 1</strong></td>
+<td>The first allele code (e.g., A, C, G, T). Usually the minor allele.</td>
+</tr>
+<tr class="odd">
+<td>6</td>
+<td><strong>Allele 2</strong></td>
+<td>The second allele code (e.g., A, C, G, T). Usually the major allele.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example</strong></p>
+<p>inro</p>
+<pre><code>1  rs123456  0  752566   G   A
+1  rs789101  0  853664   C   T</code></pre>
+<p>This file tells us about two SNPs on chromosome 1 at specific positions and what their possible alleles are.</p>
+</section>
+<section id="the-.bed-file-the-binary-genotype-data" class="level4">
+<h4 class="anchored" data-anchor-id="the-.bed-file-the-binary-genotype-data">3. The&nbsp;.bed&nbsp;File: The Binary Genotype Data</h4>
+<ul>
+<li><p>This is the most important file, containing the actual <strong>genotype data</strong>, but it is <strong>not human-readable</strong>.</p></li>
+<li><p>It is a <strong>binary</strong> file, meaning it stores the data in a highly compressed format that computers can read very quickly. This is crucial because this file can be enormous (many gigabytes for a large study).</p></li>
+<li><p>It stores the genotype for every individual (from the .fam file) at every SNP (from the .bim file). The order of individuals and SNPs in this binary file exactly matches the order in the .fam and .bim files.</p></li>
+<li><p>For a given SNP with alleles G and A, a person can have one of three genotypes: G/G (homozygous(纯合子) for G), A/A (homozygous for A), or G/A (heterozygous(杂合子)). The .bed file stores this information efficiently for millions of SNPs and thousands of people.</p></li>
+</ul>
+<p>These three files together form the complete dataset that is the starting point for your Quality Control pipeline.</p>
+</section>
+</section>
+<section id="where-does-this-data-come-from-data-sources" class="level3">
+<h3 class="anchored" data-anchor-id="where-does-this-data-come-from-data-sources">Where Does This Data Come From? (Data Sources)</h3>
+<p>As a student and future bioinformatician, you will acquire this data in two primary ways:</p>
+<ol type="1">
+<li><p><strong>Direct Collaboration:</strong> You will work directly with a hospital, university, or research consortium that is conducting a study. They will perform the sample collection and genotyping and will provide you with the PLINK filesets to analyze.</p></li>
+<li><p><strong>Public and Controlled-Access Repositories:</strong> A huge amount of GWAS data is available for secondary analysis. This is critical for research, as it allows scientists to validate findings, combine datasets in meta-analyses, and explore new hypotheses without generating new data. Key repositories include:</p>
+<ul>
+<li><p><strong>dbGaP (The database of Genotypes and Phenotypes):</strong> The primary repository in the United States, run by the NIH. Researchers must apply for access to download datasets, explaining their research plan to a Data Access Committee.</p></li>
+<li><p><strong>UK Biobank:</strong> A landmark prospective cohort study with incredibly rich genetic and health data on 500,000 UK participants. It is a go-to resource for genetic research. Access is also controlled and requires an application.</p></li>
+<li><p><strong>EGA (European Genome-phenome Archive):</strong> The European equivalent of dbGaP.</p></li>
+</ul></li>
+</ol>
+<hr>
+</section>
+</section>
+<section id="qc" class="level2">
+<h2 class="anchored" data-anchor-id="qc">QC😘</h2>
+<p>You have just received your raw data files (raw_data.bed,&nbsp;raw_data.bim,&nbsp;raw_data.fam) and you are sitting at a Linux command-line terminal. Your primary tool will be&nbsp;<strong>PLINK</strong>.</p>
+<p>The key principle is that&nbsp;<strong>the order of operations matters</strong>. We perform some broad cleaning steps first, then refine our dataset for more sensitive checks. A typical workflow looks like this:</p>
+<ol type="1">
+<li><p><strong>Initial, lenient(宽松) filtering</strong> of both SNPs and individuals to remove the most obvious garbage data.</p></li>
+<li><p><strong>Filtering based on SNP properties</strong> (MAF, HWE).</p></li>
+<li><p><strong>Filtering based on individual properties</strong> that require a cleaner set of SNPs to be calculated accurately (Heterozygosity, Relatedness, Ancestry).</p></li>
+</ol>
+<section id="step-1-initial-missingness-filters-the-first-pass" class="level3">
+<h3 class="anchored" data-anchor-id="step-1-initial-missingness-filters-the-first-pass">Step 1: Initial Missingness Filters (The First Pass)</h3>
+<p>Our first goal is to remove the “low-hanging fruit”—individuals and SNPs that failed genotyping so badly they are clearly unusable.</p>
+<section id="a.-remove-individuals-with-low-call-rate" class="level4">
+<h4 class="anchored" data-anchor-id="a.-remove-individuals-with-low-call-rate">1a. Remove Individuals with Low Call Rate</h4>
+<p>We start by removing individuals for whom a large fraction of SNPs could not be genotyped. This is often due to poor quality DNA.</p>
+<ul>
+<li><p><strong>Command:</strong> <em><code>plink --bfile raw_data --mind 0.05 --make-bed --out qc_step1</code></em></p></li>
+<li><p><strong>What this does:</strong></p>
+<ul>
+<li><p><code>--bfile raw_data</code>: Specifies our input PLINK binary fileset.</p></li>
+<li><p><code>--mind 0.05</code>: The “–missingness per individual” filter. It removes any person with more than 5% missing genotypes.</p></li>
+<li><p><code>--make-bed</code>: Tells PLINK to create a new binary fileset as output.</p></li>
+<li><p><code>--out qc_step1</code>: Sets the prefix for our new output files (<code>qc_step1.bed, qc_step1.bim, qc_step1.fam</code>).</p></li>
+</ul></li>
+</ul>
+<p>PLINK will print a report to the screen telling you how many individuals were removed.</p>
+</section>
+<section id="b.-remove-snps-with-low-call-rate" class="level4">
+<h4 class="anchored" data-anchor-id="b.-remove-snps-with-low-call-rate">1b. Remove SNPs with Low Call Rate</h4>
+<p>Now, using our slightly cleaner set of individuals, we remove SNPs that failed to genotype across many people. These are unreliable markers.</p>
+<ul>
+<li><p><strong>Command:</strong> <em><code>plink --bfile qc_step1 --geno 0.02 --make-bed --out qc_step2</code></em></p></li>
+<li><p><strong>What this does:</strong></p>
+<ul>
+<li><p><code>--bfile qc_step1</code>: Our input is the output from the previous step.</p></li>
+<li><p><code>--geno 0.02</code>: The “–missingness per <strong>geno</strong>type” (i.e., per SNP) filter. It removes any SNP with more than 2% missing calls.</p></li>
+<li><p><code>--out qc_step2</code>: Creates our next set of files.</p></li>
+</ul></li>
+</ul>
+<p>Again, PLINK will report how many variants (SNPs) were removed.</p>
+</section>
+</section>
+<section id="step-2-core-snp-quality-filters" class="level3">
+<h3 class="anchored" data-anchor-id="step-2-core-snp-quality-filters">Step 2: Core SNP Quality Filters</h3>
+<p>Now that we’ve removed the worst of the data, we apply two standard SNP-level filters.</p>
+<section id="a.-minor-allele-frequency-maf-filter次要等位基因频率-maf-过滤器" class="level4">
+<h4 class="anchored" data-anchor-id="a.-minor-allele-frequency-maf-filter次要等位基因频率-maf-过滤器">2a. Minor Allele Frequency (MAF) Filter（次要等位基因频率 (MAF) 过滤器）</h4>
+<p>We remove very rare SNPs because we lack the statistical power to test them properly, and they are more likely to be genotyping errors.</p>
+<ul>
+<li><p><strong>Command:</strong> <em><code>plink --bfile qc_step2 --maf 0.01 --make-bed --out qc_step3</code></em></p></li>
+<li><p><strong>What this does:</strong></p>
+<ul>
+<li><p><code>--bfile qc_step2</code>: Takes the previous step’s output as input.</p></li>
+<li><p><code>--maf</code> 0.01: Removes any SNP where the frequency of the less common allele is below 1%.</p></li>
+<li><p><code>--out qc_step3</code>: Creates our next set of files.</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="b.-hardy-weinberg-equilibrium-hwe-filter哈代-温伯格平衡hwe过滤器" class="level4">
+<h4 class="anchored" data-anchor-id="b.-hardy-weinberg-equilibrium-hwe-filter哈代-温伯格平衡hwe过滤器">2b. Hardy-Weinberg Equilibrium (HWE) Filter（哈代-温伯格平衡（HWE）过滤器）</h4>
+<p>We remove SNPs where the observed pattern of genotypes in the <strong>control group</strong> deviates(差异) significantly from what we’d expect by chance. This is a classic sign of genotyping error.</p>
+<ul>
+<li><p><strong>Command:</strong> <em><code>plink --bfile qc_step3 --hwe 1e-6 --make-bed --out qc_step4</code></em></p></li>
+<li><p><strong>What this does:</strong></p>
+<ul>
+<li><p><code>--hwe 1e-6</code>: Calculates the HWE p-value for each SNP in controls only by default. It then removes any SNP with a p-value less than our very stringent threshold of 0.000001. We use a tiny p-value because we are testing millions of SNPs and want to avoid removing SNPs that deviate by chance.</p></li>
+<li><p><code>--out qc_step4</code>: Creates a fileset with only HWE-compliant SNPs.</p></li>
+</ul></li>
+</ul>
+</section>
+</section>
+<section id="step-3-core-individual-quality-filters" class="level3">
+<h3 class="anchored" data-anchor-id="step-3-core-individual-quality-filters">Step 3: Core Individual Quality Filters</h3>
+<p>At this point, we have a reasonably clean set of SNPs. We can now use this set to perform more sensitive checks on the individuals.</p>
+<section id="a.-check-for-heterozygosity-outliers杂合性异常值" class="level4">
+<h4 class="anchored" data-anchor-id="a.-check-for-heterozygosity-outliers杂合性异常值">3a. Check for Heterozygosity Outliers(杂合性异常值)</h4>
+<p>We look for individuals whose DNA might be contaminated (too heterozygous) or come from an inbred background (not heterozygous enough).</p>
+<ul>
+<li><p><strong>Command:</strong> <em><code>plink --bfile qc_step4 --het --out heterozygosity_check</code></em></p></li>
+<li><p><strong>What this does:</strong></p>
+<ul>
+<li><code>--het</code>: This doesn’t filter anything yet. Instead, it calculates the heterozygosity rate for each individual and writes the results to a file named heterozygosity_check.het.</li>
+</ul></li>
+<li><p><strong>Your Action (Manual Step):</strong></p>
+<ol type="1">
+<li><p>You will now use a script (in R or Python) to read the .het file.</p></li>
+<li><p>Calculate the mean and standard deviation (SD)(平均值和标准差) of the F column (which reflects heterozygosity).</p></li>
+<li><p><strong>Identify any individuals whose F value is more than 3 SDs above or below the mean.</strong></p></li>
+<li><p>Create a simple text file, let’s call it het_outliers.txt, with two columns (Family ID and Individual ID) for these outlier individuals.</p></li>
+</ol></li>
+</ul>
+</section>
+<section id="b.-remove-heterozygosity-outliers" class="level4">
+<h4 class="anchored" data-anchor-id="b.-remove-heterozygosity-outliers">3b. Remove Heterozygosity Outliers</h4>
+<p>Now you use the list you just created to remove the outliers.</p>
+<ul>
+<li><p><strong>Command:</strong> <em><code>plink --bfile qc_step4 --remove het_outliers.txt --make-bed --out qc_step5</code></em></p></li>
+<li><p><strong>What this does:</strong></p>
+<ul>
+<li><p><code>--remove het_outliers.txt</code>: Removes the individuals listed in your file.</p></li>
+<li><p><code>--out qc_step5</code>: Creates the next version of our clean data.</p></li>
+</ul></li>
+</ul>
+</section>
+</section>
+<section id="step-4-relatedness-and-population-structure相关性和种群结构" class="level3">
+<h3 class="anchored" data-anchor-id="step-4-relatedness-and-population-structure相关性和种群结构">Step 4: Relatedness and Population Structure(相关性和种群结构)</h3>
+<p>This is the final and most computationally intensive QC phase. We want to ensure our sample is a set of unrelated individuals from the same broad ancestry. These checks work best on a set of SNPs that are not physically close to each other (i.e., not in “Linkage Disequilibrium”).</p>
+<section id="a.-prune-snps-for-independence-ld-pruning-修剪-snp-以实现独立性ld-修剪" class="level4">
+<h4 class="anchored" data-anchor-id="a.-prune-snps-for-independence-ld-pruning-修剪-snp-以实现独立性ld-修剪">4a. Prune SNPs for Independence (LD Pruning) 修剪 SNP 以实现独立性（LD 修剪）</h4>
+<ul>
+<li><p><strong>Command:</strong> <em><code>plink --bfile qc_step5 --indep-pairwise 50 5 0.5 --out ld_pruned</code></em></p></li>
+<li><p><strong>What this does:</strong></p>
+<ul>
+<li><p><code>--indep-pairwise 50 5 0.5</code>: This is a command to create a list of largely independent SNPs. It scans the genome in windows of 50 SNPs, shifts the window by 5 SNPs at a time, and removes one of any pair of SNPs that has an r² &gt; 0.5 (a measure of correlation).</p></li>
+<li><p><code>--out ld_pruned</code>: This creates two files: <code>ld_pruned.prune.in</code> (the list of SNPs to KEEP) and <code>ld_pruned.prune.out.</code></p></li>
+</ul></li>
+</ul>
+</section>
+<section id="b.-check-for-cryptic-relatedness隐秘关联" class="level4">
+<h4 class="anchored" data-anchor-id="b.-check-for-cryptic-relatedness隐秘关联">4b. Check for Cryptic Relatedness（隐秘关联）</h4>
+<p>We now use this pruned set of SNPs to check for hidden relatives in our data.</p>
+<ul>
+<li><p><strong>Command:</strong> <em><code>plink --bfile qc_step5 --extract ld_pruned.prune.in --genome --out relatedness_check</code></em></p></li>
+<li><p><strong>What this does:</strong></p>
+<ul>
+<li><p><code>--extract ld_pruned.prune.in</code>: Tells PLINK to perform the next step using only our independent set of SNPs.</p></li>
+<li><p><code>--genome</code>: This is the main command. It calculates the “identity-by-descent” (IBD)(血统同一性) for all pairs of individuals.</p></li>
+<li><p><code>--out relatedness_check</code>: The results are saved in a file called relatedness_check.genome.</p></li>
+</ul></li>
+<li><p><strong>Your Action (Manual Step):</strong></p>
+<ol type="1">
+<li><p>Inspect the .genome file. Look at the <code>PI_HAT</code> column. A value &gt; 0.1875 indicates a 3rd degree relative or closer.</p></li>
+<li><p><strong>Identify all pairs that are too related</strong>. For each pair, decide which individual to remove (a common strategy is to remove the one with the lower call rate).</p></li>
+<li><p>Create a text file, <code>related_individuals.txt</code>, with the FID and IID of every person you need to remove.</p></li>
+</ol></li>
+</ul>
+</section>
+<section id="c.-remove-related-individuals" class="level4">
+<h4 class="anchored" data-anchor-id="c.-remove-related-individuals">4c. Remove Related Individuals</h4>
+<ul>
+<li><strong>Command:</strong> <code>plink --bfile qc_step5 --remove related_individuals.txt --make-bed --out qc_step6</code></li>
+</ul>
+<hr>
+</section>
+</section>
+</section>
+<section id="pca" class="level2">
+<h2 class="anchored" data-anchor-id="pca">PCA 😉</h2>
+<section id="part-1-the-why---understanding-the-problem-of-population-stratification人口分层" class="level3">
+<h3 class="anchored" data-anchor-id="part-1-the-why---understanding-the-problem-of-population-stratification人口分层">Part 1: The “Why” - Understanding the Problem of Population Stratification（人口分层）</h3>
+<p>Before running any code, you must understand why this step is so critical.</p>
+<p><strong>Population stratification</strong> is the presence of systematic differences in allele frequencies between different subpopulations in your study. If your “case” group (people with the disease) and “control” group (healthy people) have a different mixture of these subpopulations, you can get massive numbers of false-positive results.</p>
+<p><strong>The Classic Analogy(类比): The “Chopsticks Gene”(筷子基因)</strong></p>
+<p>Imagine a hypothetical study looking for genes associated with the ability to use chopsticks.</p>
+<ul>
+<li><p>You recruit “cases” (people who can use chopsticks) primarily from an <em>East Asian population.</em></p></li>
+<li><p>You recruit “controls” (people who cannot) primarily from a <em>European population.</em></p></li>
+<li><p>You run a GWAS.</p></li>
+</ul>
+<p>The result? You will find thousands of SNPs that are “significantly associated” with your trait. However, <strong><em>these are not “chopstick-skill genes.” They are simply genetic markers that have different frequencies between East Asian and European populations. Your analysis has been completely confounded by ancestry. The association is with ancestry, not the trait itself(关联在于血统，而非特征本身).</em></strong></p>
+<p><strong>The Goal of PCA:</strong> PCA is our mathematical tool to detect this hidden ancestral structure in our data so we can either remove outlier individuals or statistically correct for the variation.</p>
+</section>
+<section id="part-2-the-what---a-conceptual-understanding-of-pca" class="level3">
+<h3 class="anchored" data-anchor-id="part-2-the-what---a-conceptual-understanding-of-pca">Part 2: The “What” - A Conceptual Understanding of PCA</h3>
+<p>In a GWAS, we have data for hundreds of thousands or millions of SNPs. You can think of this as a dataset with a million dimensions—far too complex for a human to visualize.</p>
+<p><strong>PCA is a dimensionality-reduction technique.</strong> Its goal is to distill this vast complexity into a few, highly informative new dimensions called <strong>Principal Components (PCs)</strong>.</p>
+<ul>
+<li><p><strong>Principal Component 1 (PC1):</strong> This is a new, calculated axis that captures the <strong>single largest source of variation</strong>(最大单一变异源)in your entire genetic dataset. In human genetics, this almost always corresponds to the major axis of global ancestry (e.g., separating individuals of African vs.&nbsp;non-African descent(对比非洲裔和不是非洲裔,概念较大)).</p></li>
+<li><p><strong>Principal Component 2 (PC2):</strong> This is the second axis, which is mathematically uncorrelated with PC1, that captures the <strong>largest amount of the remaining variationndefined（剩余变异最大量)</strong>. This might, for example, separate European and East Asian individuals(区分亚洲人和中东人）.</p></li>
+<li><p><strong>PC3, PC4, etc.:</strong> Each subsequent PC captures progressively smaller and smaller amounts of the remaining variation(剩余变化量越来越小).</p></li>
+</ul>
+<p>By plotting individuals based on their values for PC1 and PC2, we can create a two-dimensional “genetic map” of our study participants, allowing us to visually identify their ancestral relationships.</p>
+</section>
+<section id="part-3-the-how---a-practical-step-by-step-workflow" class="level3">
+<h3 class="anchored" data-anchor-id="part-3-the-how---a-practical-step-by-step-workflow">Part 3: The “How” - A Practical Step-by-Step Workflow</h3>
+<p>Here is how you perform PCA on your QC’d GWAS data. The input for this process should be the dataset that has already passed the initial QC steps (missingness, MAF, HWE, etc.). Let’s call our input fileset <code>qc_step6.</code></p>
+<section id="step-a-prepare-the-data-by-pruning-for-linkage-disequilibrium-ld修剪连锁不平衡ld来准备数据" class="level4">
+<h4 class="anchored" data-anchor-id="step-a-prepare-the-data-by-pruning-for-linkage-disequilibrium-ld修剪连锁不平衡ld来准备数据">Step A: Prepare the Data by Pruning for Linkage Disequilibrium (LD)(修剪连锁不平衡（LD）来准备数据)</h4>
+<ul>
+<li><p><strong>The Goal:</strong> To get a set of SNPs that are roughly independent of one another.</p></li>
+<li><p><strong>The Reason:</strong> PCA can be biased if it uses all SNPs. A region of the genome with many highly correlated SNPs (a high LD block) is essentially telling the same ancestral story many times. This would give that single region too much influence on the PCA results. By “pruning” the data—removing SNPs that are in high LD with each other—we ensure that SNPs across the whole genome contribute more evenly to the analysis.</p></li>
+<li><p><strong>The PLINK Command:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">plink</span> <span class="at">--bfile</span> qc_step6 <span class="at">--indep-pairwise</span> 50 5 0.2 <span class="at">--out</span> ld_pruned</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<li><p><strong>Command Breakdown:</strong></p>
+<ul>
+<li><p><code>--bfile qc_step6</code>: Use our QC’d data as input.</p></li>
+<li><p>-<code>-indep-pairwise 50 5 0.2</code>: This is the pruning command.</p>
+<ul>
+<li><p>50: Scans the genome in windows of 50 SNPs.</p></li>
+<li><p>5: Shifts the window forward by 5 SNPs at a time.</p></li>
+<li><p>0.2: For any pair of SNPs in a window, if their correlation (r²) is greater than 0.2, one of them is removed from the list.</p></li>
+</ul></li>
+<li><p>-<code>-out ld_pruned:</code> This doesn’t create a new dataset. It creates two files: ld_pruned.prune.in (a list of SNPs to <strong>keep</strong>) and ld_pruned.prune.out (a list of SNPs that were removed).</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="step-b-run-the-pca-calculation" class="level4">
+<h4 class="anchored" data-anchor-id="step-b-run-the-pca-calculation">Step B: Run the PCA Calculation</h4>
+<ul>
+<li><p><strong>The Goal:</strong> To calculate the Principal Component values (or “scores”) for every individual in our study.</p></li>
+<li><p><strong>The Reason:</strong> We use the pruned list of independent SNPs to perform the core calculation, as this gives a more robust and unbiased estimate of the underlying ancestry structure.</p></li>
+<li><p><strong>The PLINK Command:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">plink</span> <span class="at">--bfile</span> qc_step6 <span class="at">--extract</span> ld_pruned.prune.in <span class="at">--pca</span> 10 <span class="at">--out</span> gwas_pca</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<li><p><strong>Command Breakdown:</strong></p>
+<ul>
+<li><p><code>--bfile qc_step6</code>: We use our full QC’d dataset. We want to calculate PCs for everyone.</p></li>
+<li><p><code>--extract ld_pruned.prune.in</code>: This is the critical part. We tell PLINK to perform the calculation <strong>using only the independent SNPs</strong> from the list we just created.</p></li>
+<li><p><code>--pca 10</code>: This is the main command to run PCA and calculate the top 10 principal components.</p></li>
+<li><p><code>--out gwas_pca</code>: Specifies the prefix for the output files.</p></li>
+</ul></li>
+<li><p><strong>The Key Output File:</strong> This command produces a file named <code>gwas_pca.eigenvec</code>. This is a plain text file where each row is an individual, and the columns contain their ID followed by their calculated values for PC1, PC2, PC3, etc.</p></li>
+</ul>
+</section>
+</section>
+<section id="part-4-the-whats-next---visualization-and-action" class="level3">
+<h3 class="anchored" data-anchor-id="part-4-the-whats-next---visualization-and-action">Part 4: The “What’s Next” - Visualization and Action</h3>
+<p>Now you have the numerical results. The next step is to visualize them to understand your cohort’s structure.</p>
+<section id="a.-visualization" class="level4">
+<h4 class="anchored" data-anchor-id="a.-visualization">4a. Visualization</h4>
+<p>You will use a plotting program like <strong>R (with the ggplot2 library)</strong> or <strong>Python (with matplotlib/seaborn)</strong> to create a scatter plot.</p>
+<ol type="1">
+<li><p><strong>Load the Data:</strong> Read the <code>gwas_pca.eigenvec</code> file into your R or Python environment.</p></li>
+<li><p><strong>Create the Plot:</strong></p>
+<ul>
+<li><p>Plot PC1 on the x-axis.</p></li>
+<li><p>Plot PC2 on the y-axis.</p></li>
+<li><p>Each point on the plot represents one individual from your study.</p></li>
+</ul></li>
+</ol>
+<p><strong>Pro-Tip (as seen in the tutorial): Merging with a Reference Panel</strong><br>
+To make your plot truly interpretable, it’s best practice to merge your dataset with a public reference panel containing individuals of known ancestry (like the 1000 Genomes Project) before running the PCA. When you plot the results, you can color the reference samples by their known population (e.g., European=blue, African=green, East Asian=red). Your own study samples will then cluster with the reference populations they are genetically closest to, immediately telling you the ancestral makeup of your cohort.</p>
+</section>
+<section id="b.-interpretation-and-action-plan" class="level4">
+<h4 class="anchored" data-anchor-id="b.-interpretation-and-action-plan">4b. Interpretation and Action Plan</h4>
+<p>When you look at your plot, you will see one of a few scenarios:</p>
+<ul>
+<li><p><strong>Scenario 1: One Tight Cluster.</strong> This is the ideal result. It means your study population is ancestrally homogeneous(同质的).</p></li>
+<li><p><strong>Scenario 2: A Main Cluster with Outliers.</strong> This is very common. You’ll see a large cloud of points (your primary study population) and a few individual points scattered far away.</p></li>
+<li><p><strong>Scenario 3: Multiple Distinct Clusters.</strong> This indicates your sample contains several different ancestry groups (e.g., a cluster of European ancestry and a separate cluster of East Asian ancestry).</p></li>
+</ul>
+<p>Based on the plot, you take two crucial actions:</p>
+<ol type="1">
+<li><p><strong>Remove Ancestral Outliers(移除祖先离群值):</strong> The individuals who fall far outside the main cluster(s) of your intended study population are considered ancestral outliers. Their inclusion could introduce confounding. You should create a list of their IDs and remove them from your dataset using plink –remove.</p></li>
+<li><p><strong>Generate Covariates for the Association Analysis(为关联分析添加协变量）:</strong> For the individuals that you keep, there is still subtle variation within the main cluster (it’s a cloud, not a single point). This remaining, continuous variation can still bias your results. Therefore, you <strong>must statistically control for it.</strong></p>
+<ul>
+<li><p><strong>Action:</strong> You will take the values from the first 5 or 10 principal components (the columns in your gwas_pca.eigenvec file) and include them as <strong>covariates</strong> in your final GWAS association model. When you run the association test, your model will look like this:</p>
+<p>Disease_Status ~ SNP + Age + Sex + **PC1 + PC2 + PC3 + PC4 + PC5**</p></li>
+</ul></li>
+</ol>
+<hr>
+</section>
+</section>
+</section>
+<section id="association-test-and-visualization" class="level2">
+<h2 class="anchored" data-anchor-id="association-test-and-visualization">Association test and Visualization🤣</h2>
+<section id="part-1-the-core-concept---the-statistical-model" class="level3">
+<h3 class="anchored" data-anchor-id="part-1-the-core-concept---the-statistical-model">Part 1: The Core Concept - The Statistical Model</h3>
+<p>You are not just looking for a simple difference. You are performing a <strong>regression analysis</strong> for each SNP. Regression is a statistical method that allows us to model the relationship between a set of variables.</p>
+<p>Our model for each SNP looks something like this:</p>
+<p><strong>Trait ~ SNP Genotype + Covariate(协变量) 1 + Covariate 2 + … + Covariate N</strong></p>
+<p>Let’s translate this:</p>
+<ul>
+<li><p><strong>Trait:</strong> This is your outcome variable (the “Y”). It could be disease status (case/control) or a continuous measurement (like blood pressure).</p></li>
+<li><p><strong>(tilde(波浪线))</strong>: Means “is modeled by” or “is predicted by”.</p></li>
+<li><p><strong>SNP Genotype:</strong> This is your main predictor of interest (the “X”). The genotype is typically coded numerically (e.g., 0, 1, or 2) based on the number of copies of a specific allele an individual has(基因型通常根据个体特定等位基因的拷贝数以数字形式编码). This is called an <strong>additive model</strong>, and it’s the standard for GWAS.</p></li>
+<li><p><strong>Covariates:</strong> These are the other variables you include in the model to control for confounding effects. You must include covariates to get reliable results.</p></li>
+</ul>
+<p><strong>The Crucial Role of Covariates:</strong><br>
+Remember the principal components (PC1, PC2, etc.) we calculated during the PCA step? This is where they become absolutely essential. By including them in the model, <strong>you are statistically controlling for any residual population structure. Your model can then distinguish between a true association with the trait and a false association driven by ancestry.</strong></p>
+<p>Common covariates include:</p>
+<ul>
+<li><p><strong>Top 5-10 Principal Components</strong> (to control for ancestry)(控制祖先)</p></li>
+<li><p><strong>Age</strong> (if the trait is age-related)</p></li>
+<li><p><strong>Sex</strong> (if the trait differs between sexes)</p></li>
+<li><p>Any other relevant variables from your study (e.g., smoking status, technical batch effects).</p></li>
+</ul>
+</section>
+<section id="part-2-choosing-the-right-test" class="level3">
+<h3 class="anchored" data-anchor-id="part-2-choosing-the-right-test">Part 2: Choosing the Right Test</h3>
+<p>The specific type of regression model you use depends entirely on your phenotype.</p>
+<ul>
+<li><p><strong>For Binary Traits (Case vs.&nbsp;Control):</strong> You will use <em><strong>Logistic Regression</strong>.</em></p>
+<ul>
+<li><p><strong>The Question:</strong> Does the SNP genotype predict the odds of an individual being a case versus a control?</p></li>
+<li><p><strong>The Output:</strong> The main result is an <strong>Odds Ratio (OR)(比值比)</strong>, which tells you how much the odds of having the disease increase (or decrease) for each copy of the test allele.</p></li>
+</ul></li>
+<li><p><strong>For Quantitative Traits (Height, BMI, Blood Pressure):</strong> You will use <em><strong>Linear Regression</strong>.</em></p>
+<ul>
+<li><p><strong>The Question:</strong> Does the SNP genotype predict the value of the trait?</p></li>
+<li><p><strong>The Output:</strong> The main result is a <strong>Beta coefficient (β)</strong>, which tells you how much the trait value changes for each copy of the test allele (e.g., “each copy of the G allele is associated with a 0.5 cm increase in height”).</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="part-3-the-how---practical-implementation-with-plink" class="level3">
+<h3 class="anchored" data-anchor-id="part-3-the-how---practical-implementation-with-plink">Part 3: The “How” - Practical Implementation with PLINK</h3>
+<p>Let’s assume you are performing a case-control study for a disease. You will use logistic regression.</p>
+<ul>
+<li><p><strong>Input Files:</strong></p>
+<ol type="1">
+<li><p><code>FINAL_QC_DATA.bed/.bim/.fam</code>: Your fully cleaned dataset from the previous QC steps.</p></li>
+<li><p><code>gwas_pca.eigenvec</code>: The file containing the principal components for each individual. You will need to reformat this slightly to match PLINK’s covariate file format (typically a header row with FID, IID, PC1, PC2, etc.).</p></li>
+</ol></li>
+<li><p><strong>The PLINK Command:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">plink</span> <span class="at">--bfile</span> FINAL_QC_DATA <span class="dt">\</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">--logistic</span> <span class="dt">\</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">--covar</span> gwas_pca.eigenvec <span class="at">--covar-col-name</span> PC1,PC2,PC3,PC4,PC5 <span class="dt">\</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">--allow-no-sex</span> <span class="dt">\</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">--out</span> my_gwas_results</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<li><p><strong>Command Breakdown:</strong></p>
+<ul>
+<li><p><code>--bfile FINAL_QC_DATA</code>: Specifies your clean input dataset.</p></li>
+<li><p><code>--logistic</code>: <strong>This is the key flag that tells PLINK to perform a logistic regression for a case-control trait.</strong> If you had a quantitative trait, you would use –linear instead.</p></li>
+<li><p><code>--covar gwas_pca.eigenvec</code>: Specifies your covariate file.</p></li>
+<li><p><code>--covar-col-name PC1,PC2,PC3,PC4,PC5</code>: Tells PLINK exactly which columns from the covariate file to use in the model. (Note: The exact flag might be –covar-name in newer PLINK versions. Always check the documentation).</p></li>
+<li><p>-<code>-allow-no-sex</code>: A practical flag that prevents the analysis from failing if some individuals have missing sex information.</p></li>
+<li><p><code>--out my_gwas_results:</code> Sets the prefix for the output files.</p></li>
+</ul></li>
+</ul>
+<p>PLINK will now iterate through every SNP in your .bim file, run a logistic regression for that SNP against your phenotype (adjusting for the covariates you provided), and record the results.</p>
+</section>
+<section id="part-4-understanding-the-output---the-summary-statistics-file" class="level3">
+<h3 class="anchored" data-anchor-id="part-4-understanding-the-output---the-summary-statistics-file">Part 4: Understanding the Output - The Summary Statistics File</h3>
+<p>The command will produce a file named <code>my_gwas_results.assoc.logistic</code> (or similar). This is your <strong>summary statistics file</strong>, and it is the primary result of your entire GWAS. It’s a large text file with one row for every SNP tested.</p>
+<p>Here are the most important columns you will find inside:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><strong>Column</strong></td>
+<td><strong>Name</strong></td>
+<td><strong>Description</strong></td>
+</tr>
+<tr class="even">
+<td>CHR</td>
+<td>Chromosome</td>
+<td>The chromosome the SNP is on.</td>
+</tr>
+<tr class="odd">
+<td>SNP</td>
+<td>SNP Identifier</td>
+<td>The name of the SNP (e.g., rs123456).</td>
+</tr>
+<tr class="even">
+<td>BP</td>
+<td>Base-pair Position</td>
+<td>The physical position of the SNP on the chromosome.</td>
+</tr>
+<tr class="odd">
+<td>A1</td>
+<td>Allele 1 (Effect Allele)</td>
+<td>The allele for which the effect is reported. It’s crucial to know which allele is being tested.</td>
+</tr>
+<tr class="even">
+<td>OR</td>
+<td><strong>Odds Ratio</strong></td>
+<td><strong>The effect size.</strong> OR &gt; 1 means A1 is the risk allele. OR &lt; 1 means A1 is the protective allele. OR = 1 means no effect.</td>
+</tr>
+<tr class="odd">
+<td>STAT</td>
+<td>Test Statistic</td>
+<td>The Z-score or Wald statistic from the regression model. A larger absolute value means a stronger association.</td>
+</tr>
+<tr class="even">
+<td>P</td>
+<td><strong>P-value</strong></td>
+<td><strong>The statistical significance.</strong> The probability of observing an association this strong or stronger by pure chance, assuming no real effect.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="part-5-defining-a-hit---the-genome-wide-significance-threshold" class="level3">
+<h3 class="anchored" data-anchor-id="part-5-defining-a-hit---the-genome-wide-significance-threshold">Part 5: Defining a “Hit” - The Genome-Wide Significance Threshold</h3>
+<p>You have millions of p-values. You cannot simply use the old standard of p &lt; 0.05. If you ran a million tests, you would expect 50,000 “significant” results just by random chance! This is the problem of <strong>multiple testing</strong>.</p>
+<p>To correct for this, the genomics community has established the <strong>genome-wide significance threshold(基因组显著性阀值</strong>.</p>
+<ul>
+<li><strong>The Threshold:</strong> <strong>p &lt; 5 x 10⁻⁸</strong> (or 0.00000005)</li>
+</ul>
+<p><strong>Why this specific number?</strong> It’s a sophisticated version of a Bonferroni correction. It accounts for the fact that we are performing roughly one million independent tests on the human genome (the number of “independent” blocks of SNPs in populations of European ancestry). A standard Bonferroni correction would be 0.05 / 1,000,000 = 5 x 10⁻⁸.</p>
+<p>Any SNP in your <code>my_gwas_results.assoc.logistic</code> file with a p-value <strong>below 5 x 10⁻⁸</strong> i<strong>s considered a “genome-wide significant hit” and is a strong candidate for being genuinely associated with your disease.</strong></p>
+<p>Your next steps in the post-GWAS analysis will be to visualize these results (with Manhattan and Q-Q plots) and investigate the biological function of these significant “hits.”</p>
+</section>
+<section id="visualization" class="level3">
+<h3 class="anchored" data-anchor-id="visualization">Visualization</h3>
+</section>
+<section id="part-1-the-manhattan-plot曼哈顿图---visualizing-your-results" class="level3">
+<h3 class="anchored" data-anchor-id="part-1-the-manhattan-plot曼哈顿图---visualizing-your-results">Part 1: The Manhattan Plot(曼哈顿图) - Visualizing Your Results</h3>
+<section id="the-concept" class="level4">
+<h4 class="anchored" data-anchor-id="the-concept">The Concept</h4>
+<p>A Manhattan plot is a scatter plot for all the SNPs in your GWAS.</p>
+<p>By the way ,the reason why it was named the Manhattan Plot.why you see this picture</p>
+<p><a href="images/209780549-54a24fdd-485b-4875-8f40-d6812eb644fe.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="images/209780549-54a24fdd-485b-4875-8f40-d6812eb644fe.png" class="img-fluid"></a></p>
+<p>&nbsp;It was a cloudy and misty day. Those birds formed a significance threshold line. And the skyscrapers above that line resembled the significant signals in your GWAS. I believe you could easily get how the GWAS Manhattan plot was named.</p>
+<p><a href="images/292832626-2aacd0b4-4a4a-485b-97bd-8548679f19e0.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="images/292832626-2aacd0b4-4a4a-485b-97bd-8548679f19e0.png" class="img-fluid"></a></p>
+<ul>
+<li><p><strong>The X-axis:</strong> The genomic coordinates. All the chromosomes are laid out end-to-end, from chromosome 1 to 22.</p></li>
+<li><p><strong>The Y-axis:</strong> The level of statistical significance for each SNP. To make the most significant results stand out, we don’t plot the p-value directly. Instead, we plot the <strong>-log₁₀(P-value)</strong>.</p></li>
+</ul>
+<p><strong>Why -log₁₀(P-value)?</strong><br>
+This transformation is purely for visualization. A very small, highly significant p-value (e.g., 1x10⁻¹⁰) becomes a very large number (-log₁₀(10⁻¹⁰) = 10), making it appear high up on the plot. A non-significant p-value (e.g., 0.5) becomes a small number (-log₁₀(0.5) = 0.3). This stretches the top of the plot where the interesting results are.</p>
+<p>The plot gets its name because the significant results look like “skyscrapers” rising from the city skyline of Manhattan.</p>
+</section>
+<section id="what-to-look-for" class="level4">
+<h4 class="anchored" data-anchor-id="what-to-look-for">What to Look For</h4>
+<ol type="1">
+<li><p><strong>The Significance Line:</strong> We draw a <strong>horizontal line across the plot at the genome-wide significance threshold.</strong> This line is at <strong>-log₁₀(5x10⁻⁸) ≈ 7.3</strong>.</p></li>
+<li><p><strong>The “Towers” or “Skyscrapers”:</strong> Any SNP that crosses this line is a <strong>genome-wide significant hit</strong>. You will typically see that it’s not just one SNP, but a whole cluster of nearby SNPs that are highly significant. This “tower” represents a single <strong>genetic locus</strong> associated with your trait. The SNP at the very peak of the tower is your “lead SNP” for that locus.</p></li>
+</ol>
+</section>
+<section id="how-to-create-it-using-r-and-qqman" class="level4">
+<h4 class="anchored" data-anchor-id="how-to-create-it-using-r-and-qqman">How to Create It (Using R and qqman)</h4>
+<p>First, you need to install and load the qqman package in R.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("qqman")</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Run this once if you don't have it </span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(qqman) </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr) <span class="co"># Useful for data manipulation</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Next, you load your GWAS results file. The qqman package requires specific column names: SNP, CHR, BP, and P. Your PLINK output might have different names, so we often rename them.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read the PLINK logistic regression output file</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"my_gwas_results.assoc.logistic"</span>, <span class="at">header =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># The PLINK output columns are CHR, SNP, BP, P. qqman expects these names.</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># If your column names were different, you would rename them here.</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># For example: results_renamed &lt;- rename(results, SNP = snp_name, P = p_value)</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the Manhattan plot</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="fu">manhattan</span>(results)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This simple command will generate a classic Manhattan plot. You can customize it with titles and highlight specific SNPs.</p>
+</section>
+</section>
+<section id="part-2-the-q-q-plot---a-critical-diagnostic-check" class="level3">
+<h3 class="anchored" data-anchor-id="part-2-the-q-q-plot---a-critical-diagnostic-check">Part 2: The Q-Q Plot - A Critical Diagnostic Check</h3>
+<p>Before you get too excited about the hits on your Manhattan plot, you must perform a sanity check on your overall results using a Q-Q plot. This plot tells you if your statistical test was well-behaved or if it was biased by a hidden confounder.</p>
+<p><a href="images/292832258-40ad5aff-5ac5-4cd0-b9c2-077c0ce20e46.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="images/292832258-40ad5aff-5ac5-4cd0-b9c2-077c0ce20e46.png" class="img-fluid"></a></p>
+<section id="the-concept-1" class="level4">
+<h4 class="anchored" data-anchor-id="the-concept-1">The Concept</h4>
+<p>A Q-Q (Quantile-Quantile) plot compares the distribution of your observed p-values against the distribution of p-values you would expect to see by pure chance (the “null hypothesis”).</p>
+<ul>
+<li><p><strong>The X-axis:</strong> The <em>expected -log₁₀(P-values) if no SNP was truly associated with the disease.</em></p></li>
+<li><p><strong>The Y-axis:</strong> Your <em>observed -log₁₀(P-values) from your actual data, sorted from smallest to largest.</em></p></li>
+</ul>
+</section>
+<section id="how-to-interpret-the-q-q-plot-this-is-crucial" class="level4">
+<h4 class="anchored" data-anchor-id="how-to-interpret-the-q-q-plot-this-is-crucial">How to Interpret the Q-Q Plot (This is Crucial)</h4>
+<ol type="1">
+<li><p><strong>The Diagonal Line(对角线) (y=x):</strong> A straight diagonal line represents the null hypothesis. The vast majority of SNPs in your study are not associated with the disease, so their p-values should be randomly distributed and fall along this line.</p></li>
+<li><p><strong>The Ideal “Good” Plot:</strong> A healthy Q-Q plot shows points hugging(紧贴) the diagonal line for almost its entire length. At the very end (the top right), the points will curve upwards, departing from the line. This is the perfect picture: it shows that most of your million p-values are behaving as expected (no association), while a small number of SNPs are far more significant than expected by chance. <strong>These are your true signals.</strong></p></li>
+<li><p><strong>The “Bad” Plot (Genomic Inflation):</strong> A major red flag is when the observed p-values <strong>systematically deviate</strong> from the diagonal line early on. The entire cloud of points will appear shifted upwards, off the diagonal. This is called <strong>p-value inflation</strong> and indicates that your p-values are, on average, smaller than they should be across the whole genome.</p>
+<ul>
+<li><p><strong>The Cause:</strong> The number one cause of this is uncorrected population stratification. <strong>It means your PCA covariates were not sufficient to control for all the ancestry differences between your cases and controls.</strong></p></li>
+<li><p><strong>The Fix:</strong> If you see this, you cannot trust your results. You must go back to your association analysis and include more principal components as covariates (e.g., use the top 10 PCs instead of the top 5).</p></li>
+</ul></li>
+</ol>
+</section>
+<section id="how-to-create-it-using-r-and-qqman-1" class="level4">
+<h4 class="anchored" data-anchor-id="how-to-create-it-using-r-and-qqman-1">How to Create It (Using R and qqman)</h4>
+<p>The qqman package makes this incredibly simple.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Assuming you have already loaded your 'results' table from the step above</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the Q-Q plot</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">qq</span>(results<span class="sc">$</span>P)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This one command will generate the Q-Q plot and also calculate and display a value called&nbsp;<strong>lambda (λ)</strong>. This “genomic inflation factor” quantifies the deviation. A lambda value very close to 1.0 (e.g., 1.01) is perfect. A value &gt; 1.05 is a strong sign of inflation that needs to be addressed.</p>
+<hr>
+</section>
+</section>
+</section>
+<section id="variant-annotation-test" class="level2">
+<h2 class="anchored" data-anchor-id="variant-annotation-test">Variant Annotation Test 🤯</h2>
+<p>This is the process where we move from a simple statistical fact (rs123456 on chromosome 1 is significant) to a <strong>potential biological story</strong> (rs123456 disrupts a binding site for a key transcription factor, which may alter the expression of the nearby gene ABC, a known player in immune response).</p>
+<p>The fundamental goal of annotation is to attach biological information to your list of significant SNPs to generate hypotheses about how they might influence the disease or trait.</p>
+<section id="part-1-the-why---most-gwas-hits-are-not-obvious" class="level3">
+<h3 class="anchored" data-anchor-id="part-1-the-why---most-gwas-hits-are-not-obvious">Part 1: The “Why” - Most GWAS Hits Are Not Obvious</h3>
+<p>A common misconception is that a GWAS will point directly to a “smoking gun(确凿证据)” mutation inside a gene that breaks a protein. The reality, revealed by thousands of GWAS, is that <strong>over 90% of significant GWAS hits fall in non-coding regions of the genome</strong> (introns or the vast spaces between genes).</p>
+<p>This means they <strong>don’t change the protein sequence directly</strong>. Instead, they are much more likely to affect <strong>gene regulation</strong>—the complex system that controls when, where, and how much of a gene is turned on or off. Annotation is our key to deciphering these regulatory effects.</p>
+</section>
+<section id="part-2-the-types-of-annotation---what-information-are-we-looking-for" class="level3">
+<h3 class="anchored" data-anchor-id="part-2-the-types-of-annotation---what-information-are-we-looking-for">Part 2: The Types of Annotation - What Information Are We Looking For?</h3>
+<p>We layer different kinds of information onto our SNPs. Here are the key questions we ask, from most to least direct in their functional implication.</p>
+<section id="location-and-consequence-on-the-gene" class="level4">
+<h4 class="anchored" data-anchor-id="location-and-consequence-on-the-gene">2.1. Location and Consequence on the Gene</h4>
+<p>This is the first and most basic level of annotation. We determine where the SNP is located relative to known genes.</p>
+<ul>
+<li><p><strong>Intergenic(基因间):</strong> The SNP is in the space between genes.</p></li>
+<li><p><strong>Intronic(内含子):</strong> The SNP is inside a gene but in an intron (a non-coding section that is spliced out before the protein is made).</p></li>
+<li><p><strong>Exonic(外显子):</strong> The SNP is in an exon—a part of the gene that directly codes for the protein. This is a very interesting result and leads to a second, more critical question: what is its consequence?</p>
+<ul>
+<li><p><strong>Synonymous(同义突变):</strong> The SNP changes the DNA code, but the resulting amino acid in the <strong>protein is the same</strong>. Usually considered a low-impact change.</p></li>
+<li><p><strong>Nonsynonymous (or Missense)(非同义或者错配):</strong> This is a key finding. The SNP changes the amino acid sequence. This could <strong>alter the protein’s structure, stability, or function</strong>.</p></li>
+<li><p><strong>Nonsense (Stop Gained)(无义):</strong> A very high-impact result. The SNP introduces a <strong>premature(过早) “stop” signal,</strong> causing the protein to be truncated and likely non-functional.</p></li>
+<li><p><strong>Frameshift(移码):</strong> An insertion or deletion that alters the entire downstream reading frame of the protein. Also a very high-impact, often disease-causing, mutation.</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="regulatory-function" class="level4">
+<h4 class="anchored" data-anchor-id="regulatory-function">2.2. Regulatory Function</h4>
+<p>Since most <strong>hits are non-coding</strong>, this is often the most important category for GWAS. We check if our SNP falls within a region of the genome known to have a regulatory role.</p>
+<ul>
+<li><p><strong>Promoters/Enhancers(启动子或者增强子):</strong> Does the SNP lie in a DNA region that acts as a switch to turn a nearby gene on or off?</p></li>
+<li><p><strong>Transcription Factor Binding Sites (TFBS)(转录因子结合位点):</strong> Does the SNP alter a specific DNA sequence where a transcription factor (a protein that regulates gene expression) is known to bind? If the SNP changes the “landing pad,” the factor may not be able to bind, altering the gene’s regulation.</p></li>
+<li><p><strong>eQTL (expression Quantitative Trait Locus)(表达数量性状位点):</strong> This is a powerful form of evidence. An eQTL is a SNP that is known to be associated with the expression level of a gene (often a nearby one). If your disease-associated SNP is also a known eQTL for gene ABC, it provides a direct, testable hypothesis: the SNP influences disease risk by changing the amount of ABC protein being made.</p></li>
+</ul>
+</section>
+<section id="conservation-population-and-clinical-data" class="level4">
+<h4 class="anchored" data-anchor-id="conservation-population-and-clinical-data">2.3. Conservation, Population, and Clinical Data</h4>
+<ul>
+<li><p><strong>Conservation Score:</strong> Is this specific spot in the genome highly conserved (unchanged) across many different species (e.g., from humans to mice to fish)? High conservation suggests the region is functionally important.</p></li>
+<li><p><strong>Allele Frequencies:</strong> How common is the risk allele in different global populations? (e.g., from the gnomAD database).</p></li>
+<li><p><strong>Clinical Significance:</strong> Has this exact variant already been reported in a clinical setting and cataloged in a database like <strong>ClinVar</strong> as being pathogenic or benign?</p></li>
+</ul>
+</section>
+</section>
+<section id="part-3-the-how---tools-of-the-trade" class="level3">
+<h3 class="anchored" data-anchor-id="part-3-the-how---tools-of-the-trade">Part 3: The “How” - Tools of the Trade</h3>
+<p>You do not do this by hand. You use powerful, automated bioinformatics tools that have access to massive databases (like Ensembl, UCSC, ENCODE, and dbSNP).</p>
+<p>The most widely used tool for this is the <strong>Ensembl Variant Effect Predictor (VEP)</strong>. Another very popular tool is <strong>ANNOVAR</strong>.</p>
+</section>
+<section id="the-need-for-conversion-why-vcf" class="level3">
+<h3 class="anchored" data-anchor-id="the-need-for-conversion-why-vcf">The Need for Conversion: Why VCF?</h3>
+<p>First, why do we need to convert? Why can’t we just feed the annotation tool our PLINK files or our summary statistics file?</p>
+<ul>
+<li><p><strong>VCF is the Universal Standard:</strong> The Variant Call Format (VCF) is the <strong>gold-standard</strong> format for storing and sharing genetic variant information. Almost every modern genomics tool (including the Ensembl VEP) is designed to read VCF files as its primary input.</p></li>
+<li><p><strong>VCF Contains Essential Allele Information:</strong> A VCF file explicitly states which allele is the <strong>Reference Allele</strong> (the one found in the reference human genome) and which is the <strong>Alternative Allele</strong>. This REF/ALT information is absolutely critical for annotation tools to determine the functional consequence of a variant. PLINK’s format is more focused on the genotypes (A1/A2), which is perfect for association testing but less explicit for annotation.</p></li>
+<li><p><strong>Efficiency:</strong> You do not want to annotate all 8 million SNPs that went into your GWAS. That would be computationally massive and unnecessary. You only want to annotate the handful of SNPs that are statistically significant.</p></li>
+</ul>
+<p>Therefore, the workflow involves two steps:</p>
+<ol type="1">
+<li><p>Isolate your significant SNPs.</p></li>
+<li><p>Convert just those SNPs from your final QC’d PLINK fileset into a VCF file.</p></li>
+</ol>
+</section>
+<section id="practical-workflow-from-plink-bed-to-vcf" class="level3">
+<h3 class="anchored" data-anchor-id="practical-workflow-from-plink-bed-to-vcf">Practical Workflow: From PLINK BED to VCF</h3>
+<p>Let’s assume you have your final, clean PLINK fileset named&nbsp;FINAL_QC_DATA&nbsp;and your summary statistics file named&nbsp;<code>my_gwas_results.assoc.logistic.</code></p>
+<section id="step-1-create-a-list-of-significant-snps" class="level4">
+<h4 class="anchored" data-anchor-id="step-1-create-a-list-of-significant-snps">Step 1: Create a List of Significant SNPs</h4>
+<p>Your first task is to create a simple text file that contains only the IDs (rsIDs) of the SNPs that passed the genome-wide significance threshold.</p>
+<p>You can do this using a command-line tool like&nbsp;awk&nbsp;or a simple script in R or Python. Here is the&nbsp;awk&nbsp;method, which is very fast:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This command reads the results file, skips the header (NR&gt;1),</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># checks if the p-value in the last column ($9 for PLINK1.9 logistic) is less than 5e-8,</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># and if it is, it prints the SNP ID from the second column ($2).</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># The output is saved to a new file.</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">'NR&gt;1 &amp;&amp; $9 &lt; 5e-8 {print $2}'</span> my_gwas_results.assoc.logistic <span class="op">&gt;</span> significant_snps.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><p><strong>my_gwas_results.assoc.logistic</strong>: Your input summary statistics file.</p></li>
+<li><p><strong>significant_snps.txt</strong>: Your output file. This file will be a simple, one-column list of rsIDs, like this:</p>
+<p>codeCode</p>
+<pre><code>rs123456
+rs789012
+rs333444
+...</code></pre></li>
+</ul>
+</section>
+<section id="step-2-use-plink-to-extract-and-convert-the-snps" class="level4">
+<h4 class="anchored" data-anchor-id="step-2-use-plink-to-extract-and-convert-the-snps">Step 2: Use PLINK to Extract and Convert the SNPs</h4>
+<p>Now that you have your “shopping list” of SNPs, you can use PLINK to go back to your high-quality genotype data, pull out just those SNPs, and write them in VCF format.</p>
+<ul>
+<li><p><strong>The Tool:</strong> PLINK (version 1.9 or, even better, version 2.0).</p></li>
+<li><p><strong>The Command:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">plink</span> <span class="at">--bfile</span> FINAL_QC_DATA <span class="dt">\</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">--extract</span> significant_snps.txt <span class="dt">\</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">--recode</span> vcf <span class="dt">\</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">--out</span> my_gwas_hits</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<li><p><strong>Command Breakdown:</strong></p>
+<ul>
+<li><p><code>--bfile FINAL_QC_DATA</code>: Specifies your final, clean PLINK binary fileset as the source of the genetic data.</p></li>
+<li><p><code>--extract significant_snps.txt</code>: This is the key filter. It tells PLINK to only operate on the SNPs listed in this file.</p></li>
+<li><p><code>--recode vcf</code>: This is the main action command. It tells PLINK to write the output in VCF format.</p></li>
+<li><p><code>--out my_gwas_hits</code>: Specifies the prefix for the output file.</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="step-3-the-output---your-vcf-file" class="level4">
+<h4 class="anchored" data-anchor-id="step-3-the-output---your-vcf-file">Step 3: The Output - Your VCF File</h4>
+<p>This command will produce the file you need for annotation: <em><strong><code>my_gwas_hits.vcf</code></strong><code>.</code></em></p>
+<p>If you open this file in a text editor, you will see it has two parts:</p>
+<ol type="1">
+<li><p><strong>The Header:</strong> Many lines starting with ## that contain metadata about the file, the reference genome, and definitions for the columns.</p></li>
+<li><p><strong>The Data:</strong> A single header line starting with #CHROM followed by the data for each of your significant SNPs, one per line.</p></li>
+</ol>
+<p>The crucial columns that VEP will use are:</p>
+<ul>
+<li><p><em>#CHROM</em>: Chromosome (e.g., 1)</p></li>
+<li><p><em>POS</em>: Position (e.g., 752566)</p></li>
+<li><p><em>ID</em>: Your SNP Identifier (e.g., rs123456)</p></li>
+<li><p><em>REF</em>: The Reference Allele (e.g., A)</p></li>
+<li><p><em>ALT</em>: The Alternative Allele (e.g., G)</p></li>
+</ul>
+<p>This my_gwas_hits.vcf file is now perfectly formatted to be used as the input for the Variant Effect Predictor (VEP) or any other standard annotation tool.</p>
+<p><strong>An Important Caveat (A Real-World “Gotcha”):</strong><br>
+PLINK 1.9 sometimes has trouble knowing which allele is REF and which is ALT because the .bim file format doesn’t inherently store that information relative to a reference genome. When it creates the VCF, it might make a guess. Modern tools like <strong>PLINK 2.0</strong> and its .pgen format handle this much more robustly. For precise work, it’s always good practice to double-check that the REF allele in your VCF file matches the actual reference genome (like GRCh38), but for a standard workflow, the PLINK conversion is the accepted and correct first step.</p>
+<p><strong>Workflow using VEP:</strong></p>
+<p><strong>Step 1: Prepare Your Input File</strong></p>
+<p>First, you need to isolate your top hits. You will filter your summary statistics file to get a list of independent, genome-wide significant SNPs. For each SNP, you need the following information: Chromosome, Position, ID (rsID), Reference Allele, and Alternative Allele. This is often formatted into a standard file type called a <strong>VCF (Variant Call Format)</strong> file.</p>
+<p><strong>Step 2: Run the Annotation Tool</strong></p>
+<p>You can use the VEP web interface for a small number of SNPs, but for a real project, you use the command-line version.</p>
+<p>A typical VEP command might look like this:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">vep</span> <span class="at">--input_file</span> my_gwas_hits.vcf <span class="dt">\</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">--output_file</span> annotated_hits.tsv <span class="dt">\</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">--cache</span> <span class="dt">\</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">--force_overwrite</span> <span class="dt">\</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">--tab</span> <span class="dt">\</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">--sift</span> b <span class="dt">\</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">--polyphen</span> b <span class="dt">\</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">--symbol</span> <span class="dt">\</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">--numbers</span> <span class="dt">\</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">--regulatory</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><p>This command takes your VCF file (<code>my_gwas_hits.vcf</code>) as input.</p></li>
+<li><p>It uses a local cache of data (<code>--cache</code>) for speed.</p></li>
+<li><p>It outputs a tab-separated file (<code>--tab</code>).</p></li>
+<li><p>Crucially, it adds information from various sources:</p>
+<ul>
+<li><p><code>--sift b</code> and <code>--polyphen b</code>: These are two tools that predict how damaging a missense mutation is likely to be to the protein.</p></li>
+<li><p><code>--symbol:</code> Adds the official gene symbol.</p></li>
+<li><p>-<code>-regulatory</code>: This is a key flag! It overlays information about known regulatory elements from the Ensembl Regulatory Build.</p></li>
+</ul></li>
+</ul>
+<p><strong>Step 3: Interpret the Output</strong></p>
+<p>The output (<code>annotated_hits.tsv</code>) will be a rich table with many columns. Your job is to be a detective and sift through this information to find the most compelling biological story for each of your top hits.</p>
+<p>You would create a summary table for your paper or report, highlighting the key findings for each significant locus:</p>
+<ul>
+<li><p><strong>Lead SNP:</strong> rs123456</p></li>
+<li><p><strong>Gene:</strong> IRF5 (or “intergenic, nearest gene is IRF5”)</p></li>
+<li><p><strong>Consequence:</strong> Intronic</p></li>
+<li><p><strong>Annotation:</strong> “Overlaps with an enhancer element active in T-cells. Is a known eQTL for IRF5.”</p></li>
+<li><p><strong>Hypothesis:</strong> This variant may alter enhancer activity, leading to misregulation of IRF5 expression in T-cells, contributing to disease risk.</p></li>
+</ul>
+<hr>
+</section>
+</section>
+</section>
+<section id="advanced-process" class="level2">
+<h2 class="anchored" data-anchor-id="advanced-process">❤️Advanced Process 🤠</h2>
+<section id="part-1-fine-mapping---pinpointing-the-causal-variant精确定位因果变量" class="level3">
+<h3 class="anchored" data-anchor-id="part-1-fine-mapping---pinpointing-the-causal-variant精确定位因果变量">Part 1: Fine-Mapping - Pinpointing the Causal Variant(精确定位因果变量)</h3>
+<section id="section-1.1-the-core-problem-revisited---why-we-need-fine-mapping" class="level4">
+<h4 class="anchored" data-anchor-id="section-1.1-the-core-problem-revisited---why-we-need-fine-mapping">Section 1.1: The Core Problem Revisited - Why We Need Fine-Mapping</h4>
+<p>When your GWAS identifies a significant locus, your Manhattan plot shows a “tower” of SNPs. This happens because of <strong>Linkage Disequilibrium (LD)(连锁不平衡)</strong>.</p>
+<p>Imagine a segment of a chromosome is like a “block” of text that is almost always inherited as a single unit without being broken up by recombination.</p>
+<ul>
+<li><p>Let’s say a single SNP within this block—we’ll call it the <strong>Causal Variant (CV)</strong>—is the one that actually has a biological effect on the disease. For instance, it might disrupt a transcription factor binding site.</p></li>
+<li><p>Now, imagine there are 100 other “passenger” SNPs in this same inherited block. These SNPs have no biological function themselves, but because they are always “hitchhiking” with the CV, they will show almost the same statistical association with the disease.</p></li>
+</ul>
+<p>The GWAS result (the p-value) cannot tell these SNPs apart. It’s like seeing a car speeding down the highway; you know the car is moving fast, but you don’t know who is actually pressing the accelerator. The lead SNP from your GWAS (the one with the lowest p-value) is simply the most visible passenger in the car, but it might not be the driver.</p>
+<p><strong>The goal of fine-mapping is to computationally identify the most likely driver.</strong></p>
+</section>
+<section id="section-1.2-the-inputs---what-you-need-to-get-started" class="level4">
+<h4 class="anchored" data-anchor-id="section-1.2-the-inputs---what-you-need-to-get-started">Section 1.2: The Inputs - What You Need to Get Started</h4>
+<p>To perform statistical fine-mapping, you need two critical pieces of information for the specific genomic region you want to analyze (e.g., Chromosome 8, positions 12,000,000 to 12,500,000).</p>
+<ol type="1">
+<li><p><strong>Your GWAS Summary Statistics for the Locus:</strong></p>
+<ul>
+<li><p>This is a subset of your main GWAS results file. For every SNP in the region, you need:</p>
+<ul>
+<li><p>SNP ID (rsID)</p></li>
+<li><p>Effect allele</p></li>
+<li><p><strong>Effect size (Beta or Odds Ratio)</strong></p></li>
+<li><p><strong>Standard Error (SE) of the effect size</strong> (This is crucial as it represents the uncertainty of the estimate)</p></li>
+</ul></li>
+<li><p>The Z-score (Beta / SE) is often used as the primary input statistic.</p></li>
+</ul></li>
+<li><p><strong>A High-Quality LD Matrix:</strong></p>
+<ul>
+<li><p>This is a large table (a square matrix) that describes the correlation (r²) between every pair of SNPs in your chosen locus.</p></li>
+<li><p><strong>Crucially, this LD information CANNOT be calculated from your own study cohort.</strong> This is because the correlations in your cohort are distorted by the case-control status (a phenomenon called “non-random sampling”).</p></li>
+<li><p>You <strong>must</strong> use an external <strong>reference panel</strong> of individuals whose ancestry closely matches your study population. Common choices include:</p>
+<ul>
+<li><p><strong>The 1000 Genomes Project:</strong> A good, publicly available resource with diverse populations.</p></li>
+<li><p><strong>UK Biobank:</strong> An excellent, high-quality reference for European ancestry populations.</p></li>
+</ul></li>
+<li><p>Tools like ldstore or PLINK can be used to calculate this matrix from the reference panel’s raw genotype data.</p></li>
+</ul></li>
+</ol>
+</section>
+<section id="section-1.3-the-method---how-the-algorithms-think" class="level4">
+<h4 class="anchored" data-anchor-id="section-1.3-the-method---how-the-algorithms-think">Section 1.3: The Method - How the Algorithms “Think”</h4>
+<p>The most popular and powerful fine-mapping methods today are based on a <strong>Bayesian statistical framework</strong>. Let’s conceptually walk through how a tool like <strong>FINEMAP</strong> or <strong>SuSiE</strong> works.</p>
+<p><strong>The Underlying Assumption:</strong> For most GWAS loci, we assume there is likely only <strong>one</strong> (or maybe a small number) of true causal variants within the region.</p>
+<p><strong>The Process:</strong></p>
+<ol type="1">
+<li><p><strong>Hypothesis Generation:</strong> The algorithm systematically generates thousands of possible hypotheses. For example:</p>
+<ul>
+<li><p>Hypothesis 1: rs123 is the causal variant, and all other signals are just due to LD with it.</p></li>
+<li><p>Hypothesis 2: rs456 is the causal variant, and all other signals are just due to LD with it.</p></li>
+<li><p>…and so on for every SNP in the region.</p></li>
+<li><p>More advanced models (like SuSiE) can also test hypotheses with multiple causal variants (e.g., “rs123 and rs789 are both causal”).</p></li>
+</ul></li>
+<li><p><strong>Likelihood Calculation:</strong> For each hypothesis, the algorithm calculates a likelihood. It asks: “Given the LD matrix, if Hypothesis 1 were true, what pattern of Z-scores would we expect to see across all the SNPs? And how closely does that expected pattern match the actual Z-scores from our GWAS summary statistics?” A hypothesis that provides a better “fit” to the observed data is given a higher likelihood.</p></li>
+<li><p><strong>Posterior Probability Calculation(后验概率):</strong> Using Bayesian principles, the algorithm converts these likelihoods into <strong>posterior probabilities</strong>. The <strong>Posterior Inclusion Probability (PIP)</strong> for a given SNP is the sum of the probabilities of all the hypotheses in which that SNP was considered causal. The PIP represents the model’s confidence—on a scale from 0 to 1—that a specific SNP is the causal variant.</p></li>
+</ol>
+</section>
+<section id="section-1.4-the-output---the-credible-set" class="level4">
+<h4 class="anchored" data-anchor-id="section-1.4-the-output---the-credible-set">Section 1.4: The Output - The “Credible Set”</h4>
+<p>The final, actionable output of the fine-mapping process is the <strong>credible set</strong>.</p>
+<ul>
+<li><p><strong>How it’s created:</strong> The software lists all the SNPs in the region, ranked by their PIP. It then starts from the top and sums the PIPs until the total reaches a certain threshold, typically 95%.</p></li>
+<li><p><strong>What it means:</strong> The 95% credible set is the smallest group of SNPs that together have a 95% probability of containing the true causal variant.</p></li>
+<li><p><strong>The Impact:</strong> This is a massive leap forward from the original GWAS result. You might start with a locus containing 300 SNPs that are all statistically significant. A successful fine-mapping analysis might produce a 95% credible set containing only <strong>four</strong> SNPs.</p></li>
+</ul>
+<p><strong>Example Outcome:</strong></p>
+<ul>
+<li><p><strong>Before Fine-Mapping:</strong> “The locus at 8q24 is associated with the disease (lead SNP rs6983267, P = 1x10⁻¹⁵).”</p></li>
+<li><p><strong>After Fine-Mapping:</strong> “The 95% credible set for the 8q24 locus contains four variants: rs6983267 (PIP = 0.52), rs7000448 (PIP = 0.21), rs10808556 (PIP = 0.15), and rs10505477 (PIP = 0.08).”</p></li>
+</ul>
+<p>This tells experimental biologists that instead of studying hundreds of variants, they should focus their efforts on these four specific candidates, dramatically increasing the efficiency of their research. The next step would be to annotate just these four SNPs to see if one has a particularly compelling biological function.</p>
+</section>
+</section>
+</section>
+<section id="polygenic-risk-scoresprs多基因风险评分" class="level2">
+<h2 class="anchored" data-anchor-id="polygenic-risk-scoresprs多基因风险评分">Polygenic Risk Scores(PRS)(多基因风险评分)🙄</h2>
+<section id="part-2-polygenic-risk-scores-prs" class="level3">
+<h3 class="anchored" data-anchor-id="part-2-polygenic-risk-scores-prs">Part 2: Polygenic Risk Scores (PRS)</h3>
+<section id="section-2.1-the-core-concept---the-polygenic-architecture-of-disease" class="level4">
+<h4 class="anchored" data-anchor-id="section-2.1-the-core-concept---the-polygenic-architecture-of-disease">Section 2.1: The Core Concept - The Polygenic Architecture of Disease</h4>
+<p>For decades, genetic research focused on finding <strong><em>single genes</em></strong> with large effects (e.g., the BRCA1 gene for breast cancer or the CFTR gene for cystic fibrosis). These are called <strong>monogenic(单基因)</strong> diseases.</p>
+<p>However, GWAS has definitively shown us that most common, complex diseases and traits (like heart disease, type 2 diabetes, schizophrenia(精神分裂症), height, and blood pressure) are <strong>polygenic</strong>. This means:</p>
+<ul>
+<li><p>They are influenced by <strong>thousands to millions</strong> of genetic variants across the entire genome.</p></li>
+<li><p>The effect of each individual variant is <strong>minuscule(非常小)</strong>. An odds ratio of 1.05 (a 5% increase in odds) is typical for a single SNP.</p></li>
+<li><p>No single variant is necessary or sufficient to cause the disease. Instead, it’s the <strong>cumulative burden(累积负担)</strong> of many small-effect risk alleles that determines an individual’s genetic predisposition(易感性).</p></li>
+</ul>
+<p>The goal of a Polygenic Risk Score is to capture and quantify this cumulative genetic burden. It aggregates all these tiny effects into a single, easy-to-understand number that represents an individual’s overall genetic liability.</p>
+</section>
+<section id="section-2.2-the-how-to---calculating-a-prs" class="level4">
+<h4 class="anchored" data-anchor-id="section-2.2-the-how-to---calculating-a-prs">Section 2.2: The “How To” - Calculating a PRS</h4>
+<p>Imagine you want to calculate a PRS for a new individual, let’s call her Jane. You need two key ingredients:</p>
+<ol type="1">
+<li><p><strong>A “Base” Dataset (The Blueprint):</strong> This is a large GWAS summary statistics file from a study of the disease you’re interested in. This file provides the “weights” for the calculation. For every SNP, it gives you:</p>
+<ul>
+<li><p>The SNP ID (e.g., rs123)</p></li>
+<li><p>The risk allele (e.g., ‘G’)</p></li>
+<li><p>The <strong>effect size (β)</strong> of that risk allele (the weight).</p></li>
+</ul></li>
+<li><p><strong>A “Target” Dataset (The Individual):</strong> This is Jane’s own genotype data. For every SNP in the base dataset, we need to know how many copies of the risk allele Jane has (0, 1, or 2).</p></li>
+</ol>
+<p><strong>The Calculation:</strong> The PRS is a simple weighted sum.</p>
+<p>PRS_Jane = (β₁ × Jane’s_Allele_Count₁) + (β₂ × Jane’s_Allele_Count₂) + … + (βₙ × Jane’s_Allele_Countₙ)</p>
+<p>Let’s do a tiny example with just three SNPs:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><strong>SNP</strong></td>
+<td><strong>Risk Allele</strong></td>
+<td><strong>Effect Size (β)</strong></td>
+<td><strong>Jane’s Genotype</strong></td>
+<td><strong>Jane’s Risk Allele Count</strong></td>
+<td><strong>Contribution to PRS</strong></td>
+</tr>
+<tr class="even">
+<td>rs111</td>
+<td>A</td>
+<td>0.05</td>
+<td>G/G</td>
+<td>0</td>
+<td>0.05 * 0 = 0.0</td>
+</tr>
+<tr class="odd">
+<td>rs222</td>
+<td>T</td>
+<td>0.02</td>
+<td>T/C</td>
+<td>1</td>
+<td>0.02 * 1 = 0.02</td>
+</tr>
+<tr class="even">
+<td>rs333</td>
+<td>G</td>
+<td>0.08</td>
+<td>G/G</td>
+<td>2</td>
+<td>0.08 * 2 = 0.16</td>
+</tr>
+<tr class="odd">
+<td><strong>Total PRS</strong></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><strong>0 + 0.02 + 0.16 = 0.18</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Now, imagine doing this for 2 million SNPs. The final number is Jane’s raw PRS.</p>
+</section>
+<section id="section-2.3-a-crucial-challenge---choosing-the-right-snps-and-weights" class="level4">
+<h4 class="anchored" data-anchor-id="section-2.3-a-crucial-challenge---choosing-the-right-snps-and-weights">Section 2.3: A Crucial Challenge - Choosing the Right SNPs and Weights</h4>
+<p>The simple sum above is a bit too naive. If you just add up all the SNPs from a GWAS, you’ll get a poor result due to LD (counting the same signal multiple times) and noisy, non-zero effect sizes for non-associated SNPs. We need to refine the blueprint. This is where different PRS methods diverge.</p>
+<p><strong>Method 1: Clumping and Thresholding (C+T)</strong> - The Classic Approach<br>
+This is a two-step process to select a smaller, more robust set of SNPs to include in the score.</p>
+<ol type="1">
+<li><p><strong>Clumping(聚类):</strong> A greedy algorithm that iterates through the GWAS results, starting with the most significant SNP. It identifies all other nearby SNPs that are in high LD (e.g., r² &gt; 0.1) with this lead SNP and removes them. It then moves to the next most significant SNP and repeats the process. The result is a set of largely independent SNPs.</p></li>
+<li><p><strong>Thresholding:</strong> After clumping, you apply a p-value threshold. You might create several PRS versions by including only SNPs with p-values below a certain cutoff (e.g., a PRS using SNPs with p &lt; 5e-8, another with p &lt; 1e-4, another with p &lt; 0.1, etc.). You would then test which of these scores performs best at predicting the disease in an independent validation dataset.</p></li>
+</ol>
+<p><strong>Method 2: Bayesian Methods (e.g., LDpred2, PRS-CS)</strong> - <strong><em>The Modern Standard</em></strong><br>
+These methods are more sophisticated and generally more powerful. They don’t just discard SNPs.</p>
+<ul>
+<li><p>They use an <strong>LD reference panel</strong> to understand how LD spreads the effect of a true causal SNP across its neighbors.</p></li>
+<li><p>They <em>use a statistical model (a “prior”)</em> that assumes most SNPs have a tiny effect, but some have a slightly larger one.</p></li>
+<li><p>The <strong><em>algorithm then re-calculates (or “shrinks”) the effect size (β) for every SNP in the genome. It adjusts the original GWAS beta to account for the LD structure.</em></strong></p></li>
+<li><p>The final PRS is then calculated using all SNPs with these new, more realistic, LD-adjusted weights. This approach has been shown to be more accurate and predictive than C+T.</p></li>
+</ul>
+</section>
+<section id="section-2.4-the-application-and-interpretation---from-score-to-stratification" class="level4">
+<h4 class="anchored" data-anchor-id="section-2.4-the-application-and-interpretation---from-score-to-stratification">Section 2.4: The Application and Interpretation - From Score to Stratification</h4>
+<p>The raw PRS number (e.g., 0.18) is meaningless on its own. Its power comes from seeing where an individual falls relative to a population.</p>
+<ol type="1">
+<li><p><strong>Standardization:</strong> You calculate the PRS for thousands of individuals in a reference population. This creates a distribution of scores, which is typically a bell curve (a normal distribution). The raw scores are then standardized (converted to a Z-score) so we can talk about percentiles.</p></li>
+<li><p><strong>Risk Stratification:</strong> Now we can interpret Jane’s score. If her standardized score places her at the <strong>95th percentile</strong>, it means her calculated genetic risk is higher than 95% of the population.</p></li>
+<li><p><strong>Clinical Utility:</strong> This is where the real potential lies. Studies have shown that for diseases like coronary artery disease(心冠), individuals in the top 5% of the PRS distribution can have a <strong>3 to 4 times higher lifetime risk</strong> compared to those with an average score.</p></li>
+</ol>
+<p><strong>Crucially, a PRS is not deterministic.</strong> A high PRS for heart disease does not mean you will get it. It means your baseline genetic risk is high, making it even more important to manage modifiable risk factors like diet, exercise, and cholesterol. The power of a PRS is in identifying these high-risk individuals early so they can be targeted for more intensive screening and preventative care.</p>
+</section>
+</section>
+</section>
+<section id="mr" class="level2">
+<h2 class="anchored" data-anchor-id="mr">MR🤷‍♀️</h2>
+<section id="part-3-mendelian-randomization-mr" class="level3">
+<h3 class="anchored" data-anchor-id="part-3-mendelian-randomization-mr">Part 3: Mendelian Randomization (MR)</h3>
+<section id="section-3.1-the-core-problem---correlation-is-not-causation" class="level4">
+<h4 class="anchored" data-anchor-id="section-3.1-the-core-problem---correlation-is-not-causation">Section 3.1: The Core Problem - Correlation is Not Causation</h4>
+<p>This is one of the oldest and most difficult challenges in medical research. We frequently observe that a specific risk factor (an “exposure”) is associated with a disease (an “outcome”).</p>
+<p><strong>Classic Example:</strong></p>
+<ul>
+<li><p>Observational studies show that people with <strong>higher levels of HDL cholesterol(高密度脂蛋白胆固醇)</strong> (“good” cholesterol) have a <strong>lower risk of heart attack</strong></p></li>
+<li><p><strong>The obvious Conclusion:</strong> Low HDL cholesterol causes heart attacks.</p></li>
+<li><p><strong>The Drug Development:</strong> This led pharmaceutical companies to spend billions of dollars developing drugs that raise HDL cholesterol levels.</p></li>
+<li><p><strong>The Surprising Result:</strong> The drugs worked—they successfully raised HDL levels. However, they had <strong>zero effect</strong> on reducing heart attacks.</p></li>
+</ul>
+<p><strong>What went wrong?</strong> The initial observation was a classic case of confounding. The same healthy lifestyle choices (good diet, exercise) that lead to high HDL also protect against heart attacks through other mechanisms. The HDL level itself wasn’t the causal factor; it was just a correlated marker of a healthy lifestyle.</p>
+<p>We needed a way to test for causality that wasn’t biased by these lifestyle and environmental confounders. Mendelian Randomization is that method.</p>
+</section>
+<section id="section-3.2-the-concept---natures-randomized-controlled-trial" class="level4">
+<h4 class="anchored" data-anchor-id="section-3.2-the-concept---natures-randomized-controlled-trial">Section 3.2: The Concept - Nature’s Randomized Controlled Trial</h4>
+<p>The central idea of MR is to leverage the random process of genetic inheritance. When you are conceived(怀孕), the combination of genes you inherit from your parents is essentially random. This is <strong>Mendel’s Law of Independent Assortment(孟德尔的独立分配定律)</strong>.</p>
+<p>This randomization acts like a perfect, lifelong <strong>Randomized Controlled Trial (RCT)</strong>:</p>
+<ul>
+<li><p>Some people, by pure chance, inherit a set of genetic variants that predispose them to having slightly higher cholesterol levels throughout their lives (the “treatment group”).</p></li>
+<li><p>Other people, by pure chance, inherit variants that predispose them to lower cholesterol levels (the “control group”).</p></li>
+</ul>
+<p>Because these genes were assigned randomly at conception, they should not be correlated(混淆) with other lifestyle factors (like diet, smoking, or socioeconomic status) that could confound the relationship between cholesterol and heart disease.</p>
+<p>Therefore, if the “treatment group” (genetically higher cholesterol) consistently shows a higher rate of heart attacks than the “control group” (genetically lower cholesterol), we can infer that the higher cholesterol is likely <strong>causally</strong> related to the heart attacks.</p>
+</section>
+<section id="section-3.3-the-method---the-instrumental-variable-framework" class="level4">
+<h4 class="anchored" data-anchor-id="section-3.3-the-method---the-instrumental-variable-framework">Section 3.3: The Method - The Instrumental Variable Framework</h4>
+<p>To perform an MR analysis, we need a <strong>genetic instrument</strong>. This is a SNP (or, more powerfully, a set of SNPs) that serves as a reliable and clean proxy for the exposure we want to test.</p>
+<p>This genetic instrument must satisfy three core assumptions:</p>
+<ol type="1">
+<li><p><strong>The Relevance Assumption:</strong> The SNP must <strong><em>be strongly and robustly associated with the exposure.</em></strong> (e.g., we use SNPs from a GWAS of cholesterol levels that are genome-wide significant).</p></li>
+<li><p><strong>The Independence Assumption:</strong> The SNP must not be associated with any confounders of the exposure-outcome relationship. (This is generally assumed to be true because of the randomization of genetic inheritance).</p></li>
+<li><p><strong>The Exclusion Restriction Assumption:</strong> The SNP can only affect the outcome through the exposure. It cannot have an independent, alternative biological pathway to the outcome.</p></li>
+</ol>
+<p><strong>Violation of Assumption #3</strong> is the biggest potential pitfall(陷阱) of MR. This is called <strong>horizontal pleiotropy(水平基因多效性)</strong> (from pleio, meaning “many effects”). For example, <em>if a SNP that raises cholesterol also happens to increase blood pressure through a completely separate biological mechanism, then we can no longer be sure if the effect on heart disease is coming from the cholesterol or the blood pressure pathway. There are many advanced statistical tests to check for and correct for potential pleiotropy.</em></p>
+</section>
+<section id="section-3.4-the-practical-workflow---two-sample-mr" class="level4">
+<h4 class="anchored" data-anchor-id="section-3.4-the-practical-workflow---two-sample-mr">Section 3.4: The Practical Workflow - Two-Sample MR</h4>
+<p>The real power of MR today comes from the <strong>Two-Sample MR</strong> design. You don’t need one giant dataset with genetic, exposure, and outcome data for all individuals. Instead, you can use the summary statistics from two completely separate, publicly available GWAS.</p>
+<p><strong>The Workflow:</strong></p>
+<ol type="1">
+<li><p><strong>Define your Question:</strong> Do genetically-predicted <strong>higher levels of LDL cholesterol</strong> cause an increased risk of <strong>Coronary Artery Disease (CAD)</strong>?</p></li>
+<li><p><strong>Gather Your Data:</strong></p>
+<ul>
+<li><p><strong>Exposure GWAS:</strong> Download the full GWAS summary statistics for LDL cholesterol (e.g., from the Global Lipids Genetics Consortium).</p></li>
+<li><p><strong>Outcome GWAS:</strong> Download the full GWAS summary statistics for CAD (e.g., from the CARDIoGRAMplusC4D consortium).</p></li>
+</ul></li>
+<li><p><strong>Select Your Instruments:</strong> From the LDL GWAS, select a set of independent, genome-wide significant SNPs. These are your instrumental variables for genetically-predicted LDL.</p></li>
+<li><p><strong>Extract the Effects:</strong> For each of those LDL-associated SNPs, look up its effect size (beta) and standard error in the CAD GWAS summary statistics file.</p></li>
+<li><p><strong>Run the Analysis:</strong> Use specialized R packages (like TwoSampleMR) to perform the statistical test.</p>
+<ul>
+<li><p>The primary method is <strong>Inverse Variance Weighted (IVW)(逆方差加权) MR</strong>. This is essentially a regression where the slope of the line represents the causal estimate. For each instrument SNP, it plots its effect on the exposure (LDL) on the x-axis and its effect on the outcome (CAD) on the y-axis.</p></li>
+<li><p>If the SNPs that have a large effect on increasing LDL also have a proportionally large effect on increasing CAD risk, the slope will be steep and statistically significant, providing strong evidence for a causal effect.</p></li>
+</ul></li>
+<li><p><strong>Perform Sensitivity Analyses:</strong> Run a battery of other MR methods (e.g., MR-Egger, Weighted Median) that are more robust to violations of the pleiotropy assumption. If all the methods point in the same direction, your causal inference is much stronger.</p></li>
+</ol>
+</section>
+</section>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+
+
+</body></html>

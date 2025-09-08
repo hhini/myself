@@ -1,0 +1,2569 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Archiving
+and Interchange DTD v1.2 20190208//EN" "JATS-archivearticle1.dtd">
+
+<article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" dtd-version="1.2" article-type="other">
+
+<front>
+
+
+<article-meta>
+
+
+<title-group>
+<article-title>GWAS 教程</article-title>
+</title-group>
+
+<contrib-group>
+<contrib contrib-type="author" corresp="yes">
+<name>
+<surname>JAYZ</surname>
+<given-names></given-names>
+</name>
+<string-name>JAYZ</string-name>
+
+<role vocab="https://credit.niso.org" vocab-term="writing – original
+draft" vocab-term-identifier="https://credit.niso.org/contributor-roles/writing-original-draft/">writing</role>
+<xref ref-type="aff" rid="aff-1">a</xref>
+<xref ref-type="corresp" rid="cor-1">&#x002A;</xref>
+</contrib>
+</contrib-group>
+<aff id="aff-1">
+<institution-wrap>
+<institution>The University OF Myself</institution>
+</institution-wrap>
+
+
+
+
+
+
+
+</aff>
+<author-notes>
+<corresp id="cor-1"></corresp>
+</author-notes>
+
+
+
+
+
+
+
+
+
+<history></history>
+
+
+
+
+
+
+</article-meta>
+
+</front>
+
+<body>
+<sec id="gwas-教程">
+  <title>GWAS 教程 ❤️😍</title>
+  <sec id="genome-wide-association-studies-definition">
+    <title>Genome Wide Association Studies Definition</title>
+    <p>Genome-Wide Association Studies, abbreviated as GWAS, represent a
+    scientific methodology aimed at elucidating(阐明) potential
+    associations between genetic loci, namely the genome, and specific
+    traits or diseases. Through meticulous analysis of millions, even
+    tens of millions, of genetic variations within an organism’s genome,
+    GWAS endeavors to identify genetic loci significantly associated
+    with particular phenotypes or diseases.</p>
+  </sec>
+  <sec id="the-main-process-of-gwas">
+    <title>The main process of GWAS</title>
+    <sec id="data-collection">
+      <title>Data collection</title>
+      <p>DNA samples are systematically collected from individuals,
+      along with recording their phenotypic information, which includes
+      demographic data such as possible disease conditions, age, and
+      gender.</p>
+      <p>For GWAS, typically large sample sizes are required to identify
+      reproducible genome-wide significant association loci. Determining
+      sample sizes can be facilitated(辅助) using software tools such as
+      CATS or GPC. The phenotypes involved can be either binary traits
+      or quantitative traits. Additionally, the study design can be
+      population-based or family-based.</p>
+    </sec>
+    <sec id="genetyping">
+      <title>Genetyping</title>
+      <p>Genotyping of each individual’s genes is carried out using
+      existing GWAS arrays or sequencing strategies.</p>
+      <p>Microarray technology is commonly employed for genotyping
+      <bold>common variants</bold>, or next-generation sequencing
+      methods such as WES or WGS are utilized to cover <bold>rare
+      variants</bold>. Given the high cost of WGS (whole genome
+      sequencing), genotyping based on microarrays is currently the most
+      commonly used method. However, WGS theoretically allows for the
+      determination of nearly every genotype in the entire genome, and
+      thus, with the ongoing development of low-cost WGS technologies,
+      it is expected to become the mainstream method in the coming
+      years.</p>
+    </sec>
+  </sec>
+  <sec id="the-journey-from-person-to-data-file">
+    <title>The journey from person to data file😎</title>
+    <sec id="stage-1-the-biological-source-and-lab-technology">
+      <title>stage 1: <bold>The Biological Source and Lab
+      Technology</bold></title>
+      <list list-type="order">
+        <list-item>
+          <p><bold>The Source Material: DNA</bold></p>
+          <list list-type="bullet">
+            <list-item>
+              <p>The journey starts with collecting biological samples
+              from thousands of individuals in a study cohort (e.g.,
+              5,000 people with Type 2 Diabetes and 5,000 healthy
+              controls).</p>
+            </list-item>
+            <list-item>
+              <p>The most common sources are <bold>blood</bold> or
+              <bold>saliva(唾沫)</bold>.</p>
+            </list-item>
+            <list-item>
+              <p>In a lab, DNA is extracted from these samples. This
+              high-purity DNA is the raw material for genotyping.</p>
+            </list-item>
+          </list>
+        </list-item>
+        <list-item>
+          <p><bold>The Technology: Genotyping Arrays (or “SNP
+          Chips”)</bold></p>
+          <list list-type="bullet">
+            <list-item>
+              <p>For a GWAS, we don’t typically sequence the entire
+              genome for every person, as that would be too expensive
+              and slow for large cohorts. Instead, we use a technology
+              called a <bold>genotyping array(基因分型技术)</bold>.</p>
+            </list-item>
+            <list-item>
+              <p>Think of an array as a small glass slide or “chip” with
+              a grid containing millions of microscopic probes.</p>
+            </list-item>
+            <list-item>
+              <p>Each probe is a short, synthetic piece of DNA designed
+              to stick to a specific, known SNP location in the human
+              genome.</p>
+            </list-item>
+            <list-item>
+              <p>When an individual’s DNA is washed over this chip, the
+              DNA fragments bind to their matching probes. A laser
+              scanner then reads which version of the SNP (which allele)
+              is present at each location based on a fluorescent
+              signal.</p>
+            </list-item>
+            <list-item>
+              <p>The output of this scanning process is a set of raw
+              intensity files (e.g., .IDAT files from Illumina arrays).
+              These files are then processed by specialized software
+              (like Illumina’s GenomeStudio) to “call” the genotype for
+              each person at each SNP.</p>
+            </list-item>
+          </list>
+        </list-item>
+      </list>
+      <p>This “genotype calling” step is what translates the biological
+      signal into the digital data that the bioinformatician
+      receives.</p>
+    </sec>
+    <sec id="the-core-data-types-what-the-bioinformatician-actually-works-with">
+      <title>The Core Data Types: What the Bioinformatician Actually
+      Works With</title>
+      <p>As a bioinformatician, you will rarely work with the raw
+      intensity files. Your starting point is the “called” genotype
+      data, which is most commonly delivered in the <bold>PLINK file
+      format</bold>. This is not one file, but a set of three files that
+      work together, all sharing the same prefix
+      (前缀)(e.g., my_gwas_data).</p>
+      <p>This three-file system efficiently separates the different
+      kinds of information: the people, the genetic markers, and the
+      actual genetic data.</p>
+      <sec id="the-.fam-file-sample-and-phenotype-information">
+        <title>1. The .fam File: Sample and Phenotype
+        Information</title>
+        <p>This is a plain-text, space-delimited(空格分隔) file that
+        describes the <bold>individuals</bold> in your study. Each row
+        represents one person. It has <bold>six required
+        columns</bold></p>
+        <table-wrap>
+          <table>
+            <colgroup>
+              <col width="33%" />
+              <col width="33%" />
+              <col width="33%" />
+            </colgroup>
+            <tbody>
+              <tr>
+                <td><bold>Column</bold></td>
+                <td><bold>Name</bold></td>
+                <td><bold>Description</bold></td>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td><bold>Family ID (FID)</bold></td>
+                <td>An ID for the family. In many studies, this is the
+                same as the Individual ID.</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td><bold>Individual ID (IID)</bold></td>
+                <td>A <bold>unique identifier</bold> for each person.
+                This is the most important key.</td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>Paternal ID</td>
+                <td>The IID of the person’s father (or 0 if
+                unknown).</td>
+              </tr>
+              <tr>
+                <td>4</td>
+                <td>Maternal ID</td>
+                <td>The IID of the person’s mother (or 0 if
+                unknown).</td>
+              </tr>
+              <tr>
+                <td>5</td>
+                <td><bold>Sex</bold></td>
+                <td>1 = Male, 2 = Female, 0 = Unknown.</td>
+              </tr>
+              <tr>
+                <td>6</td>
+                <td><bold>Phenotype</bold></td>
+                <td>The trait you are studying. -9 = Missing, 0 =
+                Missing, 1 = Control, 2 = Case. For quantitative traits,
+                this column would hold the measured value (e.g., 175.3
+                for height in cm).</td>
+              </tr>
+            </tbody>
+          </table>
+        </table-wrap>
+        <p><bold>Example .fam file:</bold></p>
+        <p><bold>codeCode</bold></p>
+        <preformat>FAM001  HG001  0  0  1  2
+FAM002  HG002  0  0  2  2
+FAM003  HG003  0  0  1  1
+FAM004  HG004  0  0  2  1</preformat>
+        <p>This file tells us we have 4 people. HG001 and HG002 are
+        cases (phenotype=2), while HG003 and HG004 are controls
+        (phenotype=1).</p>
+      </sec>
+      <sec id="the-.bim-file-variant-snp-information">
+        <title>2. The .bim File: Variant (SNP) Information</title>
+        <p>This is a plain-text file that contains the “map” information
+        for your <bold>genetic markers</bold>. Each row represents one
+        SNP.</p>
+        <table-wrap>
+          <table>
+            <colgroup>
+              <col width="33%" />
+              <col width="33%" />
+              <col width="33%" />
+            </colgroup>
+            <tbody>
+              <tr>
+                <td><bold>Column</bold></td>
+                <td><bold>Name</bold></td>
+                <td><bold>Description</bold></td>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td><bold>Chromosome Code</bold></td>
+                <td>The chromosome the SNP is on (1-22, X, Y).</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td><bold>SNP Identifier</bold></td>
+                <td>A unique name for the SNP, often an “rs” ID from the
+                dbSNP database.</td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>Genetic Distance (cM)</td>
+                <td>Position in centiMorgans (厘摩）(often just 0, as
+                it’s not used in GWAS).</td>
+              </tr>
+              <tr>
+                <td>4</td>
+                <td><bold>Base-pair Position</bold></td>
+                <td>The physical position of the SNP on the chromosome
+                (e.g., position 752566).</td>
+              </tr>
+              <tr>
+                <td>5</td>
+                <td><bold>Allele 1</bold></td>
+                <td>The first allele code (e.g., A, C, G, T). Usually
+                the minor allele.</td>
+              </tr>
+              <tr>
+                <td>6</td>
+                <td><bold>Allele 2</bold></td>
+                <td>The second allele code (e.g., A, C, G, T). Usually
+                the major allele.</td>
+              </tr>
+            </tbody>
+          </table>
+        </table-wrap>
+        <p><bold>Example</bold></p>
+        <p>inro</p>
+        <preformat>1  rs123456  0  752566   G   A
+1  rs789101  0  853664   C   T</preformat>
+        <p>This file tells us about two SNPs on chromosome 1 at specific
+        positions and what their possible alleles are.</p>
+      </sec>
+      <sec id="the-.bed-file-the-binary-genotype-data">
+        <title>3. The .bed File: The Binary Genotype Data</title>
+        <list list-type="bullet">
+          <list-item>
+            <p>This is the most important file, containing the actual
+            <bold>genotype data</bold>, but it is <bold>not
+            human-readable</bold>.</p>
+          </list-item>
+          <list-item>
+            <p>It is a <bold>binary</bold> file, meaning it stores the
+            data in a highly compressed format that computers can read
+            very quickly. This is crucial because this file can be
+            enormous (many gigabytes for a large study).</p>
+          </list-item>
+          <list-item>
+            <p>It stores the genotype for every individual (from the
+            .fam file) at every SNP (from the .bim file). The order of
+            individuals and SNPs in this binary file exactly matches the
+            order in the .fam and .bim files.</p>
+          </list-item>
+          <list-item>
+            <p>For a given SNP with alleles G and A, a person can have
+            one of three genotypes: G/G (homozygous(纯合子) for G), A/A
+            (homozygous for A), or G/A (heterozygous(杂合子)). The .bed
+            file stores this information efficiently for millions of
+            SNPs and thousands of people.</p>
+          </list-item>
+        </list>
+        <p>These three files together form the complete dataset that is
+        the starting point for your Quality Control pipeline.</p>
+      </sec>
+    </sec>
+    <sec id="where-does-this-data-come-from-data-sources">
+      <title>Where Does This Data Come From? (Data Sources)</title>
+      <p>As a student and future bioinformatician, you will acquire this
+      data in two primary ways:</p>
+      <list list-type="order">
+        <list-item>
+          <p><bold>Direct Collaboration:</bold> You will work directly
+          with a hospital, university, or research consortium that is
+          conducting a study. They will perform the sample collection
+          and genotyping and will provide you with the PLINK filesets to
+          analyze.</p>
+        </list-item>
+        <list-item>
+          <p><bold>Public and Controlled-Access Repositories:</bold> A
+          huge amount of GWAS data is available for secondary analysis.
+          This is critical for research, as it allows scientists to
+          validate findings, combine datasets in meta-analyses, and
+          explore new hypotheses without generating new data. Key
+          repositories include:</p>
+          <list list-type="bullet">
+            <list-item>
+              <p><bold>dbGaP (The database of Genotypes and
+              Phenotypes):</bold> The primary repository in the United
+              States, run by the NIH. Researchers must apply for access
+              to download datasets, explaining their research plan to a
+              Data Access Committee.</p>
+            </list-item>
+            <list-item>
+              <p><bold>UK Biobank:</bold> A landmark prospective cohort
+              study with incredibly rich genetic and health data on
+              500,000 UK participants. It is a go-to resource for
+              genetic research. Access is also controlled and requires
+              an application.</p>
+            </list-item>
+            <list-item>
+              <p><bold>EGA (European Genome-phenome Archive):</bold> The
+              European equivalent of dbGaP.</p>
+            </list-item>
+          </list>
+        </list-item>
+      </list>
+    </sec>
+  </sec>
+  <sec id="qc">
+    <title>QC😘</title>
+    <p>You have just received your raw data files
+    (raw_data.bed, raw_data.bim, raw_data.fam) and you are sitting at a
+    Linux command-line terminal. Your primary tool will
+    be <bold>PLINK</bold>.</p>
+    <p>The key principle is that <bold>the order of operations
+    matters</bold>. We perform some broad cleaning steps first, then
+    refine our dataset for more sensitive checks. A typical workflow
+    looks like this:</p>
+    <list list-type="order">
+      <list-item>
+        <p><bold>Initial, lenient(宽松) filtering</bold> of both SNPs
+        and individuals to remove the most obvious garbage data.</p>
+      </list-item>
+      <list-item>
+        <p><bold>Filtering based on SNP properties</bold> (MAF,
+        HWE).</p>
+      </list-item>
+      <list-item>
+        <p><bold>Filtering based on individual properties</bold> that
+        require a cleaner set of SNPs to be calculated accurately
+        (Heterozygosity, Relatedness, Ancestry).</p>
+      </list-item>
+    </list>
+    <sec id="step-1-initial-missingness-filters-the-first-pass">
+      <title>Step 1: Initial Missingness Filters (The First
+      Pass)</title>
+      <p>Our first goal is to remove the “low-hanging fruit”—individuals
+      and SNPs that failed genotyping so badly they are clearly
+      unusable.</p>
+      <sec id="a.-remove-individuals-with-low-call-rate">
+        <title>1a. Remove Individuals with Low Call Rate</title>
+        <p>We start by removing individuals for whom a large fraction of
+        SNPs could not be genotyped. This is often due to poor quality
+        DNA.</p>
+        <list list-type="bullet">
+          <list-item>
+            <p><bold>Command:</bold>
+            <italic><monospace>plink --bfile raw_data --mind 0.05 --make-bed --out qc_step1</monospace></italic></p>
+          </list-item>
+          <list-item>
+            <p><bold>What this does:</bold></p>
+            <list list-type="bullet">
+              <list-item>
+                <p><monospace>--bfile raw_data</monospace>: Specifies
+                our input PLINK binary fileset.</p>
+              </list-item>
+              <list-item>
+                <p><monospace>--mind 0.05</monospace>: The “–missingness
+                per individual” filter. It removes any person with more
+                than 5% missing genotypes.</p>
+              </list-item>
+              <list-item>
+                <p><monospace>--make-bed</monospace>: Tells PLINK to
+                create a new binary fileset as output.</p>
+              </list-item>
+              <list-item>
+                <p><monospace>--out qc_step1</monospace>: Sets the
+                prefix for our new output files
+                (<monospace>qc_step1.bed, qc_step1.bim, qc_step1.fam</monospace>).</p>
+              </list-item>
+            </list>
+          </list-item>
+        </list>
+        <p>PLINK will print a report to the screen telling you how many
+        individuals were removed.</p>
+      </sec>
+      <sec id="b.-remove-snps-with-low-call-rate">
+        <title>1b. Remove SNPs with Low Call Rate</title>
+        <p>Now, using our slightly cleaner set of individuals, we remove
+        SNPs that failed to genotype across many people. These are
+        unreliable markers.</p>
+        <list list-type="bullet">
+          <list-item>
+            <p><bold>Command:</bold>
+            <italic><monospace>plink --bfile qc_step1 --geno 0.02 --make-bed --out qc_step2</monospace></italic></p>
+          </list-item>
+          <list-item>
+            <p><bold>What this does:</bold></p>
+            <list list-type="bullet">
+              <list-item>
+                <p><monospace>--bfile qc_step1</monospace>: Our input is
+                the output from the previous step.</p>
+              </list-item>
+              <list-item>
+                <p><monospace>--geno 0.02</monospace>: The “–missingness
+                per <bold>geno</bold>type” (i.e., per SNP) filter. It
+                removes any SNP with more than 2% missing calls.</p>
+              </list-item>
+              <list-item>
+                <p><monospace>--out qc_step2</monospace>: Creates our
+                next set of files.</p>
+              </list-item>
+            </list>
+          </list-item>
+        </list>
+        <p>Again, PLINK will report how many variants (SNPs) were
+        removed.</p>
+      </sec>
+    </sec>
+    <sec id="step-2-core-snp-quality-filters">
+      <title>Step 2: Core SNP Quality Filters</title>
+      <p>Now that we’ve removed the worst of the data, we apply two
+      standard SNP-level filters.</p>
+      <sec id="a.-minor-allele-frequency-maf-filter次要等位基因频率-maf-过滤器">
+        <title>2a. Minor Allele Frequency (MAF) Filter（次要等位基因频率
+        (MAF) 过滤器）</title>
+        <p>We remove very rare SNPs because we lack the statistical
+        power to test them properly, and they are more likely to be
+        genotyping errors.</p>
+        <list list-type="bullet">
+          <list-item>
+            <p><bold>Command:</bold>
+            <italic><monospace>plink --bfile qc_step2 --maf 0.01 --make-bed --out qc_step3</monospace></italic></p>
+          </list-item>
+          <list-item>
+            <p><bold>What this does:</bold></p>
+            <list list-type="bullet">
+              <list-item>
+                <p><monospace>--bfile qc_step2</monospace>: Takes the
+                previous step’s output as input.</p>
+              </list-item>
+              <list-item>
+                <p><monospace>--maf</monospace> 0.01: Removes any SNP
+                where the frequency of the less common allele is below
+                1%.</p>
+              </list-item>
+              <list-item>
+                <p><monospace>--out qc_step3</monospace>: Creates our
+                next set of files.</p>
+              </list-item>
+            </list>
+          </list-item>
+        </list>
+      </sec>
+      <sec id="b.-hardy-weinberg-equilibrium-hwe-filter哈代-温伯格平衡hwe过滤器">
+        <title>2b. Hardy-Weinberg Equilibrium (HWE)
+        Filter（哈代-温伯格平衡（HWE）过滤器）</title>
+        <p>We remove SNPs where the observed pattern of genotypes in the
+        <bold>control group</bold> deviates(差异) significantly from
+        what we’d expect by chance. This is a classic sign of genotyping
+        error.</p>
+        <list list-type="bullet">
+          <list-item>
+            <p><bold>Command:</bold>
+            <italic><monospace>plink --bfile qc_step3 --hwe 1e-6 --make-bed --out qc_step4</monospace></italic></p>
+          </list-item>
+          <list-item>
+            <p><bold>What this does:</bold></p>
+            <list list-type="bullet">
+              <list-item>
+                <p><monospace>--hwe 1e-6</monospace>: Calculates the HWE
+                p-value for each SNP in controls only by default. It
+                then removes any SNP with a p-value less than our very
+                stringent threshold of 0.000001. We use a tiny p-value
+                because we are testing millions of SNPs and want to
+                avoid removing SNPs that deviate by chance.</p>
+              </list-item>
+              <list-item>
+                <p><monospace>--out qc_step4</monospace>: Creates a
+                fileset with only HWE-compliant SNPs.</p>
+              </list-item>
+            </list>
+          </list-item>
+        </list>
+      </sec>
+    </sec>
+    <sec id="step-3-core-individual-quality-filters">
+      <title>Step 3: Core Individual Quality Filters</title>
+      <p>At this point, we have a reasonably clean set of SNPs. We can
+      now use this set to perform more sensitive checks on the
+      individuals.</p>
+      <sec id="a.-check-for-heterozygosity-outliers杂合性异常值">
+        <title>3a. Check for Heterozygosity
+        Outliers(杂合性异常值)</title>
+        <p>We look for individuals whose DNA might be contaminated (too
+        heterozygous) or come from an inbred background (not
+        heterozygous enough).</p>
+        <list list-type="bullet">
+          <list-item>
+            <p><bold>Command:</bold>
+            <italic><monospace>plink --bfile qc_step4 --het --out heterozygosity_check</monospace></italic></p>
+          </list-item>
+          <list-item>
+            <p><bold>What this does:</bold></p>
+            <list list-type="bullet">
+              <list-item>
+                <p><monospace>--het</monospace>: This doesn’t filter
+                anything yet. Instead, it calculates the heterozygosity
+                rate for each individual and writes the results to a
+                file named heterozygosity_check.het.</p>
+              </list-item>
+            </list>
+          </list-item>
+          <list-item>
+            <p><bold>Your Action (Manual Step):</bold></p>
+            <list list-type="order">
+              <list-item>
+                <p>You will now use a script (in R or Python) to read
+                the .het file.</p>
+              </list-item>
+              <list-item>
+                <p>Calculate the mean and standard deviation
+                (SD)(平均值和标准差) of the F column (which reflects
+                heterozygosity).</p>
+              </list-item>
+              <list-item>
+                <p><bold>Identify any individuals whose F value is more
+                than 3 SDs above or below the mean.</bold></p>
+              </list-item>
+              <list-item>
+                <p>Create a simple text file, let’s call it
+                het_outliers.txt, with two columns (Family ID and
+                Individual ID) for these outlier individuals.</p>
+              </list-item>
+            </list>
+          </list-item>
+        </list>
+      </sec>
+      <sec id="b.-remove-heterozygosity-outliers">
+        <title>3b. Remove Heterozygosity Outliers</title>
+        <p>Now you use the list you just created to remove the
+        outliers.</p>
+        <list list-type="bullet">
+          <list-item>
+            <p><bold>Command:</bold>
+            <italic><monospace>plink --bfile qc_step4 --remove het_outliers.txt --make-bed --out qc_step5</monospace></italic></p>
+          </list-item>
+          <list-item>
+            <p><bold>What this does:</bold></p>
+            <list list-type="bullet">
+              <list-item>
+                <p><monospace>--remove het_outliers.txt</monospace>:
+                Removes the individuals listed in your file.</p>
+              </list-item>
+              <list-item>
+                <p><monospace>--out qc_step5</monospace>: Creates the
+                next version of our clean data.</p>
+              </list-item>
+            </list>
+          </list-item>
+        </list>
+      </sec>
+    </sec>
+    <sec id="step-4-relatedness-and-population-structure相关性和种群结构">
+      <title>Step 4: Relatedness and Population
+      Structure(相关性和种群结构)</title>
+      <p>This is the final and most computationally intensive QC phase.
+      We want to ensure our sample is a set of unrelated individuals
+      from the same broad ancestry. These checks work best on a set of
+      SNPs that are not physically close to each other (i.e., not in
+      “Linkage Disequilibrium”).</p>
+      <sec id="a.-prune-snps-for-independence-ld-pruning-修剪-snp-以实现独立性ld-修剪">
+        <title>4a. Prune SNPs for Independence (LD Pruning) 修剪 SNP
+        以实现独立性（LD 修剪）</title>
+        <list list-type="bullet">
+          <list-item>
+            <p><bold>Command:</bold>
+            <italic><monospace>plink --bfile qc_step5 --indep-pairwise 50 5 0.5 --out ld_pruned</monospace></italic></p>
+          </list-item>
+          <list-item>
+            <p><bold>What this does:</bold></p>
+            <list list-type="bullet">
+              <list-item>
+                <p><monospace>--indep-pairwise 50 5 0.5</monospace>:
+                This is a command to create a list of largely
+                independent SNPs. It scans the genome in windows of 50
+                SNPs, shifts the window by 5 SNPs at a time, and removes
+                one of any pair of SNPs that has an r² &gt; 0.5 (a
+                measure of correlation).</p>
+              </list-item>
+              <list-item>
+                <p><monospace>--out ld_pruned</monospace>: This creates
+                two files: <monospace>ld_pruned.prune.in</monospace>
+                (the list of SNPs to KEEP) and
+                <monospace>ld_pruned.prune.out.</monospace></p>
+              </list-item>
+            </list>
+          </list-item>
+        </list>
+      </sec>
+      <sec id="b.-check-for-cryptic-relatedness隐秘关联">
+        <title>4b. Check for Cryptic Relatedness（隐秘关联）</title>
+        <p>We now use this pruned set of SNPs to check for hidden
+        relatives in our data.</p>
+        <list list-type="bullet">
+          <list-item>
+            <p><bold>Command:</bold>
+            <italic><monospace>plink --bfile qc_step5 --extract ld_pruned.prune.in --genome --out relatedness_check</monospace></italic></p>
+          </list-item>
+          <list-item>
+            <p><bold>What this does:</bold></p>
+            <list list-type="bullet">
+              <list-item>
+                <p><monospace>--extract ld_pruned.prune.in</monospace>:
+                Tells PLINK to perform the next step using only our
+                independent set of SNPs.</p>
+              </list-item>
+              <list-item>
+                <p><monospace>--genome</monospace>: This is the main
+                command. It calculates the “identity-by-descent”
+                (IBD)(血统同一性) for all pairs of individuals.</p>
+              </list-item>
+              <list-item>
+                <p><monospace>--out relatedness_check</monospace>: The
+                results are saved in a file called
+                relatedness_check.genome.</p>
+              </list-item>
+            </list>
+          </list-item>
+          <list-item>
+            <p><bold>Your Action (Manual Step):</bold></p>
+            <list list-type="order">
+              <list-item>
+                <p>Inspect the .genome file. Look at the
+                <monospace>PI_HAT</monospace> column. A value &gt;
+                0.1875 indicates a 3rd degree relative or closer.</p>
+              </list-item>
+              <list-item>
+                <p><bold>Identify all pairs that are too related</bold>.
+                For each pair, decide which individual to remove (a
+                common strategy is to remove the one with the lower call
+                rate).</p>
+              </list-item>
+              <list-item>
+                <p>Create a text file,
+                <monospace>related_individuals.txt</monospace>, with the
+                FID and IID of every person you need to remove.</p>
+              </list-item>
+            </list>
+          </list-item>
+        </list>
+      </sec>
+      <sec id="c.-remove-related-individuals">
+        <title>4c. Remove Related Individuals</title>
+        <list list-type="bullet">
+          <list-item>
+            <p><bold>Command:</bold>
+            <monospace>plink --bfile qc_step5 --remove related_individuals.txt --make-bed --out qc_step6</monospace></p>
+          </list-item>
+        </list>
+      </sec>
+    </sec>
+  </sec>
+  <sec id="pca">
+    <title>PCA 😉</title>
+    <sec id="part-1-the-why---understanding-the-problem-of-population-stratification人口分层">
+      <title>Part 1: The “Why” - Understanding the Problem of Population
+      Stratification（人口分层）</title>
+      <p>Before running any code, you must understand why this step is
+      so critical.</p>
+      <p><bold>Population stratification</bold> is the presence of
+      systematic differences in allele frequencies between different
+      subpopulations in your study. If your “case” group (people with
+      the disease) and “control” group (healthy people) have a different
+      mixture of these subpopulations, you can get massive numbers of
+      false-positive results.</p>
+      <p><bold>The Classic Analogy(类比): The “Chopsticks
+      Gene”(筷子基因)</bold></p>
+      <p>Imagine a hypothetical study looking for genes associated with
+      the ability to use chopsticks.</p>
+      <list list-type="bullet">
+        <list-item>
+          <p>You recruit “cases” (people who can use chopsticks)
+          primarily from an <italic>East Asian population.</italic></p>
+        </list-item>
+        <list-item>
+          <p>You recruit “controls” (people who cannot) primarily from a
+          <italic>European population.</italic></p>
+        </list-item>
+        <list-item>
+          <p>You run a GWAS.</p>
+        </list-item>
+      </list>
+      <p>The result? You will find thousands of SNPs that are
+      “significantly associated” with your trait. However,
+      <bold><italic>these are not “chopstick-skill genes.” They are
+      simply genetic markers that have different frequencies between
+      East Asian and European populations. Your analysis has been
+      completely confounded by ancestry. The association is with
+      ancestry, not the trait
+      itself(关联在于血统，而非特征本身).</italic></bold></p>
+      <p><bold>The Goal of PCA:</bold> PCA is our mathematical tool to
+      detect this hidden ancestral structure in our data so we can
+      either remove outlier individuals or statistically correct for the
+      variation.</p>
+    </sec>
+    <sec id="part-2-the-what---a-conceptual-understanding-of-pca">
+      <title>Part 2: The “What” - A Conceptual Understanding of
+      PCA</title>
+      <p>In a GWAS, we have data for hundreds of thousands or millions
+      of SNPs. You can think of this as a dataset with a million
+      dimensions—far too complex for a human to visualize.</p>
+      <p><bold>PCA is a dimensionality-reduction technique.</bold> Its
+      goal is to distill this vast complexity into a few, highly
+      informative new dimensions called <bold>Principal Components
+      (PCs)</bold>.</p>
+      <list list-type="bullet">
+        <list-item>
+          <p><bold>Principal Component 1 (PC1):</bold> This is a new,
+          calculated axis that captures the <bold>single largest source
+          of variation</bold>(最大单一变异源)in your entire genetic
+          dataset. In human genetics, this almost always corresponds to
+          the major axis of global ancestry (e.g., separating
+          individuals of African vs. non-African
+          descent(对比非洲裔和不是非洲裔,概念较大)).</p>
+        </list-item>
+        <list-item>
+          <p><bold>Principal Component 2 (PC2):</bold> This is the
+          second axis, which is mathematically uncorrelated with PC1,
+          that captures the <bold>largest amount of the remaining
+          variationndefined（剩余变异最大量)</bold>. This might, for
+          example, separate European and East Asian
+          individuals(区分亚洲人和中东人）.</p>
+        </list-item>
+        <list-item>
+          <p><bold>PC3, PC4, etc.:</bold> Each subsequent PC captures
+          progressively smaller and smaller amounts of the remaining
+          variation(剩余变化量越来越小).</p>
+        </list-item>
+      </list>
+      <p>By plotting individuals based on their values for PC1 and PC2,
+      we can create a two-dimensional “genetic map” of our study
+      participants, allowing us to visually identify their ancestral
+      relationships.</p>
+    </sec>
+    <sec id="part-3-the-how---a-practical-step-by-step-workflow">
+      <title>Part 3: The “How” - A Practical Step-by-Step
+      Workflow</title>
+      <p>Here is how you perform PCA on your QC’d GWAS data. The input
+      for this process should be the dataset that has already passed the
+      initial QC steps (missingness, MAF, HWE, etc.). Let’s call our
+      input fileset <monospace>qc_step6.</monospace></p>
+      <sec id="step-a-prepare-the-data-by-pruning-for-linkage-disequilibrium-ld修剪连锁不平衡ld来准备数据">
+        <title>Step A: Prepare the Data by Pruning for Linkage
+        Disequilibrium (LD)(修剪连锁不平衡（LD）来准备数据)</title>
+        <list list-type="bullet">
+          <list-item>
+            <p><bold>The Goal:</bold> To get a set of SNPs that are
+            roughly independent of one another.</p>
+          </list-item>
+          <list-item>
+            <p><bold>The Reason:</bold> PCA can be biased if it uses all
+            SNPs. A region of the genome with many highly correlated
+            SNPs (a high LD block) is essentially telling the same
+            ancestral story many times. This would give that single
+            region too much influence on the PCA results. By “pruning”
+            the data—removing SNPs that are in high LD with each
+            other—we ensure that SNPs across the whole genome contribute
+            more evenly to the analysis.</p>
+          </list-item>
+          <list-item>
+            <p><bold>The PLINK Command:</bold></p>
+            <p specific-use="wrapper">
+              <code language="bash">plink --bfile qc_step6 --indep-pairwise 50 5 0.2 --out ld_pruned</code>
+            </p>
+          </list-item>
+          <list-item>
+            <p><bold>Command Breakdown:</bold></p>
+            <list list-type="bullet">
+              <list-item>
+                <p><monospace>--bfile qc_step6</monospace>: Use our QC’d
+                data as input.</p>
+              </list-item>
+              <list-item>
+                <p>-<monospace>-indep-pairwise 50 5 0.2</monospace>:
+                This is the pruning command.</p>
+                <list list-type="bullet">
+                  <list-item>
+                    <p>50: Scans the genome in windows of 50 SNPs.</p>
+                  </list-item>
+                  <list-item>
+                    <p>5: Shifts the window forward by 5 SNPs at a
+                    time.</p>
+                  </list-item>
+                  <list-item>
+                    <p>0.2: For any pair of SNPs in a window, if their
+                    correlation (r²) is greater than 0.2, one of them is
+                    removed from the list.</p>
+                  </list-item>
+                </list>
+              </list-item>
+              <list-item>
+                <p>-<monospace>-out ld_pruned:</monospace> This doesn’t
+                create a new dataset. It creates two files:
+                ld_pruned.prune.in (a list of SNPs to <bold>keep</bold>)
+                and ld_pruned.prune.out (a list of SNPs that were
+                removed).</p>
+              </list-item>
+            </list>
+          </list-item>
+        </list>
+      </sec>
+      <sec id="step-b-run-the-pca-calculation">
+        <title>Step B: Run the PCA Calculation</title>
+        <list list-type="bullet">
+          <list-item>
+            <p><bold>The Goal:</bold> To calculate the Principal
+            Component values (or “scores”) for every individual in our
+            study.</p>
+          </list-item>
+          <list-item>
+            <p><bold>The Reason:</bold> We use the pruned list of
+            independent SNPs to perform the core calculation, as this
+            gives a more robust and unbiased estimate of the underlying
+            ancestry structure.</p>
+          </list-item>
+          <list-item>
+            <p><bold>The PLINK Command:</bold></p>
+            <p specific-use="wrapper">
+              <code language="bash">plink --bfile qc_step6 --extract ld_pruned.prune.in --pca 10 --out gwas_pca</code>
+            </p>
+          </list-item>
+          <list-item>
+            <p><bold>Command Breakdown:</bold></p>
+            <list list-type="bullet">
+              <list-item>
+                <p><monospace>--bfile qc_step6</monospace>: We use our
+                full QC’d dataset. We want to calculate PCs for
+                everyone.</p>
+              </list-item>
+              <list-item>
+                <p><monospace>--extract ld_pruned.prune.in</monospace>:
+                This is the critical part. We tell PLINK to perform the
+                calculation <bold>using only the independent SNPs</bold>
+                from the list we just created.</p>
+              </list-item>
+              <list-item>
+                <p><monospace>--pca 10</monospace>: This is the main
+                command to run PCA and calculate the top 10 principal
+                components.</p>
+              </list-item>
+              <list-item>
+                <p><monospace>--out gwas_pca</monospace>: Specifies the
+                prefix for the output files.</p>
+              </list-item>
+            </list>
+          </list-item>
+          <list-item>
+            <p><bold>The Key Output File:</bold> This command produces a
+            file named <monospace>gwas_pca.eigenvec</monospace>. This is
+            a plain text file where each row is an individual, and the
+            columns contain their ID followed by their calculated values
+            for PC1, PC2, PC3, etc.</p>
+          </list-item>
+        </list>
+      </sec>
+    </sec>
+    <sec id="part-4-the-whats-next---visualization-and-action">
+      <title>Part 4: The “What’s Next” - Visualization and
+      Action</title>
+      <p>Now you have the numerical results. The next step is to
+      visualize them to understand your cohort’s structure.</p>
+      <sec id="a.-visualization">
+        <title>4a. Visualization</title>
+        <p>You will use a plotting program like <bold>R (with the
+        ggplot2 library)</bold> or <bold>Python (with
+        matplotlib/seaborn)</bold> to create a scatter plot.</p>
+        <list list-type="order">
+          <list-item>
+            <p><bold>Load the Data:</bold> Read the
+            <monospace>gwas_pca.eigenvec</monospace> file into your R or
+            Python environment.</p>
+          </list-item>
+          <list-item>
+            <p><bold>Create the Plot:</bold></p>
+            <list list-type="bullet">
+              <list-item>
+                <p>Plot PC1 on the x-axis.</p>
+              </list-item>
+              <list-item>
+                <p>Plot PC2 on the y-axis.</p>
+              </list-item>
+              <list-item>
+                <p>Each point on the plot represents one individual from
+                your study.</p>
+              </list-item>
+            </list>
+          </list-item>
+        </list>
+        <p><bold>Pro-Tip (as seen in the tutorial): Merging with a
+        Reference Panel</bold>
+        To make your plot truly interpretable, it’s best practice to
+        merge your dataset with a public reference panel containing
+        individuals of known ancestry (like the 1000 Genomes Project)
+        before running the PCA. When you plot the results, you can color
+        the reference samples by their known population (e.g.,
+        European=blue, African=green, East Asian=red). Your own study
+        samples will then cluster with the reference populations they
+        are genetically closest to, immediately telling you the
+        ancestral makeup of your cohort.</p>
+      </sec>
+      <sec id="b.-interpretation-and-action-plan">
+        <title>4b. Interpretation and Action Plan</title>
+        <p>When you look at your plot, you will see one of a few
+        scenarios:</p>
+        <list list-type="bullet">
+          <list-item>
+            <p><bold>Scenario 1: One Tight Cluster.</bold> This is the
+            ideal result. It means your study population is ancestrally
+            homogeneous(同质的).</p>
+          </list-item>
+          <list-item>
+            <p><bold>Scenario 2: A Main Cluster with Outliers.</bold>
+            This is very common. You’ll see a large cloud of points
+            (your primary study population) and a few individual points
+            scattered far away.</p>
+          </list-item>
+          <list-item>
+            <p><bold>Scenario 3: Multiple Distinct Clusters.</bold> This
+            indicates your sample contains several different ancestry
+            groups (e.g., a cluster of European ancestry and a separate
+            cluster of East Asian ancestry).</p>
+          </list-item>
+        </list>
+        <p>Based on the plot, you take two crucial actions:</p>
+        <list list-type="order">
+          <list-item>
+            <p><bold>Remove Ancestral Outliers(移除祖先离群值):</bold>
+            The individuals who fall far outside the main cluster(s) of
+            your intended study population are considered ancestral
+            outliers. Their inclusion could introduce confounding. You
+            should create a list of their IDs and remove them from your
+            dataset using plink –remove.</p>
+          </list-item>
+          <list-item>
+            <p><bold>Generate Covariates for the Association
+            Analysis(为关联分析添加协变量）:</bold> For the individuals
+            that you keep, there is still subtle variation within the
+            main cluster (it’s a cloud, not a single point). This
+            remaining, continuous variation can still bias your results.
+            Therefore, you <bold>must statistically control for
+            it.</bold></p>
+            <list list-type="bullet">
+              <list-item>
+                <p><bold>Action:</bold> You will take the values from
+                the first 5 or 10 principal components (the columns in
+                your gwas_pca.eigenvec file) and include them as
+                <bold>covariates</bold> in your final GWAS association
+                model. When you run the association test, your model
+                will look like this:</p>
+                <p>Disease_Status ~ SNP + Age + Sex + **PC1 + PC2 + PC3
+                + PC4 + PC5**</p>
+              </list-item>
+            </list>
+          </list-item>
+        </list>
+      </sec>
+    </sec>
+  </sec>
+  <sec id="association-test-and-visualization">
+    <title>Association test and Visualization🤣</title>
+    <sec id="part-1-the-core-concept---the-statistical-model">
+      <title>Part 1: The Core Concept - The Statistical Model</title>
+      <p>You are not just looking for a simple difference. You are
+      performing a <bold>regression analysis</bold> for each SNP.
+      Regression is a statistical method that allows us to model the
+      relationship between a set of variables.</p>
+      <p>Our model for each SNP looks something like this:</p>
+      <p><bold>Trait ~ SNP Genotype + Covariate(协变量) 1 + Covariate 2
+      + … + Covariate N</bold></p>
+      <p>Let’s translate this:</p>
+      <list list-type="bullet">
+        <list-item>
+          <p><bold>Trait:</bold> This is your outcome variable (the
+          “Y”). It could be disease status (case/control) or a
+          continuous measurement (like blood pressure).</p>
+        </list-item>
+        <list-item>
+          <p><bold>(tilde(波浪线))</bold>: Means “is modeled by” or “is
+          predicted by”.</p>
+        </list-item>
+        <list-item>
+          <p><bold>SNP Genotype:</bold> This is your main predictor of
+          interest (the “X”). The genotype is typically coded
+          numerically (e.g., 0, 1, or 2) based on the number of copies
+          of a specific allele an individual
+          has(基因型通常根据个体特定等位基因的拷贝数以数字形式编码).
+          This is called an <bold>additive model</bold>, and it’s the
+          standard for GWAS.</p>
+        </list-item>
+        <list-item>
+          <p><bold>Covariates:</bold> These are the other variables you
+          include in the model to control for confounding effects. You
+          must include covariates to get reliable results.</p>
+        </list-item>
+      </list>
+      <p><bold>The Crucial Role of Covariates:</bold>
+      Remember the principal components (PC1, PC2, etc.) we calculated
+      during the PCA step? This is where they become absolutely
+      essential. By including them in the model, <bold>you are
+      statistically controlling for any residual population structure.
+      Your model can then distinguish between a true association with
+      the trait and a false association driven by ancestry.</bold></p>
+      <p>Common covariates include:</p>
+      <list list-type="bullet">
+        <list-item>
+          <p><bold>Top 5-10 Principal Components</bold> (to control for
+          ancestry)(控制祖先)</p>
+        </list-item>
+        <list-item>
+          <p><bold>Age</bold> (if the trait is age-related)</p>
+        </list-item>
+        <list-item>
+          <p><bold>Sex</bold> (if the trait differs between sexes)</p>
+        </list-item>
+        <list-item>
+          <p>Any other relevant variables from your study (e.g., smoking
+          status, technical batch effects).</p>
+        </list-item>
+      </list>
+    </sec>
+    <sec id="part-2-choosing-the-right-test">
+      <title>Part 2: Choosing the Right Test</title>
+      <p>The specific type of regression model you use depends entirely
+      on your phenotype.</p>
+      <list list-type="bullet">
+        <list-item>
+          <p><bold>For Binary Traits (Case vs. Control):</bold> You will
+          use <italic><bold>Logistic Regression</bold>.</italic></p>
+          <list list-type="bullet">
+            <list-item>
+              <p><bold>The Question:</bold> Does the SNP genotype
+              predict the odds of an individual being a case versus a
+              control?</p>
+            </list-item>
+            <list-item>
+              <p><bold>The Output:</bold> The main result is an
+              <bold>Odds Ratio (OR)(比值比)</bold>, which tells you how
+              much the odds of having the disease increase (or decrease)
+              for each copy of the test allele.</p>
+            </list-item>
+          </list>
+        </list-item>
+        <list-item>
+          <p><bold>For Quantitative Traits (Height, BMI, Blood
+          Pressure):</bold> You will use <italic><bold>Linear
+          Regression</bold>.</italic></p>
+          <list list-type="bullet">
+            <list-item>
+              <p><bold>The Question:</bold> Does the SNP genotype
+              predict the value of the trait?</p>
+            </list-item>
+            <list-item>
+              <p><bold>The Output:</bold> The main result is a
+              <bold>Beta coefficient (β)</bold>, which tells you how
+              much the trait value changes for each copy of the test
+              allele (e.g., “each copy of the G allele is associated
+              with a 0.5 cm increase in height”).</p>
+            </list-item>
+          </list>
+        </list-item>
+      </list>
+    </sec>
+    <sec id="part-3-the-how---practical-implementation-with-plink">
+      <title>Part 3: The “How” - Practical Implementation with
+      PLINK</title>
+      <p>Let’s assume you are performing a case-control study for a
+      disease. You will use logistic regression.</p>
+      <list list-type="bullet">
+        <list-item>
+          <p><bold>Input Files:</bold></p>
+          <list list-type="order">
+            <list-item>
+              <p><monospace>FINAL_QC_DATA.bed/.bim/.fam</monospace>:
+              Your fully cleaned dataset from the previous QC steps.</p>
+            </list-item>
+            <list-item>
+              <p><monospace>gwas_pca.eigenvec</monospace>: The file
+              containing the principal components for each individual.
+              You will need to reformat this slightly to match PLINK’s
+              covariate file format (typically a header row with FID,
+              IID, PC1, PC2, etc.).</p>
+            </list-item>
+          </list>
+        </list-item>
+        <list-item>
+          <p><bold>The PLINK Command:</bold></p>
+          <p specific-use="wrapper">
+            <code language="bash">plink --bfile FINAL_QC_DATA \
+      --logistic \
+      --covar gwas_pca.eigenvec --covar-col-name PC1,PC2,PC3,PC4,PC5 \
+      --allow-no-sex \
+      --out my_gwas_results</code>
+          </p>
+        </list-item>
+        <list-item>
+          <p><bold>Command Breakdown:</bold></p>
+          <list list-type="bullet">
+            <list-item>
+              <p><monospace>--bfile FINAL_QC_DATA</monospace>: Specifies
+              your clean input dataset.</p>
+            </list-item>
+            <list-item>
+              <p><monospace>--logistic</monospace>: <bold>This is the
+              key flag that tells PLINK to perform a logistic regression
+              for a case-control trait.</bold> If you had a quantitative
+              trait, you would use –linear instead.</p>
+            </list-item>
+            <list-item>
+              <p><monospace>--covar gwas_pca.eigenvec</monospace>:
+              Specifies your covariate file.</p>
+            </list-item>
+            <list-item>
+              <p><monospace>--covar-col-name PC1,PC2,PC3,PC4,PC5</monospace>:
+              Tells PLINK exactly which columns from the covariate file
+              to use in the model. (Note: The exact flag might be
+              –covar-name in newer PLINK versions. Always check the
+              documentation).</p>
+            </list-item>
+            <list-item>
+              <p>-<monospace>-allow-no-sex</monospace>: A practical flag
+              that prevents the analysis from failing if some
+              individuals have missing sex information.</p>
+            </list-item>
+            <list-item>
+              <p><monospace>--out my_gwas_results:</monospace> Sets the
+              prefix for the output files.</p>
+            </list-item>
+          </list>
+        </list-item>
+      </list>
+      <p>PLINK will now iterate through every SNP in your .bim file, run
+      a logistic regression for that SNP against your phenotype
+      (adjusting for the covariates you provided), and record the
+      results.</p>
+    </sec>
+    <sec id="part-4-understanding-the-output---the-summary-statistics-file">
+      <title>Part 4: Understanding the Output - The Summary Statistics
+      File</title>
+      <p>The command will produce a file named
+      <monospace>my_gwas_results.assoc.logistic</monospace> (or
+      similar). This is your <bold>summary statistics file</bold>, and
+      it is the primary result of your entire GWAS. It’s a large text
+      file with one row for every SNP tested.</p>
+      <p>Here are the most important columns you will find inside:</p>
+      <table-wrap>
+        <table>
+          <colgroup>
+            <col width="33%" />
+            <col width="33%" />
+            <col width="33%" />
+          </colgroup>
+          <tbody>
+            <tr>
+              <td><bold>Column</bold></td>
+              <td><bold>Name</bold></td>
+              <td><bold>Description</bold></td>
+            </tr>
+            <tr>
+              <td>CHR</td>
+              <td>Chromosome</td>
+              <td>The chromosome the SNP is on.</td>
+            </tr>
+            <tr>
+              <td>SNP</td>
+              <td>SNP Identifier</td>
+              <td>The name of the SNP (e.g., rs123456).</td>
+            </tr>
+            <tr>
+              <td>BP</td>
+              <td>Base-pair Position</td>
+              <td>The physical position of the SNP on the
+              chromosome.</td>
+            </tr>
+            <tr>
+              <td>A1</td>
+              <td>Allele 1 (Effect Allele)</td>
+              <td>The allele for which the effect is reported. It’s
+              crucial to know which allele is being tested.</td>
+            </tr>
+            <tr>
+              <td>OR</td>
+              <td><bold>Odds Ratio</bold></td>
+              <td><bold>The effect size.</bold> OR &gt; 1 means A1 is
+              the risk allele. OR &lt; 1 means A1 is the protective
+              allele. OR = 1 means no effect.</td>
+            </tr>
+            <tr>
+              <td>STAT</td>
+              <td>Test Statistic</td>
+              <td>The Z-score or Wald statistic from the regression
+              model. A larger absolute value means a stronger
+              association.</td>
+            </tr>
+            <tr>
+              <td>P</td>
+              <td><bold>P-value</bold></td>
+              <td><bold>The statistical significance.</bold> The
+              probability of observing an association this strong or
+              stronger by pure chance, assuming no real effect.</td>
+            </tr>
+          </tbody>
+        </table>
+      </table-wrap>
+    </sec>
+    <sec id="part-5-defining-a-hit---the-genome-wide-significance-threshold">
+      <title>Part 5: Defining a “Hit” - The Genome-Wide Significance
+      Threshold</title>
+      <p>You have millions of p-values. You cannot simply use the old
+      standard of p &lt; 0.05. If you ran a million tests, you would
+      expect 50,000 “significant” results just by random chance! This is
+      the problem of <bold>multiple testing</bold>.</p>
+      <p>To correct for this, the genomics community has established the
+      <bold>genome-wide significance
+      threshold(基因组显著性阀值</bold>.</p>
+      <list list-type="bullet">
+        <list-item>
+          <p><bold>The Threshold:</bold> <bold>p &lt; 5 x 10⁻⁸</bold>
+          (or 0.00000005)</p>
+        </list-item>
+      </list>
+      <p><bold>Why this specific number?</bold> It’s a sophisticated
+      version of a Bonferroni correction. It accounts for the fact that
+      we are performing roughly one million independent tests on the
+      human genome (the number of “independent” blocks of SNPs in
+      populations of European ancestry). A standard Bonferroni
+      correction would be 0.05 / 1,000,000 = 5 x 10⁻⁸.</p>
+      <p>Any SNP in your
+      <monospace>my_gwas_results.assoc.logistic</monospace> file with a
+      p-value <bold>below 5 x 10⁻⁸</bold> i<bold>s considered a
+      “genome-wide significant hit” and is a strong candidate for being
+      genuinely associated with your disease.</bold></p>
+      <p>Your next steps in the post-GWAS analysis will be to visualize
+      these results (with Manhattan and Q-Q plots) and investigate the
+      biological function of these significant “hits.”</p>
+    </sec>
+    <sec id="visualization">
+      <title>Visualization</title>
+    </sec>
+    <sec id="part-1-the-manhattan-plot曼哈顿图---visualizing-your-results">
+      <title>Part 1: The Manhattan Plot(曼哈顿图) - Visualizing Your
+      Results</title>
+      <sec id="the-concept">
+        <title>The Concept</title>
+        <p>A Manhattan plot is a scatter plot for all the SNPs in your
+        GWAS.</p>
+        <p>By the way ,the reason why it was named the Manhattan
+        Plot.why you see this picture</p>
+        <graphic mimetype="image" mime-subtype="png" xlink:href="images/209780549-54a24fdd-485b-4875-8f40-d6812eb644fe.png" />
+        <p> It was a cloudy and misty day. Those birds formed a
+        significance threshold line. And the skyscrapers above that line
+        resembled the significant signals in your GWAS. I believe you
+        could easily get how the GWAS Manhattan plot was named.</p>
+        <graphic mimetype="image" mime-subtype="png" xlink:href="images/292832626-2aacd0b4-4a4a-485b-97bd-8548679f19e0.png" />
+        <list list-type="bullet">
+          <list-item>
+            <p><bold>The X-axis:</bold> The genomic coordinates. All the
+            chromosomes are laid out end-to-end, from chromosome 1 to
+            22.</p>
+          </list-item>
+          <list-item>
+            <p><bold>The Y-axis:</bold> The level of statistical
+            significance for each SNP. To make the most significant
+            results stand out, we don’t plot the p-value directly.
+            Instead, we plot the <bold>-log₁₀(P-value)</bold>.</p>
+          </list-item>
+        </list>
+        <p><bold>Why -log₁₀(P-value)?</bold>
+        This transformation is purely for visualization. A very small,
+        highly significant p-value (e.g., 1x10⁻¹⁰) becomes a very large
+        number (-log₁₀(10⁻¹⁰) = 10), making it appear high up on the
+        plot. A non-significant p-value (e.g., 0.5) becomes a small
+        number (-log₁₀(0.5) = 0.3). This stretches the top of the plot
+        where the interesting results are.</p>
+        <p>The plot gets its name because the significant results look
+        like “skyscrapers” rising from the city skyline of
+        Manhattan.</p>
+      </sec>
+      <sec id="what-to-look-for">
+        <title>What to Look For</title>
+        <list list-type="order">
+          <list-item>
+            <p><bold>The Significance Line:</bold> We draw a
+            <bold>horizontal line across the plot at the genome-wide
+            significance threshold.</bold> This line is at
+            <bold>-log₁₀(5x10⁻⁸) ≈ 7.3</bold>.</p>
+          </list-item>
+          <list-item>
+            <p><bold>The “Towers” or “Skyscrapers”:</bold> Any SNP that
+            crosses this line is a <bold>genome-wide significant
+            hit</bold>. You will typically see that it’s not just one
+            SNP, but a whole cluster of nearby SNPs that are highly
+            significant. This “tower” represents a single <bold>genetic
+            locus</bold> associated with your trait. The SNP at the very
+            peak of the tower is your “lead SNP” for that locus.</p>
+          </list-item>
+        </list>
+      </sec>
+      <sec id="how-to-create-it-using-r-and-qqman">
+        <title>How to Create It (Using R and qqman)</title>
+        <p>First, you need to install and load the qqman package in
+        R.</p>
+        <code language="r script"># install.packages(&quot;qqman&quot;)
+# Run this once if you don't have it 
+library(qqman) 
+library(dplyr) # Useful for data manipulation</code>
+        <p>Next, you load your GWAS results file. The qqman package
+        requires specific column names: SNP, CHR, BP, and P. Your PLINK
+        output might have different names, so we often rename them.</p>
+        <code language="r script"># Read the PLINK logistic regression output file
+results &lt;- read.table(&quot;my_gwas_results.assoc.logistic&quot;, header = TRUE)
+
+# The PLINK output columns are CHR, SNP, BP, P. qqman expects these names.
+# If your column names were different, you would rename them here.
+# For example: results_renamed &lt;- rename(results, SNP = snp_name, P = p_value)
+
+# Create the Manhattan plot
+manhattan(results)</code>
+        <p>This simple command will generate a classic Manhattan plot.
+        You can customize it with titles and highlight specific
+        SNPs.</p>
+      </sec>
+    </sec>
+    <sec id="part-2-the-q-q-plot---a-critical-diagnostic-check">
+      <title>Part 2: The Q-Q Plot - A Critical Diagnostic Check</title>
+      <p>Before you get too excited about the hits on your Manhattan
+      plot, you must perform a sanity check on your overall results
+      using a Q-Q plot. This plot tells you if your statistical test was
+      well-behaved or if it was biased by a hidden confounder.</p>
+      <graphic mimetype="image" mime-subtype="png" xlink:href="images/292832258-40ad5aff-5ac5-4cd0-b9c2-077c0ce20e46.png" />
+      <sec id="the-concept-1">
+        <title>The Concept</title>
+        <p>A Q-Q (Quantile-Quantile) plot compares the distribution of
+        your observed p-values against the distribution of p-values you
+        would expect to see by pure chance (the “null hypothesis”).</p>
+        <list list-type="bullet">
+          <list-item>
+            <p><bold>The X-axis:</bold> The <italic>expected
+            -log₁₀(P-values) if no SNP was truly associated with the
+            disease.</italic></p>
+          </list-item>
+          <list-item>
+            <p><bold>The Y-axis:</bold> Your <italic>observed
+            -log₁₀(P-values) from your actual data, sorted from smallest
+            to largest.</italic></p>
+          </list-item>
+        </list>
+      </sec>
+      <sec id="how-to-interpret-the-q-q-plot-this-is-crucial">
+        <title>How to Interpret the Q-Q Plot (This is Crucial)</title>
+        <list list-type="order">
+          <list-item>
+            <p><bold>The Diagonal Line(对角线) (y=x):</bold> A straight
+            diagonal line represents the null hypothesis. The vast
+            majority of SNPs in your study are not associated with the
+            disease, so their p-values should be randomly distributed
+            and fall along this line.</p>
+          </list-item>
+          <list-item>
+            <p><bold>The Ideal “Good” Plot:</bold> A healthy Q-Q plot
+            shows points hugging(紧贴) the diagonal line for almost its
+            entire length. At the very end (the top right), the points
+            will curve upwards, departing from the line. This is the
+            perfect picture: it shows that most of your million p-values
+            are behaving as expected (no association), while a small
+            number of SNPs are far more significant than expected by
+            chance. <bold>These are your true signals.</bold></p>
+          </list-item>
+          <list-item>
+            <p><bold>The “Bad” Plot (Genomic Inflation):</bold> A major
+            red flag is when the observed p-values <bold>systematically
+            deviate</bold> from the diagonal line early on. The entire
+            cloud of points will appear shifted upwards, off the
+            diagonal. This is called <bold>p-value inflation</bold> and
+            indicates that your p-values are, on average, smaller than
+            they should be across the whole genome.</p>
+            <list list-type="bullet">
+              <list-item>
+                <p><bold>The Cause:</bold> The number one cause of this
+                is uncorrected population stratification. <bold>It means
+                your PCA covariates were not sufficient to control for
+                all the ancestry differences between your cases and
+                controls.</bold></p>
+              </list-item>
+              <list-item>
+                <p><bold>The Fix:</bold> If you see this, you cannot
+                trust your results. You must go back to your association
+                analysis and include more principal components as
+                covariates (e.g., use the top 10 PCs instead of the top
+                5).</p>
+              </list-item>
+            </list>
+          </list-item>
+        </list>
+      </sec>
+      <sec id="how-to-create-it-using-r-and-qqman-1">
+        <title>How to Create It (Using R and qqman)</title>
+        <p>The qqman package makes this incredibly simple.</p>
+        <code language="r script"># Assuming you have already loaded your 'results' table from the step above
+
+# Create the Q-Q plot
+qq(results$P)</code>
+        <p>This one command will generate the Q-Q plot and also
+        calculate and display a value called <bold>lambda (λ)</bold>.
+        This “genomic inflation factor” quantifies the deviation. A
+        lambda value very close to 1.0 (e.g., 1.01) is perfect. A value
+        &gt; 1.05 is a strong sign of inflation that needs to be
+        addressed.</p>
+      </sec>
+    </sec>
+  </sec>
+  <sec id="variant-annotation-test">
+    <title>Variant Annotation Test 🤯</title>
+    <p>This is the process where we move from a simple statistical fact
+    (rs123456 on chromosome 1 is significant) to a <bold>potential
+    biological story</bold> (rs123456 disrupts a binding site for a key
+    transcription factor, which may alter the expression of the nearby
+    gene ABC, a known player in immune response).</p>
+    <p>The fundamental goal of annotation is to attach biological
+    information to your list of significant SNPs to generate hypotheses
+    about how they might influence the disease or trait.</p>
+    <sec id="part-1-the-why---most-gwas-hits-are-not-obvious">
+      <title>Part 1: The “Why” - Most GWAS Hits Are Not Obvious</title>
+      <p>A common misconception is that a GWAS will point directly to a
+      “smoking gun(确凿证据)” mutation inside a gene that breaks a
+      protein. The reality, revealed by thousands of GWAS, is that
+      <bold>over 90% of significant GWAS hits fall in non-coding regions
+      of the genome</bold> (introns or the vast spaces between
+      genes).</p>
+      <p>This means they <bold>don’t change the protein sequence
+      directly</bold>. Instead, they are much more likely to affect
+      <bold>gene regulation</bold>—the complex system that controls
+      when, where, and how much of a gene is turned on or off.
+      Annotation is our key to deciphering these regulatory effects.</p>
+    </sec>
+    <sec id="part-2-the-types-of-annotation---what-information-are-we-looking-for">
+      <title>Part 2: The Types of Annotation - What Information Are We
+      Looking For?</title>
+      <p>We layer different kinds of information onto our SNPs. Here are
+      the key questions we ask, from most to least direct in their
+      functional implication.</p>
+      <sec id="location-and-consequence-on-the-gene">
+        <title>2.1. Location and Consequence on the Gene</title>
+        <p>This is the first and most basic level of annotation. We
+        determine where the SNP is located relative to known genes.</p>
+        <list list-type="bullet">
+          <list-item>
+            <p><bold>Intergenic(基因间):</bold> The SNP is in the space
+            between genes.</p>
+          </list-item>
+          <list-item>
+            <p><bold>Intronic(内含子):</bold> The SNP is inside a gene
+            but in an intron (a non-coding section that is spliced out
+            before the protein is made).</p>
+          </list-item>
+          <list-item>
+            <p><bold>Exonic(外显子):</bold> The SNP is in an exon—a part
+            of the gene that directly codes for the protein. This is a
+            very interesting result and leads to a second, more critical
+            question: what is its consequence?</p>
+            <list list-type="bullet">
+              <list-item>
+                <p><bold>Synonymous(同义突变):</bold> The SNP changes
+                the DNA code, but the resulting amino acid in the
+                <bold>protein is the same</bold>. Usually considered a
+                low-impact change.</p>
+              </list-item>
+              <list-item>
+                <p><bold>Nonsynonymous (or
+                Missense)(非同义或者错配):</bold> This is a key finding.
+                The SNP changes the amino acid sequence. This could
+                <bold>alter the protein’s structure, stability, or
+                function</bold>.</p>
+              </list-item>
+              <list-item>
+                <p><bold>Nonsense (Stop Gained)(无义):</bold> A very
+                high-impact result. The SNP introduces a
+                <bold>premature(过早) “stop” signal,</bold> causing the
+                protein to be truncated and likely non-functional.</p>
+              </list-item>
+              <list-item>
+                <p><bold>Frameshift(移码):</bold> An insertion or
+                deletion that alters the entire downstream reading frame
+                of the protein. Also a very high-impact, often
+                disease-causing, mutation.</p>
+              </list-item>
+            </list>
+          </list-item>
+        </list>
+      </sec>
+      <sec id="regulatory-function">
+        <title>2.2. Regulatory Function</title>
+        <p>Since most <bold>hits are non-coding</bold>, this is often
+        the most important category for GWAS. We check if our SNP falls
+        within a region of the genome known to have a regulatory
+        role.</p>
+        <list list-type="bullet">
+          <list-item>
+            <p><bold>Promoters/Enhancers(启动子或者增强子):</bold> Does
+            the SNP lie in a DNA region that acts as a switch to turn a
+            nearby gene on or off?</p>
+          </list-item>
+          <list-item>
+            <p><bold>Transcription Factor Binding Sites
+            (TFBS)(转录因子结合位点):</bold> Does the SNP alter a
+            specific DNA sequence where a transcription factor (a
+            protein that regulates gene expression) is known to bind? If
+            the SNP changes the “landing pad,” the factor may not be
+            able to bind, altering the gene’s regulation.</p>
+          </list-item>
+          <list-item>
+            <p><bold>eQTL (expression Quantitative Trait
+            Locus)(表达数量性状位点):</bold> This is a powerful form of
+            evidence. An eQTL is a SNP that is known to be associated
+            with the expression level of a gene (often a nearby one). If
+            your disease-associated SNP is also a known eQTL for gene
+            ABC, it provides a direct, testable hypothesis: the SNP
+            influences disease risk by changing the amount of ABC
+            protein being made.</p>
+          </list-item>
+        </list>
+      </sec>
+      <sec id="conservation-population-and-clinical-data">
+        <title>2.3. Conservation, Population, and Clinical Data</title>
+        <list list-type="bullet">
+          <list-item>
+            <p><bold>Conservation Score:</bold> Is this specific spot in
+            the genome highly conserved (unchanged) across many
+            different species (e.g., from humans to mice to fish)? High
+            conservation suggests the region is functionally
+            important.</p>
+          </list-item>
+          <list-item>
+            <p><bold>Allele Frequencies:</bold> How common is the risk
+            allele in different global populations? (e.g., from the
+            gnomAD database).</p>
+          </list-item>
+          <list-item>
+            <p><bold>Clinical Significance:</bold> Has this exact
+            variant already been reported in a clinical setting and
+            cataloged in a database like <bold>ClinVar</bold> as being
+            pathogenic or benign?</p>
+          </list-item>
+        </list>
+      </sec>
+    </sec>
+    <sec id="part-3-the-how---tools-of-the-trade">
+      <title>Part 3: The “How” - Tools of the Trade</title>
+      <p>You do not do this by hand. You use powerful, automated
+      bioinformatics tools that have access to massive databases (like
+      Ensembl, UCSC, ENCODE, and dbSNP).</p>
+      <p>The most widely used tool for this is the <bold>Ensembl Variant
+      Effect Predictor (VEP)</bold>. Another very popular tool is
+      <bold>ANNOVAR</bold>.</p>
+    </sec>
+    <sec id="the-need-for-conversion-why-vcf">
+      <title>The Need for Conversion: Why VCF?</title>
+      <p>First, why do we need to convert? Why can’t we just feed the
+      annotation tool our PLINK files or our summary statistics
+      file?</p>
+      <list list-type="bullet">
+        <list-item>
+          <p><bold>VCF is the Universal Standard:</bold> The Variant
+          Call Format (VCF) is the <bold>gold-standard</bold> format for
+          storing and sharing genetic variant information. Almost every
+          modern genomics tool (including the Ensembl VEP) is designed
+          to read VCF files as its primary input.</p>
+        </list-item>
+        <list-item>
+          <p><bold>VCF Contains Essential Allele Information:</bold> A
+          VCF file explicitly states which allele is the <bold>Reference
+          Allele</bold> (the one found in the reference human genome)
+          and which is the <bold>Alternative Allele</bold>. This REF/ALT
+          information is absolutely critical for annotation tools to
+          determine the functional consequence of a variant. PLINK’s
+          format is more focused on the genotypes (A1/A2), which is
+          perfect for association testing but less explicit for
+          annotation.</p>
+        </list-item>
+        <list-item>
+          <p><bold>Efficiency:</bold> You do not want to annotate all 8
+          million SNPs that went into your GWAS. That would be
+          computationally massive and unnecessary. You only want to
+          annotate the handful of SNPs that are statistically
+          significant.</p>
+        </list-item>
+      </list>
+      <p>Therefore, the workflow involves two steps:</p>
+      <list list-type="order">
+        <list-item>
+          <p>Isolate your significant SNPs.</p>
+        </list-item>
+        <list-item>
+          <p>Convert just those SNPs from your final QC’d PLINK fileset
+          into a VCF file.</p>
+        </list-item>
+      </list>
+    </sec>
+    <sec id="practical-workflow-from-plink-bed-to-vcf">
+      <title>Practical Workflow: From PLINK BED to VCF</title>
+      <p>Let’s assume you have your final, clean PLINK fileset
+      named FINAL_QC_DATA and your summary statistics file
+      named <monospace>my_gwas_results.assoc.logistic.</monospace></p>
+      <sec id="step-1-create-a-list-of-significant-snps">
+        <title>Step 1: Create a List of Significant SNPs</title>
+        <p>Your first task is to create a simple text file that contains
+        only the IDs (rsIDs) of the SNPs that passed the genome-wide
+        significance threshold.</p>
+        <p>You can do this using a command-line tool like awk or a
+        simple script in R or Python. Here is the awk method, which is
+        very fast:</p>
+        <code language="bash"># This command reads the results file, skips the header (NR&gt;1),
+# checks if the p-value in the last column ($9 for PLINK1.9 logistic) is less than 5e-8,
+# and if it is, it prints the SNP ID from the second column ($2).
+# The output is saved to a new file.
+
+awk 'NR&gt;1 &amp;&amp; $9 &lt; 5e-8 {print $2}' my_gwas_results.assoc.logistic &gt; significant_snps.txt</code>
+        <list list-type="bullet">
+          <list-item>
+            <p><bold>my_gwas_results.assoc.logistic</bold>: Your input
+            summary statistics file.</p>
+          </list-item>
+          <list-item>
+            <p><bold>significant_snps.txt</bold>: Your output file. This
+            file will be a simple, one-column list of rsIDs, like
+            this:</p>
+            <p>codeCode</p>
+            <p specific-use="wrapper">
+              <preformat>rs123456
+rs789012
+rs333444
+...</preformat>
+            </p>
+          </list-item>
+        </list>
+      </sec>
+      <sec id="step-2-use-plink-to-extract-and-convert-the-snps">
+        <title>Step 2: Use PLINK to Extract and Convert the SNPs</title>
+        <p>Now that you have your “shopping list” of SNPs, you can use
+        PLINK to go back to your high-quality genotype data, pull out
+        just those SNPs, and write them in VCF format.</p>
+        <list list-type="bullet">
+          <list-item>
+            <p><bold>The Tool:</bold> PLINK (version 1.9 or, even
+            better, version 2.0).</p>
+          </list-item>
+          <list-item>
+            <p><bold>The Command:</bold></p>
+            <p specific-use="wrapper">
+              <code language="bash">plink --bfile FINAL_QC_DATA \
+      --extract significant_snps.txt \
+      --recode vcf \
+      --out my_gwas_hits</code>
+            </p>
+          </list-item>
+          <list-item>
+            <p><bold>Command Breakdown:</bold></p>
+            <list list-type="bullet">
+              <list-item>
+                <p><monospace>--bfile FINAL_QC_DATA</monospace>:
+                Specifies your final, clean PLINK binary fileset as the
+                source of the genetic data.</p>
+              </list-item>
+              <list-item>
+                <p><monospace>--extract significant_snps.txt</monospace>:
+                This is the key filter. It tells PLINK to only operate
+                on the SNPs listed in this file.</p>
+              </list-item>
+              <list-item>
+                <p><monospace>--recode vcf</monospace>: This is the main
+                action command. It tells PLINK to write the output in
+                VCF format.</p>
+              </list-item>
+              <list-item>
+                <p><monospace>--out my_gwas_hits</monospace>: Specifies
+                the prefix for the output file.</p>
+              </list-item>
+            </list>
+          </list-item>
+        </list>
+      </sec>
+      <sec id="step-3-the-output---your-vcf-file">
+        <title>Step 3: The Output - Your VCF File</title>
+        <p>This command will produce the file you need for annotation:
+        <italic><bold><monospace>my_gwas_hits.vcf</monospace></bold><monospace>.</monospace></italic></p>
+        <p>If you open this file in a text editor, you will see it has
+        two parts:</p>
+        <list list-type="order">
+          <list-item>
+            <p><bold>The Header:</bold> Many lines starting with ## that
+            contain metadata about the file, the reference genome, and
+            definitions for the columns.</p>
+          </list-item>
+          <list-item>
+            <p><bold>The Data:</bold> A single header line starting with
+            #CHROM followed by the data for each of your significant
+            SNPs, one per line.</p>
+          </list-item>
+        </list>
+        <p>The crucial columns that VEP will use are:</p>
+        <list list-type="bullet">
+          <list-item>
+            <p><italic>#CHROM</italic>: Chromosome (e.g., 1)</p>
+          </list-item>
+          <list-item>
+            <p><italic>POS</italic>: Position (e.g., 752566)</p>
+          </list-item>
+          <list-item>
+            <p><italic>ID</italic>: Your SNP Identifier (e.g.,
+            rs123456)</p>
+          </list-item>
+          <list-item>
+            <p><italic>REF</italic>: The Reference Allele (e.g., A)</p>
+          </list-item>
+          <list-item>
+            <p><italic>ALT</italic>: The Alternative Allele (e.g.,
+            G)</p>
+          </list-item>
+        </list>
+        <p>This my_gwas_hits.vcf file is now perfectly formatted to be
+        used as the input for the Variant Effect Predictor (VEP) or any
+        other standard annotation tool.</p>
+        <p><bold>An Important Caveat (A Real-World “Gotcha”):</bold>
+        PLINK 1.9 sometimes has trouble knowing which allele is REF and
+        which is ALT because the .bim file format doesn’t inherently
+        store that information relative to a reference genome. When it
+        creates the VCF, it might make a guess. Modern tools like
+        <bold>PLINK 2.0</bold> and its .pgen format handle this much
+        more robustly. For precise work, it’s always good practice to
+        double-check that the REF allele in your VCF file matches the
+        actual reference genome (like GRCh38), but for a standard
+        workflow, the PLINK conversion is the accepted and correct first
+        step.</p>
+        <p><bold>Workflow using VEP:</bold></p>
+        <p><bold>Step 1: Prepare Your Input File</bold></p>
+        <p>First, you need to isolate your top hits. You will filter
+        your summary statistics file to get a list of independent,
+        genome-wide significant SNPs. For each SNP, you need the
+        following information: Chromosome, Position, ID (rsID),
+        Reference Allele, and Alternative Allele. This is often
+        formatted into a standard file type called a <bold>VCF (Variant
+        Call Format)</bold> file.</p>
+        <p><bold>Step 2: Run the Annotation Tool</bold></p>
+        <p>You can use the VEP web interface for a small number of SNPs,
+        but for a real project, you use the command-line version.</p>
+        <p>A typical VEP command might look like this:</p>
+        <code language="bash">vep --input_file my_gwas_hits.vcf \
+    --output_file annotated_hits.tsv \
+    --cache \
+    --force_overwrite \
+    --tab \
+    --sift b \
+    --polyphen b \
+    --symbol \
+    --numbers \
+    --regulatory</code>
+        <list list-type="bullet">
+          <list-item>
+            <p>This command takes your VCF file
+            (<monospace>my_gwas_hits.vcf</monospace>) as input.</p>
+          </list-item>
+          <list-item>
+            <p>It uses a local cache of data
+            (<monospace>--cache</monospace>) for speed.</p>
+          </list-item>
+          <list-item>
+            <p>It outputs a tab-separated file
+            (<monospace>--tab</monospace>).</p>
+          </list-item>
+          <list-item>
+            <p>Crucially, it adds information from various sources:</p>
+            <list list-type="bullet">
+              <list-item>
+                <p><monospace>--sift b</monospace> and
+                <monospace>--polyphen b</monospace>: These are two tools
+                that predict how damaging a missense mutation is likely
+                to be to the protein.</p>
+              </list-item>
+              <list-item>
+                <p><monospace>--symbol:</monospace> Adds the official
+                gene symbol.</p>
+              </list-item>
+              <list-item>
+                <p>-<monospace>-regulatory</monospace>: This is a key
+                flag! It overlays information about known regulatory
+                elements from the Ensembl Regulatory Build.</p>
+              </list-item>
+            </list>
+          </list-item>
+        </list>
+        <p><bold>Step 3: Interpret the Output</bold></p>
+        <p>The output (<monospace>annotated_hits.tsv</monospace>) will
+        be a rich table with many columns. Your job is to be a detective
+        and sift through this information to find the most compelling
+        biological story for each of your top hits.</p>
+        <p>You would create a summary table for your paper or report,
+        highlighting the key findings for each significant locus:</p>
+        <list list-type="bullet">
+          <list-item>
+            <p><bold>Lead SNP:</bold> rs123456</p>
+          </list-item>
+          <list-item>
+            <p><bold>Gene:</bold> IRF5 (or “intergenic, nearest gene is
+            IRF5”)</p>
+          </list-item>
+          <list-item>
+            <p><bold>Consequence:</bold> Intronic</p>
+          </list-item>
+          <list-item>
+            <p><bold>Annotation:</bold> “Overlaps with an enhancer
+            element active in T-cells. Is a known eQTL for IRF5.”</p>
+          </list-item>
+          <list-item>
+            <p><bold>Hypothesis:</bold> This variant may alter enhancer
+            activity, leading to misregulation of IRF5 expression in
+            T-cells, contributing to disease risk.</p>
+          </list-item>
+        </list>
+      </sec>
+    </sec>
+  </sec>
+  <sec id="advanced-process">
+    <title>❤️Advanced Process 🤠</title>
+    <sec id="part-1-fine-mapping---pinpointing-the-causal-variant精确定位因果变量">
+      <title>Part 1: Fine-Mapping - Pinpointing the Causal
+      Variant(精确定位因果变量)</title>
+      <sec id="section-1.1-the-core-problem-revisited---why-we-need-fine-mapping">
+        <title>Section 1.1: The Core Problem Revisited - Why We Need
+        Fine-Mapping</title>
+        <p>When your GWAS identifies a significant locus, your Manhattan
+        plot shows a “tower” of SNPs. This happens because of
+        <bold>Linkage Disequilibrium (LD)(连锁不平衡)</bold>.</p>
+        <p>Imagine a segment of a chromosome is like a “block” of text
+        that is almost always inherited as a single unit without being
+        broken up by recombination.</p>
+        <list list-type="bullet">
+          <list-item>
+            <p>Let’s say a single SNP within this block—we’ll call it
+            the <bold>Causal Variant (CV)</bold>—is the one that
+            actually has a biological effect on the disease. For
+            instance, it might disrupt a transcription factor binding
+            site.</p>
+          </list-item>
+          <list-item>
+            <p>Now, imagine there are 100 other “passenger” SNPs in this
+            same inherited block. These SNPs have no biological function
+            themselves, but because they are always “hitchhiking” with
+            the CV, they will show almost the same statistical
+            association with the disease.</p>
+          </list-item>
+        </list>
+        <p>The GWAS result (the p-value) cannot tell these SNPs apart.
+        It’s like seeing a car speeding down the highway; you know the
+        car is moving fast, but you don’t know who is actually pressing
+        the accelerator. The lead SNP from your GWAS (the one with the
+        lowest p-value) is simply the most visible passenger in the car,
+        but it might not be the driver.</p>
+        <p><bold>The goal of fine-mapping is to computationally identify
+        the most likely driver.</bold></p>
+      </sec>
+      <sec id="section-1.2-the-inputs---what-you-need-to-get-started">
+        <title>Section 1.2: The Inputs - What You Need to Get
+        Started</title>
+        <p>To perform statistical fine-mapping, you need two critical
+        pieces of information for the specific genomic region you want
+        to analyze (e.g., Chromosome 8, positions 12,000,000 to
+        12,500,000).</p>
+        <list list-type="order">
+          <list-item>
+            <p><bold>Your GWAS Summary Statistics for the
+            Locus:</bold></p>
+            <list list-type="bullet">
+              <list-item>
+                <p>This is a subset of your main GWAS results file. For
+                every SNP in the region, you need:</p>
+                <list list-type="bullet">
+                  <list-item>
+                    <p>SNP ID (rsID)</p>
+                  </list-item>
+                  <list-item>
+                    <p>Effect allele</p>
+                  </list-item>
+                  <list-item>
+                    <p><bold>Effect size (Beta or Odds Ratio)</bold></p>
+                  </list-item>
+                  <list-item>
+                    <p><bold>Standard Error (SE) of the effect
+                    size</bold> (This is crucial as it represents the
+                    uncertainty of the estimate)</p>
+                  </list-item>
+                </list>
+              </list-item>
+              <list-item>
+                <p>The Z-score (Beta / SE) is often used as the primary
+                input statistic.</p>
+              </list-item>
+            </list>
+          </list-item>
+          <list-item>
+            <p><bold>A High-Quality LD Matrix:</bold></p>
+            <list list-type="bullet">
+              <list-item>
+                <p>This is a large table (a square matrix) that
+                describes the correlation (r²) between every pair of
+                SNPs in your chosen locus.</p>
+              </list-item>
+              <list-item>
+                <p><bold>Crucially, this LD information CANNOT be
+                calculated from your own study cohort.</bold> This is
+                because the correlations in your cohort are distorted by
+                the case-control status (a phenomenon called “non-random
+                sampling”).</p>
+              </list-item>
+              <list-item>
+                <p>You <bold>must</bold> use an external <bold>reference
+                panel</bold> of individuals whose ancestry closely
+                matches your study population. Common choices
+                include:</p>
+                <list list-type="bullet">
+                  <list-item>
+                    <p><bold>The 1000 Genomes Project:</bold> A good,
+                    publicly available resource with diverse
+                    populations.</p>
+                  </list-item>
+                  <list-item>
+                    <p><bold>UK Biobank:</bold> An excellent,
+                    high-quality reference for European ancestry
+                    populations.</p>
+                  </list-item>
+                </list>
+              </list-item>
+              <list-item>
+                <p>Tools like ldstore or PLINK can be used to calculate
+                this matrix from the reference panel’s raw genotype
+                data.</p>
+              </list-item>
+            </list>
+          </list-item>
+        </list>
+      </sec>
+      <sec id="section-1.3-the-method---how-the-algorithms-think">
+        <title>Section 1.3: The Method - How the Algorithms
+        “Think”</title>
+        <p>The most popular and powerful fine-mapping methods today are
+        based on a <bold>Bayesian statistical framework</bold>. Let’s
+        conceptually walk through how a tool like <bold>FINEMAP</bold>
+        or <bold>SuSiE</bold> works.</p>
+        <p><bold>The Underlying Assumption:</bold> For most GWAS loci,
+        we assume there is likely only <bold>one</bold> (or maybe a
+        small number) of true causal variants within the region.</p>
+        <p><bold>The Process:</bold></p>
+        <list list-type="order">
+          <list-item>
+            <p><bold>Hypothesis Generation:</bold> The algorithm
+            systematically generates thousands of possible hypotheses.
+            For example:</p>
+            <list list-type="bullet">
+              <list-item>
+                <p>Hypothesis 1: rs123 is the causal variant, and all
+                other signals are just due to LD with it.</p>
+              </list-item>
+              <list-item>
+                <p>Hypothesis 2: rs456 is the causal variant, and all
+                other signals are just due to LD with it.</p>
+              </list-item>
+              <list-item>
+                <p>…and so on for every SNP in the region.</p>
+              </list-item>
+              <list-item>
+                <p>More advanced models (like SuSiE) can also test
+                hypotheses with multiple causal variants (e.g., “rs123
+                and rs789 are both causal”).</p>
+              </list-item>
+            </list>
+          </list-item>
+          <list-item>
+            <p><bold>Likelihood Calculation:</bold> For each hypothesis,
+            the algorithm calculates a likelihood. It asks: “Given the
+            LD matrix, if Hypothesis 1 were true, what pattern of
+            Z-scores would we expect to see across all the SNPs? And how
+            closely does that expected pattern match the actual Z-scores
+            from our GWAS summary statistics?” A hypothesis that
+            provides a better “fit” to the observed data is given a
+            higher likelihood.</p>
+          </list-item>
+          <list-item>
+            <p><bold>Posterior Probability Calculation(后验概率):</bold>
+            Using Bayesian principles, the algorithm converts these
+            likelihoods into <bold>posterior probabilities</bold>. The
+            <bold>Posterior Inclusion Probability (PIP)</bold> for a
+            given SNP is the sum of the probabilities of all the
+            hypotheses in which that SNP was considered causal. The PIP
+            represents the model’s confidence—on a scale from 0 to
+            1—that a specific SNP is the causal variant.</p>
+          </list-item>
+        </list>
+      </sec>
+      <sec id="section-1.4-the-output---the-credible-set">
+        <title>Section 1.4: The Output - The “Credible Set”</title>
+        <p>The final, actionable output of the fine-mapping process is
+        the <bold>credible set</bold>.</p>
+        <list list-type="bullet">
+          <list-item>
+            <p><bold>How it’s created:</bold> The software lists all the
+            SNPs in the region, ranked by their PIP. It then starts from
+            the top and sums the PIPs until the total reaches a certain
+            threshold, typically 95%.</p>
+          </list-item>
+          <list-item>
+            <p><bold>What it means:</bold> The 95% credible set is the
+            smallest group of SNPs that together have a 95% probability
+            of containing the true causal variant.</p>
+          </list-item>
+          <list-item>
+            <p><bold>The Impact:</bold> This is a massive leap forward
+            from the original GWAS result. You might start with a locus
+            containing 300 SNPs that are all statistically significant.
+            A successful fine-mapping analysis might produce a 95%
+            credible set containing only <bold>four</bold> SNPs.</p>
+          </list-item>
+        </list>
+        <p><bold>Example Outcome:</bold></p>
+        <list list-type="bullet">
+          <list-item>
+            <p><bold>Before Fine-Mapping:</bold> “The locus at 8q24 is
+            associated with the disease (lead SNP rs6983267, P =
+            1x10⁻¹⁵).”</p>
+          </list-item>
+          <list-item>
+            <p><bold>After Fine-Mapping:</bold> “The 95% credible set
+            for the 8q24 locus contains four variants: rs6983267 (PIP =
+            0.52), rs7000448 (PIP = 0.21), rs10808556 (PIP = 0.15), and
+            rs10505477 (PIP = 0.08).”</p>
+          </list-item>
+        </list>
+        <p>This tells experimental biologists that instead of studying
+        hundreds of variants, they should focus their efforts on these
+        four specific candidates, dramatically increasing the efficiency
+        of their research. The next step would be to annotate just these
+        four SNPs to see if one has a particularly compelling biological
+        function.</p>
+      </sec>
+    </sec>
+  </sec>
+  <sec id="polygenic-risk-scoresprs多基因风险评分">
+    <title>Polygenic Risk Scores(PRS)(多基因风险评分)🙄</title>
+    <sec id="part-2-polygenic-risk-scores-prs">
+      <title>Part 2: Polygenic Risk Scores (PRS)</title>
+      <sec id="section-2.1-the-core-concept---the-polygenic-architecture-of-disease">
+        <title>Section 2.1: The Core Concept - The Polygenic
+        Architecture of Disease</title>
+        <p>For decades, genetic research focused on finding
+        <bold><italic>single genes</italic></bold> with large effects
+        (e.g., the BRCA1 gene for breast cancer or the CFTR gene for
+        cystic fibrosis). These are called
+        <bold>monogenic(单基因)</bold> diseases.</p>
+        <p>However, GWAS has definitively shown us that most common,
+        complex diseases and traits (like heart disease, type 2
+        diabetes, schizophrenia(精神分裂症), height, and blood pressure)
+        are <bold>polygenic</bold>. This means:</p>
+        <list list-type="bullet">
+          <list-item>
+            <p>They are influenced by <bold>thousands to millions</bold>
+            of genetic variants across the entire genome.</p>
+          </list-item>
+          <list-item>
+            <p>The effect of each individual variant is
+            <bold>minuscule(非常小)</bold>. An odds ratio of 1.05 (a 5%
+            increase in odds) is typical for a single SNP.</p>
+          </list-item>
+          <list-item>
+            <p>No single variant is necessary or sufficient to cause the
+            disease. Instead, it’s the <bold>cumulative
+            burden(累积负担)</bold> of many small-effect risk alleles
+            that determines an individual’s genetic
+            predisposition(易感性).</p>
+          </list-item>
+        </list>
+        <p>The goal of a Polygenic Risk Score is to capture and quantify
+        this cumulative genetic burden. It aggregates all these tiny
+        effects into a single, easy-to-understand number that represents
+        an individual’s overall genetic liability.</p>
+      </sec>
+      <sec id="section-2.2-the-how-to---calculating-a-prs">
+        <title>Section 2.2: The “How To” - Calculating a PRS</title>
+        <p>Imagine you want to calculate a PRS for a new individual,
+        let’s call her Jane. You need two key ingredients:</p>
+        <list list-type="order">
+          <list-item>
+            <p><bold>A “Base” Dataset (The Blueprint):</bold> This is a
+            large GWAS summary statistics file from a study of the
+            disease you’re interested in. This file provides the
+            “weights” for the calculation. For every SNP, it gives
+            you:</p>
+            <list list-type="bullet">
+              <list-item>
+                <p>The SNP ID (e.g., rs123)</p>
+              </list-item>
+              <list-item>
+                <p>The risk allele (e.g., ‘G’)</p>
+              </list-item>
+              <list-item>
+                <p>The <bold>effect size (β)</bold> of that risk allele
+                (the weight).</p>
+              </list-item>
+            </list>
+          </list-item>
+          <list-item>
+            <p><bold>A “Target” Dataset (The Individual):</bold> This is
+            Jane’s own genotype data. For every SNP in the base dataset,
+            we need to know how many copies of the risk allele Jane has
+            (0, 1, or 2).</p>
+          </list-item>
+        </list>
+        <p><bold>The Calculation:</bold> The PRS is a simple weighted
+        sum.</p>
+        <p>PRS_Jane = (β₁ × Jane’s_Allele_Count₁) + (β₂ ×
+        Jane’s_Allele_Count₂) + … + (βₙ × Jane’s_Allele_Countₙ)</p>
+        <p>Let’s do a tiny example with just three SNPs:</p>
+        <table-wrap>
+          <table>
+            <colgroup>
+              <col width="17%" />
+              <col width="17%" />
+              <col width="17%" />
+              <col width="17%" />
+              <col width="17%" />
+              <col width="17%" />
+            </colgroup>
+            <tbody>
+              <tr>
+                <td><bold>SNP</bold></td>
+                <td><bold>Risk Allele</bold></td>
+                <td><bold>Effect Size (β)</bold></td>
+                <td><bold>Jane’s Genotype</bold></td>
+                <td><bold>Jane’s Risk Allele Count</bold></td>
+                <td><bold>Contribution to PRS</bold></td>
+              </tr>
+              <tr>
+                <td>rs111</td>
+                <td>A</td>
+                <td>0.05</td>
+                <td>G/G</td>
+                <td>0</td>
+                <td>0.05 * 0 = 0.0</td>
+              </tr>
+              <tr>
+                <td>rs222</td>
+                <td>T</td>
+                <td>0.02</td>
+                <td>T/C</td>
+                <td>1</td>
+                <td>0.02 * 1 = 0.02</td>
+              </tr>
+              <tr>
+                <td>rs333</td>
+                <td>G</td>
+                <td>0.08</td>
+                <td>G/G</td>
+                <td>2</td>
+                <td>0.08 * 2 = 0.16</td>
+              </tr>
+              <tr>
+                <td><bold>Total PRS</bold></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><bold>0 + 0.02 + 0.16 = 0.18</bold></td>
+              </tr>
+            </tbody>
+          </table>
+        </table-wrap>
+        <p>Now, imagine doing this for 2 million SNPs. The final number
+        is Jane’s raw PRS.</p>
+      </sec>
+      <sec id="section-2.3-a-crucial-challenge---choosing-the-right-snps-and-weights">
+        <title>Section 2.3: A Crucial Challenge - Choosing the Right
+        SNPs and Weights</title>
+        <p>The simple sum above is a bit too naive. If you just add up
+        all the SNPs from a GWAS, you’ll get a poor result due to LD
+        (counting the same signal multiple times) and noisy, non-zero
+        effect sizes for non-associated SNPs. We need to refine the
+        blueprint. This is where different PRS methods diverge.</p>
+        <p><bold>Method 1: Clumping and Thresholding (C+T)</bold> - The
+        Classic Approach
+        This is a two-step process to select a smaller, more robust set
+        of SNPs to include in the score.</p>
+        <list list-type="order">
+          <list-item>
+            <p><bold>Clumping(聚类):</bold> A greedy algorithm that
+            iterates through the GWAS results, starting with the most
+            significant SNP. It identifies all other nearby SNPs that
+            are in high LD (e.g., r² &gt; 0.1) with this lead SNP and
+            removes them. It then moves to the next most significant SNP
+            and repeats the process. The result is a set of largely
+            independent SNPs.</p>
+          </list-item>
+          <list-item>
+            <p><bold>Thresholding:</bold> After clumping, you apply a
+            p-value threshold. You might create several PRS versions by
+            including only SNPs with p-values below a certain cutoff
+            (e.g., a PRS using SNPs with p &lt; 5e-8, another with p
+            &lt; 1e-4, another with p &lt; 0.1, etc.). You would then
+            test which of these scores performs best at predicting the
+            disease in an independent validation dataset.</p>
+          </list-item>
+        </list>
+        <p><bold>Method 2: Bayesian Methods (e.g., LDpred2,
+        PRS-CS)</bold> - <bold><italic>The Modern
+        Standard</italic></bold>
+        These methods are more sophisticated and generally more
+        powerful. They don’t just discard SNPs.</p>
+        <list list-type="bullet">
+          <list-item>
+            <p>They use an <bold>LD reference panel</bold> to understand
+            how LD spreads the effect of a true causal SNP across its
+            neighbors.</p>
+          </list-item>
+          <list-item>
+            <p>They <italic>use a statistical model (a “prior”)</italic>
+            that assumes most SNPs have a tiny effect, but some have a
+            slightly larger one.</p>
+          </list-item>
+          <list-item>
+            <p>The <bold><italic>algorithm then re-calculates (or
+            “shrinks”) the effect size (β) for every SNP in the genome.
+            It adjusts the original GWAS beta to account for the LD
+            structure.</italic></bold></p>
+          </list-item>
+          <list-item>
+            <p>The final PRS is then calculated using all SNPs with
+            these new, more realistic, LD-adjusted weights. This
+            approach has been shown to be more accurate and predictive
+            than C+T.</p>
+          </list-item>
+        </list>
+      </sec>
+      <sec id="section-2.4-the-application-and-interpretation---from-score-to-stratification">
+        <title>Section 2.4: The Application and Interpretation - From
+        Score to Stratification</title>
+        <p>The raw PRS number (e.g., 0.18) is meaningless on its own.
+        Its power comes from seeing where an individual falls relative
+        to a population.</p>
+        <list list-type="order">
+          <list-item>
+            <p><bold>Standardization:</bold> You calculate the PRS for
+            thousands of individuals in a reference population. This
+            creates a distribution of scores, which is typically a bell
+            curve (a normal distribution). The raw scores are then
+            standardized (converted to a Z-score) so we can talk about
+            percentiles.</p>
+          </list-item>
+          <list-item>
+            <p><bold>Risk Stratification:</bold> Now we can interpret
+            Jane’s score. If her standardized score places her at the
+            <bold>95th percentile</bold>, it means her calculated
+            genetic risk is higher than 95% of the population.</p>
+          </list-item>
+          <list-item>
+            <p><bold>Clinical Utility:</bold> This is where the real
+            potential lies. Studies have shown that for diseases like
+            coronary artery disease(心冠), individuals in the top 5% of
+            the PRS distribution can have a <bold>3 to 4 times higher
+            lifetime risk</bold> compared to those with an average
+            score.</p>
+          </list-item>
+        </list>
+        <p><bold>Crucially, a PRS is not deterministic.</bold> A high
+        PRS for heart disease does not mean you will get it. It means
+        your baseline genetic risk is high, making it even more
+        important to manage modifiable risk factors like diet, exercise,
+        and cholesterol. The power of a PRS is in identifying these
+        high-risk individuals early so they can be targeted for more
+        intensive screening and preventative care.</p>
+      </sec>
+    </sec>
+  </sec>
+  <sec id="mr">
+    <title>MR🤷‍♀️</title>
+    <sec id="part-3-mendelian-randomization-mr">
+      <title>Part 3: Mendelian Randomization (MR)</title>
+      <sec id="section-3.1-the-core-problem---correlation-is-not-causation">
+        <title>Section 3.1: The Core Problem - Correlation is Not
+        Causation</title>
+        <p>This is one of the oldest and most difficult challenges in
+        medical research. We frequently observe that a specific risk
+        factor (an “exposure”) is associated with a disease (an
+        “outcome”).</p>
+        <p><bold>Classic Example:</bold></p>
+        <list list-type="bullet">
+          <list-item>
+            <p>Observational studies show that people with <bold>higher
+            levels of HDL cholesterol(高密度脂蛋白胆固醇)</bold> (“good”
+            cholesterol) have a <bold>lower risk of heart
+            attack</bold></p>
+          </list-item>
+          <list-item>
+            <p><bold>The obvious Conclusion:</bold> Low HDL cholesterol
+            causes heart attacks.</p>
+          </list-item>
+          <list-item>
+            <p><bold>The Drug Development:</bold> This led
+            pharmaceutical companies to spend billions of dollars
+            developing drugs that raise HDL cholesterol levels.</p>
+          </list-item>
+          <list-item>
+            <p><bold>The Surprising Result:</bold> The drugs worked—they
+            successfully raised HDL levels. However, they had <bold>zero
+            effect</bold> on reducing heart attacks.</p>
+          </list-item>
+        </list>
+        <p><bold>What went wrong?</bold> The initial observation was a
+        classic case of confounding. The same healthy lifestyle choices
+        (good diet, exercise) that lead to high HDL also protect against
+        heart attacks through other mechanisms. The HDL level itself
+        wasn’t the causal factor; it was just a correlated marker of a
+        healthy lifestyle.</p>
+        <p>We needed a way to test for causality that wasn’t biased by
+        these lifestyle and environmental confounders. Mendelian
+        Randomization is that method.</p>
+      </sec>
+      <sec id="section-3.2-the-concept---natures-randomized-controlled-trial">
+        <title>Section 3.2: The Concept - Nature’s Randomized Controlled
+        Trial</title>
+        <p>The central idea of MR is to leverage the random process of
+        genetic inheritance. When you are conceived(怀孕), the
+        combination of genes you inherit from your parents is
+        essentially random. This is <bold>Mendel’s Law of Independent
+        Assortment(孟德尔的独立分配定律)</bold>.</p>
+        <p>This randomization acts like a perfect, lifelong
+        <bold>Randomized Controlled Trial (RCT)</bold>:</p>
+        <list list-type="bullet">
+          <list-item>
+            <p>Some people, by pure chance, inherit a set of genetic
+            variants that predispose them to having slightly higher
+            cholesterol levels throughout their lives (the “treatment
+            group”).</p>
+          </list-item>
+          <list-item>
+            <p>Other people, by pure chance, inherit variants that
+            predispose them to lower cholesterol levels (the “control
+            group”).</p>
+          </list-item>
+        </list>
+        <p>Because these genes were assigned randomly at conception,
+        they should not be correlated(混淆) with other lifestyle factors
+        (like diet, smoking, or socioeconomic status) that could
+        confound the relationship between cholesterol and heart
+        disease.</p>
+        <p>Therefore, if the “treatment group” (genetically higher
+        cholesterol) consistently shows a higher rate of heart attacks
+        than the “control group” (genetically lower cholesterol), we can
+        infer that the higher cholesterol is likely
+        <bold>causally</bold> related to the heart attacks.</p>
+      </sec>
+      <sec id="section-3.3-the-method---the-instrumental-variable-framework">
+        <title>Section 3.3: The Method - The Instrumental Variable
+        Framework</title>
+        <p>To perform an MR analysis, we need a <bold>genetic
+        instrument</bold>. This is a SNP (or, more powerfully, a set of
+        SNPs) that serves as a reliable and clean proxy for the exposure
+        we want to test.</p>
+        <p>This genetic instrument must satisfy three core
+        assumptions:</p>
+        <list list-type="order">
+          <list-item>
+            <p><bold>The Relevance Assumption:</bold> The SNP must
+            <bold><italic>be strongly and robustly associated with the
+            exposure.</italic></bold> (e.g., we use SNPs from a GWAS of
+            cholesterol levels that are genome-wide significant).</p>
+          </list-item>
+          <list-item>
+            <p><bold>The Independence Assumption:</bold> The SNP must
+            not be associated with any confounders of the
+            exposure-outcome relationship. (This is generally assumed to
+            be true because of the randomization of genetic
+            inheritance).</p>
+          </list-item>
+          <list-item>
+            <p><bold>The Exclusion Restriction Assumption:</bold> The
+            SNP can only affect the outcome through the exposure. It
+            cannot have an independent, alternative biological pathway
+            to the outcome.</p>
+          </list-item>
+        </list>
+        <p><bold>Violation of Assumption #3</bold> is the biggest
+        potential pitfall(陷阱) of MR. This is called <bold>horizontal
+        pleiotropy(水平基因多效性)</bold> (from pleio, meaning “many
+        effects”). For example, <italic>if a SNP that raises cholesterol
+        also happens to increase blood pressure through a completely
+        separate biological mechanism, then we can no longer be sure if
+        the effect on heart disease is coming from the cholesterol or
+        the blood pressure pathway. There are many advanced statistical
+        tests to check for and correct for potential
+        pleiotropy.</italic></p>
+      </sec>
+      <sec id="section-3.4-the-practical-workflow---two-sample-mr">
+        <title>Section 3.4: The Practical Workflow - Two-Sample
+        MR</title>
+        <p>The real power of MR today comes from the <bold>Two-Sample
+        MR</bold> design. You don’t need one giant dataset with genetic,
+        exposure, and outcome data for all individuals. Instead, you can
+        use the summary statistics from two completely separate,
+        publicly available GWAS.</p>
+        <p><bold>The Workflow:</bold></p>
+        <list list-type="order">
+          <list-item>
+            <p><bold>Define your Question:</bold> Do
+            genetically-predicted <bold>higher levels of LDL
+            cholesterol</bold> cause an increased risk of <bold>Coronary
+            Artery Disease (CAD)</bold>?</p>
+          </list-item>
+          <list-item>
+            <p><bold>Gather Your Data:</bold></p>
+            <list list-type="bullet">
+              <list-item>
+                <p><bold>Exposure GWAS:</bold> Download the full GWAS
+                summary statistics for LDL cholesterol (e.g., from the
+                Global Lipids Genetics Consortium).</p>
+              </list-item>
+              <list-item>
+                <p><bold>Outcome GWAS:</bold> Download the full GWAS
+                summary statistics for CAD (e.g., from the
+                CARDIoGRAMplusC4D consortium).</p>
+              </list-item>
+            </list>
+          </list-item>
+          <list-item>
+            <p><bold>Select Your Instruments:</bold> From the LDL GWAS,
+            select a set of independent, genome-wide significant SNPs.
+            These are your instrumental variables for
+            genetically-predicted LDL.</p>
+          </list-item>
+          <list-item>
+            <p><bold>Extract the Effects:</bold> For each of those
+            LDL-associated SNPs, look up its effect size (beta) and
+            standard error in the CAD GWAS summary statistics file.</p>
+          </list-item>
+          <list-item>
+            <p><bold>Run the Analysis:</bold> Use specialized R packages
+            (like TwoSampleMR) to perform the statistical test.</p>
+            <list list-type="bullet">
+              <list-item>
+                <p>The primary method is <bold>Inverse Variance Weighted
+                (IVW)(逆方差加权) MR</bold>. This is essentially a
+                regression where the slope of the line represents the
+                causal estimate. For each instrument SNP, it plots its
+                effect on the exposure (LDL) on the x-axis and its
+                effect on the outcome (CAD) on the y-axis.</p>
+              </list-item>
+              <list-item>
+                <p>If the SNPs that have a large effect on increasing
+                LDL also have a proportionally large effect on
+                increasing CAD risk, the slope will be steep and
+                statistically significant, providing strong evidence for
+                a causal effect.</p>
+              </list-item>
+            </list>
+          </list-item>
+          <list-item>
+            <p><bold>Perform Sensitivity Analyses:</bold> Run a battery
+            of other MR methods (e.g., MR-Egger, Weighted Median) that
+            are more robust to violations of the pleiotropy assumption.
+            If all the methods point in the same direction, your causal
+            inference is much stronger.</p>
+          </list-item>
+        </list>
+      </sec>
+    </sec>
+  </sec>
+</sec>
+</body>
+
+<back>
+</back>
+
+<!-- (F2ED4C6E)[nb-1]:D:\nootbookpo\GSNA.qmd -->
+<!-- (F2ED4C6E)[nb-2]:D:\nootbookpo\metabolim.qmd -->
+<!-- (F2ED4C6E)[nb-3]:D:\nootbookpo\micro.qmd -->
+<!-- (F2ED4C6E)[nb-4]:D:\nootbookpo\proteomic.qmd -->
+
+</article>

@@ -1,0 +1,1962 @@
+---
+title: 蛋白质组学教程
+authors:
+  - name: JAYZ
+    affiliation: The University OF Myself
+    roles: writing
+    corresponding: true
+bibliography: references.bib
+---
+
+# 😉Proteomic❤️
+
+------------------------------------------------------------------------
+
+## Understanding the Raw Data Format😎
+
+### Proprietary vs. Open-Standard Formats
+
+When the mass spectrometer finishes its run, **it saves the data in a specific file format**. Initially, these are almost always in a proprietary format9专有格式), meaning it's specific to the vendor(制造商) who made the instrument.
+
+-   **Proprietary Formats:**
+
+    -   Thermo Scientific: **`.raw`**
+
+    -   Sciex: **.`wiff`**
+
+    -   Agilent: **.`d`**
+
+    -   Bruker: **`.baf`**
+
+    -   **Problem:** You often **need the vendor's specific software** to open and read these files. This is not ideal for bioinformaticians who want to use open-source tools and write their own scripts.
+
+-   **The Open-Standard: *mzML***
+
+    -   To solve this problem, the proteomics community developed a standardized, open format called **mzML**.
+
+    -   **Analogy:** Think of .raw as a Photoshop file (.psd) and mzML as a JPEG (.jpg). The JPEG is a universal format that any program can open.
+
+    -   **Key Tool:** A program called **ProteoWizard** (specifically its msConvert tool) is the universally accepted "translator". As a bioinformatician, one of your first steps is often to convert all the proprietary .raw or .wiff files into the open mzML format. This allows you to use a wide variety of analysis software.
+
+### The Key Information Inside the File: A Scan-by-Scan Record
+
+Whether it's a .raw or mzML file, the data is organized as a long series of **"scans."** Each scan is a snapshot of the ions entering the mass spectrometer at a specific point in time.
+
+Here are the essential pieces of information recorded for every single scan.
+
+**1. Scan Number(扫描数量):**
+
+-   **What it is:** A simple, unique counter for each scan (e.g., Scan 1, Scan 2, ... Scan 50,000).
+
+-   **Why it matters:** It's the primary identifier for a specific spectrum within the file.
+
+**2. Retention Time(保留时间) (RT):**
+
+-   **What it is:** The time (usually in minutes) when the scan was taken. It corresponds to the time the peptide eluted(洗脱), or came off, the liquid chromatography (LC) column(液相色谱).
+
+-   **Why it matters:** It helps separate peptides in time before they enter the mass spectrometer. Peptides with different chemical properties will have different retention times.
+
+**3. MS Level (or Scan Type):**\
+This is the most critical piece of information for understanding what the machine was doing at that moment.
+
+-   **MS1 Scan (also called a "Survey Scan"):**
+
+    -   **What it is:** A snapshot of all the peptide ions entering the mass spec at a given retention time. It's a map of mass-to-charge (m/z) versus intensity(质荷比和强度的图谱).
+
+    -   **Purpose:** To identify the "parent"(母离子) or "precursor"(前体离子) ions that are present and to measure their abundance (intensity). This data is primarily used for ***quantification**.*
+
+-   **MS2 Scan (also called MS/MS or "Fragmentation Scan"):**
+
+    -   **What it is:** In the preceding MS1 scan, the instrument ***picked one of the most intense precursor ions,*** isolated it, broke it into fragments, and then took a picture of those fragments.
+
+    -   **Purpose:** **To identify the amino acid sequence of the peptide**. The fragmentation pattern is like a fingerprint unique to that peptide. This data is primarily used for ***identification**.*
+
+**4. Precursor m/z (Mass-to-Charge Ratio（质荷比)):**
+
+-   **What it is:** This only applies to MS2 scans. It is the m/z of the parent ion that was selected from the preceding MS1 scan to be fragmented.
+
+-   **Why it matters:** It's the **crucial link between an MS2 spectrum (the fragments) and the MS1 parent ion** it came from. The database search engine will use this mass very precisely to narrow down which peptides it could possibly be.
+
+**5. Ion Intensities and m/z Arrays:**
+
+-   **What it is:** For every scan (MS1 or MS2), the core data is a list of two numbers: a mass-to-charge (m/z) value and its corresponding intensity (a measure of how many ions were detected at that m/z).
+
+-   **Why it matters:** This is the actual spectrum!
+
+    -   In an **MS1 scan**, the intensity of a precursor ion is used to **quantify** how much of that peptide was in the sample.
+
+    -   In an **MS2 scan**, the m/z and intensity of the fragment ions are used to create the "fingerprint" for **database searching.**
+
+### Summary for this Lesson
+
+As a bioinformatician, when you receive a raw data file, you should immediately think of it as a structured collection of scans. Your job is to use software to extract this information. The primary goal of the next analysis steps will be to:
+
+1.  Use the **MS1 scans** to find all the peptide precursors and measure their **intensity** at a specific **retention time**.
+
+2.  Link each **MS2 scan** back to its precursor using the **precursor m/z**.
+
+3.  Use the fragment ion data within the **MS2 scans** to figure out the peptide's identity.
+
+This fundamental structure—alternating MS1 survey scans and MS2 fragmentation scans—is the basis of nearly all modern proteomics experiments.
+
+------------------------------------------------------------------------
+
+## Quality Control on the Raw Data👺
+
+***Most proteomics analysis software (like MaxQuant or vendor-specific suites) will generate a QC report for you, but you need to know what to look for. Here are the key metrics you will check.***
+
+### Metric 1: The Total Ion Chromatogram (TIC)
+
+-   **What it is:** The TIC is the sum of all the ion intensities in every **MS1 scan**, plotted against the retention time. It gives you a bird's-eye view of the entire run.
+
+-   **What you're looking at:** The overall stability and intensity of the signal over time.
+
+-   **What a GOOD TIC looks like:**
+
+    -   It often has a relatively smooth, somewhat rectangular(略显矩形) or broad bell shape.
+
+    -   The intensity rises as the peptides start eluting from the LC column, stays high and stable during the main part of the gradient, and then drops off as the run finishes.
+
+    -   Think of it like a stable heartbeat for the experiment. It shows the electrospray(电子喷雾) was consistent and peptides were eluting steadily.
+
+-   **What a BAD TIC looks like:**
+
+    -   **Extremely spiky or jagged(锯齿状):** This can indicate an unstable electrospray.
+
+    -   **Sudden, sharp drops to zero intensity:** This could mean the spray failed entirely for a period of time. No data was collected in that window.
+
+    -   **Very low intensity overall:** The sample might have been too diluted.
+
+-   **Why it matters:** If the TIC is unstable, the quantification data derived from the MS1 scans will be unreliable. A run with a failed spray is often unusable and should be removed from the analysis.
+
+### Metric 2: Mass Accuracy
+
+-   **What it is:** The difference between the experimentally measured m/z of a peptide and its theoretically calculated true m/z. This is measured in **parts-per-million (ppm).**
+
+-   `ppm = [(Measured Mass - True Mass) / True Mass] * 1,000,000.`
+
+-   **What you're looking at:** How accurate and stable the instrument's mass measurement was during the run.
+
+-   **What GOOD Mass Accuracy looks like:**
+
+    -   A very tight distribution of mass errors centered close to zero.
+
+    -   For a modern Orbitrap instrument, the vast majority of identified peptides should have a mass error of **less than 5 ppm**, and often less than 2 ppm.
+
+    -   The plot of mass error over retention time should be flat, not drifting up or down.
+
+-   **What BAD Mass Accuracy looks like:**
+
+    -   A very wide distribution of errors (e.g., \> 10-20 ppm).
+
+    -   A systematic drift where the error is, for example, -10 ppm at the start of the run and +10 ppm at the end.
+
+    -   The center of the distribution is far from zero (e.g., centered on 15 ppm).
+
+-   **Why it matters:** High mass accuracy is your most powerful tool for identifying peptides correctly. When you search the database, you'll tell the search engine to only consider theoretical peptides within a narrow mass window (e.g., 10 ppm) of what you measured. If the mass accuracy is poor, you either have to use a very wide window (which dramatically increases the chance of false positives) or you will fail to identify many peptides. Poor mass accuracy often means the instrument needs to be re-calibrated(重新校准).
+
+### Metric 3: Consistency Between Replicates
+
+Science demands reproducibility. In proteomics, you will almost always analyze multiple runs of the same sample (technical replicates) or of different samples from the same group (biological replicates).
+
+-   **What you're looking at:** You compare the QC metrics above across all the related files in your experiment.
+
+-   **What GOOD Consistency looks like:**
+
+    -   The TIC shapes and intensity ranges are very similar across replicate runs.
+
+    -   After a preliminary analysis, the total number of identified proteins and peptides is in the same ballpark for each replicate.
+
+-   **What BAD Consistency looks like:**
+
+    -   One run (an "outlier") has a collapsed TIC, much lower intensity, or identifies half as many proteins as its partners.
+
+-   **Why it matters:** If one replicate is a clear technical failure, it's often better to **exclude it from the analysis**. Including a bad outlier run can severely compromise your downstream statistical analysis and lead to incorrect conclusions.
+
+------------------------------------------------------------------------
+
+## Spectral Processing - Cleaning the Signal🤯
+
+***Imagine the raw spectrum from the mass spectrometer is a blurry, noisy photograph. You can see the general shapes, but it's hard to make out the important details. Spectral processing is the equivalent of using photo editing software to sharpen the image, increase the contrast, and remove the background noise, so you are left with a clear picture of the main subject.***
+
+### Step 1: Peak Picking (or "Centroiding"(质心))
+
+This is the most fundamental step of spectral processing. The raw output from the detector is not a list of perfect peaks, but a continuous "profile"(轮廓) of ion intensity across a range of m/z values. It looks like a series of small, connected mountain ranges.
+
+-   **What it is:** Centroiding is the process of converting this "profile" data into a simple list of discrete peaks. The algorithm finds the center of each "mountain" and represents it with a single, precise m/z value and its maximum intensity (the height of the peak).
+
+-   **Analogy:**
+
+    -   **Profile Data:** A detailed topographical map of a mountain range.
+
+    -   **Centroided Data:** A simple list containing only the exact coordinates and altitude of each mountain's summit.
+
+-   **Why it's done:**
+
+    1.  **Massive Data Reduction:** It drastically reduces the size of the data file by storing only the most important information.
+
+    2.  **Simplification:** It provides a clean "peak list" (m/z and intensity) that is easy for downstream algorithms to work with.
+
+### Step 2: De-isotoping(去同位素)
+
+This is a clever and crucial step that relies on basic chemistry. Most elements, particularly carbon, have naturally occurring heavy isotopes (e.g., Carbon-13 in addition to the common Carbon-12).
+
+-   **What it is:** Because of these isotopes, a single peptide does not appear as a single peak in an MS1 scan. Instead, it appears as a characteristic pattern of several peaks, called an "isotope envelope.(同位素包络)" The first peak (M) is the one with all light isotopes (e.g., all Carbon-12). The next peak (M+1) is where one atom is a heavy isotope, and so on.
+
+-   **The Software's Job:** The de-isotoping algorithm recognizes these characteristic patterns. It does two things:
+
+    1.  It collapses the entire isotope envelope into a single representative peak, the "monoisotopic peak(单同位素峰)" (the one with the lightest mass). This further simplifies the spectrum.
+
+    2.  It calculates the **charge state (z)** of the peptide ion. The distance between the peaks in the isotope envelope is equal to 1/z. For example, if the peaks are separated by \~0.5 m/z, the charge state is 2+. This is **critically important** information for the next stage.
+
+-   **Why it's done:** To identify a peptide, you need its **neutral mass**. The instrument measures mass-to-charge (m/z). By determining the charge (z) from de-isotoping, the software can now calculate the actual mass: **Mass = (m/z \* z) - (mass of protons)**. The search engine needs this neutral mass for its database lookup.
+
+### Step 3: Noise Reduction
+
+-   **What it is:** Raw mass spectra contain a lot of low-level background signals. This can be electronic noise from the detector or low-level chemical contaminants. This is often called "grass" because it looks like a lawn of tiny peaks.
+
+-   **The Software's Job:** The software applies a simple intensity threshold. Any peaks below this threshold are considered noise and are discarded from the spectrum.
+
+-   **Why it's done:** This focuses the analysis on the most significant signals, preventing the database search engine from wasting time trying to match random noise, which can sometimes lead to false positives.
+
+------------------------------------------------------------------------
+
+## The Search Engine - The Matching Game.👻
+
+*At this point, we have a clean MS/MS spectrum. It is a list of m/z values for the fragment ions. Think of this spectrum as a **fingerprint left at a crime scene.** We also have the very precise mass of the person who left the fingerprint (the precursor mass from the MS1 scan).*
+
+### Step 1: Get the List of Suspects (The Protein Database)
+
+You cannot identify a peptide unless you know what peptides are possible in your sample. This information comes from a protein sequence database.
+
+-   **What it is:** A simple text file in **FASTA format**. Each entry contains a header line (starting with \>) with the protein's name and information, followed by the lines of its amino acid sequence (e.g., M G A Q T S...).
+
+-   **Where you get it:** For most organisms, you download the entire known proteome from a public repository like **UniProt** or **NCBI RefSeq**.
+
+-   **The Golden Rule:** You **must** use a *database that matches your sample's species*. If you are analyzing a mouse sample, you use the mouse proteome. If you search a human sample against a yeast database, you will find nothing.
+
+### Step 2: Create a Master List of All Possible Peptides (In Silico Digestion)
+
+Proteins are too big; the mass spec analyzes peptides. In the lab, the scientist used an enzyme (almost always **Trypsin(胰蛋白酶)**) to cut the proteins into smaller peptides. Trypsin has a very specific rule: it cuts the protein chain after the amino acids Lysine (K) and Arginine (R).
+
+The search engine simulates this process computationally. This is called in silico digestion (meaning "done in the computer").
+
+-   **The Process:** The software reads every single protein sequence in the FASTA file and "cuts" it according to the Trypsin rule.
+
+-   **The Result:** It generates a massive, theoretical list of every single peptide that could possibly be created from all the proteins in the database. This list can contain millions of peptide sequences. The software also calculates the exact neutral mass of each of these theoretical peptides.
+
+### Step 3: Predict the Fingerprint for Each Possible Peptide (Theoretical Spectrum Generation)
+
+Now for the clever part. For every peptide in that massive list, the software predicts what its MS/MS fingerprint should look like.
+
+-   **The Process:** When a peptide is fragmented in the mass spectrometer, its backbone breaks in predictable places. This creates two main series of fragment ions, called **b-ions** and **y-ions**. The search engine knows the mass of every amino acid, so for a given peptide sequence (e.g., V G A Q T S K), it can calculate the precise m/z of all the possible b-ions and y-ions that would be formed if that peptide were fragmented.
+
+-   **The Result:** A "theoretical spectrum" for every single peptide in the master list.
+
+### Step 4: The Match and Score
+
+Now the detective work begins. The search engine takes one of your **experimental MS/MS spectra** and tries to find the best match in the theoretical library it just created.
+
+1.  **Filtering by Mass:** First, it uses the precursor mass to filter the list. If your experimental precursor ion had a mass of 874.48 Daltons, the software will immediately discard all theoretical peptides that don't have a mass extremely close to that (e.g., within a 10 ppm window). This is a huge and essential filtering step.
+
+2.  **Comparing Spectra:** For the handful of candidate peptides that passed the mass filter, the software compares their theoretical spectra (the predicted b- and y-ions) against the peaks in your experimental spectrum.
+
+3.  **Scoring:** An algorithm calculates a score based on how good the match is. A higher score is given if:
+
+    -   More of the experimental peaks are explained by the theoretical fragments.
+
+    -   The matched peaks are the most intense peaks in the experimental spectrum.
+
+    -   Long, consecutive series of b- or y-ions are found.
+
+Different search engines (**Mascot, Sequest, Andromeda**) use different scoring algorithms, but the principle is the same.
+
+### The Final Output: The Peptide-Spectrum Match (PSM)
+
+After comparing all candidate peptides, the search engine makes a final decision. It declares the theoretical peptide that received the highest score as the best match. This single assignment is called a **Peptide-Spectrum Match (PSM)**.
+
+The final output of this stage is a huge table that looks something like this:
+
+|                 |                   |                        |           |
+|-----------------|-------------------|------------------------|-----------|
+| **Scan Number** | **Precursor m/z** | **Best Peptide Match** | **Score** |
+| 5024            | 643.32            | VAGISSAK               | 123.4     |
+| 5028            | 712.38            | LKECCDKPLLEK           | 98.7      |
+| 5031            | 598.29            | FSTVAGESGSADIK         | 154.2     |
+
+We now have a preliminary identity for thousands of our spectra. But a crucial question remains: just because a peptide got the "best score," does that mean it's the correct identification? This is a huge problem of false positives, which brings us to our next, critically important lesson on statistical validation.
+
+*In the last lesson, the search engine gave us a huge list of Peptide-Spectrum Matches (PSMs), each with a score. It is incredibly tempting to just take the highest-scoring match for each spectrum and declare victory.*
+
+**This would be a catastrophic mistake.**
+
+### The Problem: The Inevitability of False Positives
+
+-   **The Search Engine is Naive:** A search engine will always return the best-scoring match it can find, even if that "best" match is complete nonsense. ***It has no concept of "I don't know."***
+
+-   **Random Chance is Powerful:** Your experimental spectra are imperfect, and your database of theoretical peptides is enormous (millions of entries). By sheer random chance, a noisy, unidentifiable spectrum will look somewhat similar to some random peptide in the database.
+
+-   **The Result:** A significant portion of your high-scoring PSMs are likely to be **false positives**—incorrect matches that are purely the result of random chance.
+
+Without a statistical method to control for this, your data is unusable. You have a list of "identifications" but no idea which ones are real and which are garbage.
+
+### The Solution: The Target-Decoy Strategy
+
+To solve this, the entire field of proteomics uses an elegant and powerful statistical method called the **Target-Decoy Strategy.** Understanding this is non-negotiable for a bioinformatician.
+
+Let's use an analogy. Imagine you are searching a huge English dictionary (**the Target**) for a list of random letter scrambles (your spectra). You will definitely find some real words just by chance. How do you know how many of your "hits" are just random luck?
+
+The answer: you create a **Decoy** dictionary where every single word is spelled backward ("proteomics" becomes "scimoetorp"). This decoy dictionary is full of nonsense. You then search for your letter scrambles in a combined dictionary of real + nonsense words.
+
+The number of "matches" you find in the nonsense, backward dictionary is a direct and excellent estimate of how many random-chance matches you are getting in the real dictionary.
+
+**This is exactly how it works in proteomics:**
+
+**Step 1: Create the Decoy Database**
+
+-   Before the search, the software takes your protein FASTA file (**Target database**) and creates a second, decoy database.
+
+-   The most common method is to simply **reverse** the sequence of every protein. For example:
+
+    -   **Target:** MGTSAQ...
+
+    -   **Decoy:** ...QASTGM
+
+-   This creates a database of nonsense proteins that still have the exact same amino acid composition and mass distribution as the real ones, making it a perfect statistical model for random matches.
+
+**Step 2: A Competitive Search**
+
+-   The software combines the Target and Decoy databases into one large file.
+
+-   It then runs the database search against this combined database.
+
+-   Crucially, the search engine does not know which is which. It treats them all as valid possibilities.
+
+-   Each of your experimental spectra will now be matched to either a Target peptide or a Decoy peptide, whichever gives the better score.
+
+**Step 3: Calculate the False Discovery Rate (FDR)**
+
+-   After the search, you have your list of all PSMs, each labeled as a Target or a Decoy.
+
+-   You rank all of them, from highest score to lowest score.
+
+-   Now, you go down the list and ask a simple question: "At this score cutoff, how many of my hits are nonsense (Decoys)?"
+
+-   The logic is simple but powerful: **The number of decoy matches at a given score threshold is a great estimate of the number of false-positive target matches at that same threshold.**
+
+-   The **False Discovery Rate (FDR)** is calculated as:\
+    FDR = (Number of Decoy Matches) / (Number of Target Matches)
+
+**Step 4: Apply the Cutoff**
+
+-   The universal standard in proteomics is to accept a **1% FDR**.
+
+-   The software goes down the ranked list of PSMs until it finds the score cutoff where the FDR is exactly 1%. For example, it might find that at a score of 135.2, there are 10,000 Target hits and 100 Decoy hits.
+
+    -   FDR = 100 / 10,000 = 0.01 = 1%
+
+-   This score (135.2) now becomes your quality threshold. **You discard all PSMs with a score below this value.**
+
+### Summary for this Lesson
+
+By using the Target-Decoy strategy, you have transformed your dataset from a raw list of "best guesses" into a statistically validated set of identifications.
+
+When you say, "I have 10,000 peptide identifications at a 1% FDR," you are making a clear, scientifically defensible statement: **"Here is my list of identified peptides. I am confident that, at most, 1% of these are incorrect."**
+
+This step is the bedrock of reliable proteomics. It is not optional. It is the bioinformatician's primary responsibility to ensure it is performed correctly.
+
+------------------------------------------------------------------------
+
+## The Protein inference Problem - from peptides to proteins 👹
+
+**Part 2, Lesson 6: The Protein Inference Problem - From Peptides to Proteins.**
+
+### Goal: Understand the challenge of accurately identifying proteins from a list of peptides and the logic used to solve it.
+
+This seems like it should be an easy step. If you found a peptide from Protein A, then Protein A must be in your sample, right?
+
+The answer is: **maybe.** The problem is that your list of identified peptides is often ambiguous.
+
+### The Core Problem: Ambiguity(歧义) from Shared Peptides
+
+A single peptide sequence can, and often does, belong to more than one protein in the database. This is the central challenge of protein inference.
+
+Why does this happen?
+
+1.  **Protein Isoforms(异构体):** A single gene can produce multiple, slightly different versions of a protein through alternative splicing(剪切). These isoforms might be 95% identical. Any peptide identified from the shared region will map to all of those isoforms.
+
+2.  **Homologous Proteins(同源蛋白0:** Organisms have protein families with very similar sequences (e.g., Actin(肌动蛋白)-Beta and Actin-Gamma). A peptide from a conserved region of the protein could match both.
+
+3.  **Database Redundancy:** The FASTA database might contain slightly different entries for the same protein.
+
+This ambiguity means you cannot simply make a list of every protein that one of your peptides hits. You would massively over-report the number of proteins and include many false positives.
+
+### The Solution: The Principle of Parsimony(简约) (Occam's Razor(奥卡姆剃刀))
+
+To solve this, proteomics software applies a logical principle called **parsimony**, also known as Occam's Razor: **"The simplest explanation is the best."**
+
+In proteomics, this translates to: **"Explain all of your identified peptide evidence with the minimum possible number of proteins."(用尽可能少的蛋白质解释所有已鉴定的肽证据)**
+
+Let's walk through this with a simple analogy.
+
+-   **Peptides** are like unique words.
+
+-   **Proteins** are like books.
+
+-   Your experiment gives you a list of words, and you have to figure out which books were on the shelf.
+
+**Scenario:**
+
+-   You find the word **"photosynthesis(光合作用)"**. This word only appears in the "Biology Textbook". Conclusion: You definitely have the Biology Textbook. ("Photosynthesis" is a **unique** or **proteotypic peptide**).
+
+-   You find the word **"the"**. This word appears in the "Biology Textbook," the "History Book," and the "Chemistry Book". Conclusion: You can't be sure which book it came from. ("The" is a **shared** or **degenerate peptide**).
+
+**How Parsimony Works in Practice:**
+
+Imagine we identify three peptides with the following evidence:
+
+-   **Peptide 1:** Maps only to Protein A. (Unique)
+
+-   **Peptide 2:** Maps only to Protein B. (Unique)
+
+-   **Peptide 3:** Maps to both Protein A and Protein B. (Shared)
+
+The software reasons as follows:
+
+1.  "I have definitive evidence for Protein A because I found Peptide 1."
+
+2.  "I have definitive evidence for Protein B because I found Peptide 2."
+
+3.  "Now I need to explain Peptide 3. I already know that Protein A and Protein B are both present. Since Peptide 3 belongs to both, its presence is already explained. I do not need to invoke any new proteins to explain this evidence."
+
+The final conclusion is that both Protein A and Protein B are confidently identified.
+
+**Now, a trickier case:** What if we only found Peptide 1 and Peptide 3?
+
+1.  "I have definitive evidence for Protein A because I found Peptide 1."
+
+2.  "Now I need to explain Peptide 3. It could come from Protein A or Protein B. However, the simplest explanation (parsimony) is to say it also came from Protein A, which I already know is present. I don't have enough evidence to justify also claiming that Protein B is present."
+
+In this second case, the software would ***only report Protein A as a high-confidence identification***. Protein B would not be reported because its presence is not required to explain the observed peptides.
+
+### The Output: Protein Groups
+
+Because of this ambiguity, the final output of the inference step is often not a simple list of proteins, but a list of **Protein Groups**.
+
+A protein group is a list of one or more proteins that cannot be distinguished based on the set of identified peptides.
+
+-   If you only identify shared peptides that map to Proteins A, B, and C, your software will report one line for the protein group "(A, B, C)". This tells you that at least one of these proteins is present, but you can't be sure which.
+
+-   The first protein listed in a group is often the "master protein" – the one with the most peptide evidence or the best-known entry in the database.
+
+As a bioinformatician, you must understand that when you see a "protein identification," you are often looking at a "protein group," which represents the software's best, most parsimonious(简约) conclusion about the protein-level evidence.
+
+### Summary for this Lesson
+
+-   Protein inference is necessary because peptides can be shared between multiple proteins.
+
+-   The guiding logic is the **Principle of Parsimony**: explain the data with the fewest proteins possible.
+
+-   The process relies on first identifying proteins that have **unique peptide** evidence.
+
+-   The final output is a list of **protein groups** that represents the resolved (and sometimes unresolved) ambiguity.
+
+------------------------------------------------------------------------
+
+## Quantification😋
+
+**Part 2, Lesson 7: Quantification - How Much Is There?**
+
+### Goal: Learn the computational methods for determining the abundance of proteins.
+
+Identifying proteins is only half the story. In most experiments, the real goal is to find out which proteins have changed in abundance between different conditions (e.g., healthy vs. disease). This requires **quantification**.
+
+The fundamental principle of quantification in mass spectrometry is: **"*The more of a peptide you have, the stronger its signal will be.*"**
+
+Our job as bioinformaticians is to use software to extract this signal for every peptide and then roll it up to the protein level. There are two main families of techniques for this.
+
+### Method 1: Label-Free Quantification (LFQ)(无定量标记)
+
+This is the most conceptually straightforward method. As the name implies, you do not add any special chemical tags or labels to your samples. You just run them one by one and compare the signals.
+
+-   **The Data Source:** LFQ relies entirely on the **MS1 scans** – the high-resolution survey scans we discussed in Lesson 1.
+
+-   **The Computational Workflow (MaxLFQ is the most famous algorithm):**
+
+    1.  **Feature Detection:** The software goes through all the MS1 scans and creates a 3D map for every peptide ion it finds: its **m/z**, its **retention time**, and its **intensity**. This 3D peak is called a "feature."
+
+    2.  **Alignment:** The retention time for a peptide is never perfectly stable; it can drift slightly from run to run. The software must perform **retention time alignment** to **warp the time axis of each run so that the same peptide feature appears at the same time in all samples**. This is a critical step.
+
+    3.  **"Match Between Runs":** This is a key feature to reduce missing values. *Imagine Peptide X was identified by MS/MS in Sample 1 but not in Sample 2 (perhaps because it wasn't intense enough to be selected for fragmentation in that run).* The software knows the m/z and aligned retention time of Peptide X. It can go back to the MS1 map of Sample 2 and say, "Is there a feature at this exact coordinate?" If it finds one, it can "***transfer***" the identification and quantify the feature, even without an MS/MS scan in that specific run.
+
+    4.  **Intensity Extraction:** The software calculates the **Area Under the Curve (AUC)(曲线下面积)** for each feature. T***his total ion current is the peptide's raw abundance measurement.***
+
+    5.  **Protein Quantification:** To get the protein's abundance, the software takes the intensities of all the unique peptides belonging to that protein and uses a robust algorithm (like summing the top 3 most intense peptides or using a median) to calculate a single, representative value for the protein's abundance.
+
+-   **Pros:** Simple lab workflow, inexpensive.
+
+-   **Cons:** Highly dependent on instrument stability; more prone to missing values than labeling methods.
+
+### Method 2: Isobaric Labeling (TMT and iTRAQ)(同量异位素标记)
+
+This is a more complex but very powerful chemical method that allows you to run multiple samples at the same time.This is more needing the help of wetlab.
+
+-   **The Lab Workflow:** In the lab, the scientist takes up to 16 different samples (e.g., 8 healthy, 8 disease). Each sample is labeled with a different chemical tag (e.g., TMT-126, TMT-127N, etc.). These tags are **isobaric**, ***meaning they have the exact same total mass.*** After labeling, all 16 samples are mixed together into a single tube and run as one mass spec experiment.
+
+-   **The Data Source:**
+
+    -   **Identification:** Comes from the MS/MS spectrum, just like before.
+
+    -   **Quantification:** This is the clever part. ***When a tagged peptide is fragmented in the mass spectrometer (during an MS2 or a special MS3 scan), the tags break off. This produces small, low-mass*** **"reporter ions."** ***Each tag produces a reporter ion with a unique mass (e.g., 126, 127, etc.).***
+
+-   **The Computational Workflow:**
+
+    1.  **Identification:** First, the software identifies the peptide sequence from the higher-mass fragment ions in the MS/MS spectrum (the b- and y-ions).
+
+    2.  **Reporter Ion Extraction:** Once a peptide is identified, the software looks in the ***low-mass region of that same MS/MS spectrum***. It finds the special reporter ion peaks.
+
+    3.  **Relative Quantification(相对定量):** The **intensity of each reporter ion peak** is **directly proportional to the amount of that peptide that came from the original sample(每个报告离子峰的强度与原始样品中该肽的含量成正比)**. If the 126 reporter is twice as intense as the 127N reporter, it means there was twice as much of that peptide in Sample 1 than in Sample 2.
+
+    4.  **Protein Quantification:** Just like with LFQ, the relative ratios from all the peptides belonging to a protein are combined to get a final set of ratios for the protein.
+
+-   **Pros:** Very ***precise relative quantification***; fewer missing values because all samples are mixed.
+
+-   **Cons:** More expensive and complex lab work; can suffer from "ratio compression" issues.
+
+### Final Critical Step for Both Methods: Normalization
+
+You can **never** directly compare the raw intensity values between different runs or different TMT channels. There will always be small variations (e.g., one sample was slightly more concentrated, the instrument spray was slightly stronger for one run).
+
+-   **What it is:** Normalization is a mathematical adjustment that corrects for these systematic, non-biological variations.
+
+-   **How it works:** Many methods exist, but a common one is **median normalization**. The software assumes that for most proteins, their abundance does not change. It calculates the median of all protein intensities (or ratios) in each sample/channel and adjusts the values so that the medians are all equal.
+
+-   **Why it matters:** Without normalization, you might think a protein is upregulated in one sample when in reality, you just loaded more of that entire sample onto the instrument. **Normalization is absolutely essential before any downstream statistical analysis.**
+
+### Summary for this Lesson
+
+-   Quantification connects a signal intensity to a peptide/protein.
+
+-   **LFQ** uses the area of the peptide's peak in the **MS1 scan**. It requires careful **retention time alignment**.
+
+-   **Isobaric Labeling (TMT)** uses the intensity of special **reporter ions** in the **MS/MS (or MS3) scan**.
+
+-   The final step before any biological analysis is **normalization**, which corrects for technical variability between samples.
+
+------------------------------------------------------------------------
+
+## 🐗DownStream analysis🐻
+
+------------------------------------------------------------------------
+
+## Downstream Statistics🙂‍↔️
+
+**Part 3, Lesson 8: Downstream Statistics - Finding What's Interesting.**
+
+### Goal: Learn how to find statistically significant changes between your sample groups from your quantified protein list.
+
+At this point, you have a giant table. The rows are your proteins, and the columns are your samples. The cells contain the normalized abundance (e.g., LFQ intensity or TMT ratio) for each protein in each sample.
+
+Our goal is to compare the abundance values between our experimental groups (e.g., "Control" vs. "Treatment") and find the proteins that show a real, significant difference.
+
+### Step 1: Handling Missing Values (Data Imputation)
+
+Especially in Label-Free Quantification (LFQ), your data table will have holes in it. A protein might be quantified in all three "Control" replicates but only one of the "Treatment" replicates. This is a huge problem for most statistical tests.
+
+-   **Why do values go missing?** Often, it's because the peptide's signal was too low to be reliably detected in that run. This means the missing values are not random; they are often linked to low abundance.
+
+-   **The Solution: Imputation(插补).** Imputation is the process of filling in the missing values with a reasonable estimate. You can't just ignore them.
+
+    -   **A Common Method:** A popular approach is to impute the missing values ***with a small number*** drawn from the very low end of the overall intensity distribution. The logic is that the value is missing because it was below the detection limit, so we should replace it with a value that reflects that.
+
+-   **The Bioinformatician's Role:** You need to be aware that imputation is happening, understand the method your software is using, and recognize how it might affect your results.
+
+### Step 2: Log Transformation
+
+Protein abundance data often spans a huge dynamic range (from very low to very high intensity). This kind of data is usually ***not normally distributed*** (it doesn't form a nice bell curve), ***which violates the assumptions of many statistical tests.***
+
+-   **The Solution:** You perform a **log transformation** on your data (usually log base 2, or log2).
+
+-   **Why it's done:**
+
+    1.  **Normalization:** It makes the data more symmetric and closer to a normal distribution, which is better for statistics.
+
+    2.  **Meaningful Fold Changes:** A log2 transformation makes fold changes intuitive(直观).
+
+        -   An increase of 2-fold becomes log2(2) = 1.
+
+        -   An increase of 4-fold becomes log2(4) = 2.
+
+        -   A decrease of 2-fold (i.e., half) becomes log2(0.5) = -1.
+
+        -   No change (1-fold) is log2(1) = 0.\
+            This symmetry makes plotting and interpretation much easier.
+
+### Step 3: Performing the Statistical Test
+
+Now you can finally compare your groups.
+
+-   **The Tools:** You'll use standard statistical tests to see if the average abundance in one group is significantly different from the average in the other.
+
+    -   If you have two groups (e.g., Control vs. Treatment): Use a **Student's t-test**.
+
+    -   If you have more than two groups (e.g., Control vs. Treatment A vs. Treatment B): Use **ANOVA** (Analysis of Variance).
+
+-   **The Output:** For every single protein, the test will give you two important numbers:
+
+    1.  **p-value:** The probability that the difference you observed between the groups is just due to random chance. A small p-value (e.g., \< 0.05) suggests the difference is real.
+
+    2.  **Fold Change (or log2 Fold Change):** How big the difference is. A fold change of 2 means the protein is twice as abundant in one group.
+
+### Step 4: The Multiple Hypothesis Testing Problem and Correction
+
+You just performed thousands of t-tests simultaneously (one for each protein). This leads to a major statistical trap.
+
+-   **The Problem:** If you use a p-value cutoff of 0.05, you are accepting a 5% chance of a false positive for each test. ***If you do 10,000 tests***, you would expect 10,000 \* 0.05 = ***500 proteins to look significant just by pure random luck!***
+
+-   **The Solution: p-value Adjustment.** You must correct for this multiple testing. The most common method in bioinformatics is the **Benjamini-Hochberg procedure**.
+
+-   **The Output:** This method takes your list of raw p-values and calculates an **"adjusted p-value"** or a **"q-value."** This q-value is essentially the False Discovery Rate (FDR) for your list of significant proteins.
+
+-   **The New Rule:** Instead of using a p-value \< 0.05, you will now use a **q-value \< 0.05** (or 0.01) to decide which proteins are truly significant.
+
+### Step 5: Visualizing the Results: The Volcano Plot
+
+You now have a list of thousands of proteins, each with a log2 fold change and an adjusted p-value (q-value). The best way to visualize this is with a **Volcano Plot**.
+
+-   **X-axis:** The log2(Fold Change). Proteins to the right are upregulated; proteins to the left are downregulated.
+
+-   **Y-axis:** The -log10(adjusted p-value). The minus sign is just to flip the plot. A smaller p-value (more significant) becomes a larger -log10 value, so the most significant proteins are at the top.
+
+-   **Interpretation:**
+
+    -   You draw two vertical lines for a fold-change cutoff (e.g., at -1 and +1, for a 2-fold change).
+
+    -   You draw one horizontal line for your significance cutoff (e.g., at -log10(0.05)).
+
+    -   **The "hits" are the points in the top-left and top-right corners.** These are the proteins that are both statistically significant AND have a large magnitude of change. The points in the middle are either not significant or did not change much.
+
+### Summary for this Lesson
+
+This is your final data filtering step. You start with a quantified list of all proteins and, through a rigorous statistical workflow, you produce a final, high-confidence list of **differentially abundant proteins**.
+
+------------------------------------------------------------------------
+
+## Go and KEGG 😏
+
+**Part 3, Lesson 9: Functional Enrichment Analysis - What Does the Protein List Mean?**
+
+### Goal: Go from a list of significant proteins to a coherent biological story.
+
+Imagine your list of differentially abundant proteins is a random bag of Scrabble tiles. You might have the letters: E, N, Y, M, Z, E. Just looking at the individual letters doesn't tell you much. But if you rearrange them to spell **"ENZYME,"** you suddenly have a meaningful concept.
+
+Functional enrichment analysis is the computational tool that does this "rearranging" for you. It takes your list of proteins and asks: **"Are there any biological themes, functions, or pathways that are surprisingly common (over-represented) in this list compared to the whole proteome?"**
+
+### The Tools: Proteomics Knowledge Bases
+
+To do this, we need structured, computer-readable knowledge about what each protein does. This information is stored in large, curated public databases called "knowledge bases." There are three main types we use.
+
+**1. Gene Ontology (GO)**
+
+-   **What it is:** The GO project is a massive effort to describe the functions of genes and proteins in a standardized way. It's the most widely used resource for this kind of analysis.
+
+-   **The Three Domains of GO:** It describes each protein in three ways:
+
+    -   **Biological Process (BP):** The larger biological program the protein participates in (e.g., "cell division," "glycolysis," "DNA repair"). This is often the most useful category for interpretation.
+
+    -   **Molecular Function (MF):** The specific biochemical activity of the protein (e.g., "protein kinase activity," "DNA binding," "transporter activity").
+
+    -   **Cellular Component (CC):** Where the protein is located in the cell (e.g., "nucleus," "mitochondrion," "plasma membrane").
+
+-   **Example:** For the protein Hexokinase, a GO annotation might be: BP: "glycolysis", MF: "ATP binding", CC: "cytosol".
+
+**2. Pathway Databases (KEGG and Reactome)**
+
+-   **What they are:** These databases go a step beyond simple functional labels. They are detailed, hand-drawn maps of known biological pathways.
+
+    -   **KEGG (Kyoto Encyclopedia of Genes and Genomes):** Famous for its iconic, color-coded pathway diagrams showing how metabolites are converted by enzymes.
+
+    -   **Reactome:** Focuses on human biological reactions and pathways in extreme detail, showing all the molecular players and their interactions.
+
+-   **Why they are useful:** If you find that many of your upregulated proteins all fall into the "Citric Acid Cycle" pathway in KEGG, you have a very strong and clear biological story.
+
+### The Method: The Statistics of "Over-representation"
+
+How does the software decide if a theme is "surprisingly common"? It uses a statistical test, most commonly the **Hypergeometric Test** or its close cousin, **Fisher's Exact Test**.
+
+Let's use an analogy.
+
+-   Imagine a large urn (**the entire proteome of your organism**) containing 10,000 marbles.
+
+-   Of these, 100 are red (**all the proteins known to be involved in "DNA repair"**).
+
+-   Now, you blindly draw 50 marbles from the urn (**your list of 50 significantly upregulated proteins**).
+
+-   In your hand, you find that 10 of your 50 marbles are red.
+
+The hypergeometric test answers the question: **"If I were to randomly draw 50 marbles from this urn, what is the probability that I would get 10 or more red ones just by pure chance?"**
+
+If this probability (the **p-value**) is very, very small (e.g., 1e-10), you can confidently conclude that your selection was not random. You have "enriched" for red marbles. In exactly the same way, the software calculates whether your list of significant proteins is **enriched** for proteins belonging to the "DNA repair" GO term.
+
+### The Workflow and Output
+
+1.  **Input:** You will use a web-based tool (like **DAVID** or **Metascape**) or a programming package in R/Python. You provide two things:
+
+    -   Your list of significant protein IDs.
+
+    -   A "background" or "universe" list, which is all the proteins you identified in your experiment.
+
+2.  **Analysis:** The tool runs the hypergeometric test for every single GO term and pathway in its database.
+
+3.  **Output:** You get a ranked table of the most significantly enriched terms. The columns will typically be:
+
+    -   **Term Name:** e.g., "GO:0006281 DNA repair"
+
+    -   **p-value:** The result of the hypergeometric test.
+
+    -   **Adjusted p-value (FDR):** Just like in our differential expression analysis, this is essential because you are performing thousands of tests.
+
+    -   **Fold Enrichment:** How much more common the term is in your list compared to the background.
+
+    -   **Gene/Protein IDs:** The specific proteins from your list that belong to that term.
+
+### Summary for this Lesson
+
+Functional enrichment analysis is the bridge from a sterile list of protein names to a vibrant biological narrative. It allows you to move from saying:
+
+"We identified that proteins A, B, X, and Y were upregulated."
+
+------------------------------------------------------------------------
+
+## Network Analysis🥶
+
+**Part 3, Lesson 10: Network Analysis - How Do They Work Together?**
+
+### Goal: Visualize and analyze how the changing proteins interact with each other to form a functional system.
+
+Biology is not a simple list of independent proteins; it's a complex, interconnected web of interactions. A single protein rarely acts alone. Network analysis allows us to visualize this web and find the key players or "hubs" that might be driving the biological response.
+
+### The Tool: Protein-Protein Interaction (PPI) Databases
+
+Just as we needed knowledge bases for protein function, we need a database for protein interactions.
+
+-   **What it is:** These databases collect and store evidence of how proteins physically interact with each other. This evidence can come from many sources (e-lab experiments, text mining of scientific literature, etc.).
+
+-   **The Go-To Resource: STRING Database**
+
+    -   **STRING (Search Tool for the Retrieval(检索) of Interacting Genes/Proteins)** is arguably the most popular and comprehensive resource for this.
+
+    -   It doesn't just store "yes/no" interactions. Each interaction in STRING has a **confidence score** (from 0 to 1) that represents how much evidence supports that connection. This is crucial because it allows you to filter out low-confidence or speculative interactions.
+
+    -   The evidence is color-coded by type (e.g., green for literature mining, blue for co-expression, purple for experimental evidence), so you can see why STRING thinks two proteins are connected.
+
+### The Workflow: Building and Interpreting a Network
+
+1.  **Input:** You take your list of differentially abundant proteins (the same list you used for GO analysis) and paste it into the search box on the STRING website (or use a tool like Cytoscape that connects to STRING).
+
+2.  **Building the Network:** STRING will look at your list and build a network based on its database.
+
+    -   **Nodes (or Vertices):** Each protein from your list becomes a node (a circle) in the network.
+
+    -   **Edges (or Links):** If STRING has evidence that two proteins in your list interact, it will draw a line (an edge) between their nodes.
+
+3.  **Initial Interpretation: Is the Network "Real"?**
+
+    -   The first thing STRING tells you is a "PPI enrichment p-value." This is a vital statistic. It answers the question: **"Are there significantly more interactions among these proteins than you would expect for a random set of proteins of the same size?"**
+
+    -   If this p-value is very small (e.g., \< 1.0e-16), it's a powerful result. It means your list of significant proteins is not just a random collection; they form a tightly connected biological module. This adds a huge layer of confidence to your overall findings.
+
+4.  **Visual Analysis: Finding the Hubs and Clusters**
+
+    -   Now you look at the network itself. You are looking for patterns:
+
+        -   **Hubs:** These are highly connected nodes (proteins with many edges). A hub protein that is significantly upregulated might be a master regulator driving the changes in its neighbors. Identifying these is often a key goal.
+
+        -   **Clusters (or Modules):** You will often see dense "hairballs" of highly interconnected nodes within the larger network. These often represent a specific protein complex or a functional pathway. STRING can even use clustering algorithms (like k-means) to automatically color these different modules for you.
+
+### Example Interpretation
+
+Imagine you are studying a drug treatment. You create a PPI network from your upregulated proteins.
+
+-   The network has a highly significant PPI enrichment p-value.
+
+-   You see two distinct clusters. You use your GO analysis results from the previous lesson to help interpret them.
+
+    -   **Cluster 1:** You see it's full of proteins that your GO analysis labeled as "Proteasome components." You've identified the proteasome complex, which is responsible for protein degradation.
+
+    -   **Cluster 2:** This cluster is full of proteins related to "mRNA splicing." You've identified the spliceosome.
+
+-   In the middle, connecting these two clusters, is a major **hub protein**, UBA52.
+
+This network allows you to generate a powerful hypothesis: "The drug treatment leads to the coordinated upregulation of two key cellular machines: the proteasome and the spliceosome. The central hub protein, UBA52, appears to be a key player linking these two processes. This suggests the drug may be causing cellular stress that requires both increased protein turnover and altered RNA processing."
+
+### Summary for this Lesson
+
+-   Network analysis moves beyond a simple list of functions to show how your significant proteins work together as a system.
+
+-   It relies on **Protein-Protein Interaction (PPI) databases**, with **STRING** being the most common tool.
+
+-   The first step is to check the **PPI enrichment p-value** to ensure your network is statistically meaningful.
+
+-   The main goal of visual analysis is to identify important **hubs** (key regulators) and **clusters** (functional modules), which can then be interpreted using your GO and pathway results.
+
+### Course Conclusion
+
+Congratulations! We have completed our entire journey. Starting from a complex, raw data file from the mass spectrometer, we have followed the complete bioinformatics pipeline:
+
+1.  We learned about the **raw data structure (DDA/DIA)** and performed **quality control**.
+
+2.  We used a **search engine** to match spectra to peptides from a **FASTA database**.
+
+3.  We used the **target-decoy strategy** to statistically control the **False Discovery Rate**.
+
+4.  We solved the **protein inference problem** using the principle of parsimony.
+
+5.  We **quantified** our proteins using either **LFQ** or **isobaric tags** and **normalized** the data.
+
+6.  We performed **statistical tests** and used a **volcano plot** to find the truly significant proteins.
+
+7.  Finally, we used **functional enrichment** and **network analysis** to translate that final list into a rich biological story.
+
+------------------------------------------------------------------------
+
+# 🥺TURE Project🦄
+
+### **Project: The Effect of a Kinase Inhibitor(激酶抑制剂) on the HeLa Cell Proteome**
+
+***The Biological Question:`"Our lab is testing a new drug, 'Kinase Inhibitor Y'. We want to know which proteins change their abundance in HeLa cancer cells after being treated with this drug for 24 hours. This will help us understand the drug's mechanism of action and potential off-target effects."`***
+
+**The Experimental Design:**
+
+-   **Organism:** Human (Homo sapiens)
+
+-   **Cell Line:** HeLa (a common cancer cell line)
+
+-   **Groups:** Two groups, with three biological replicates each.
+
+    -   **Control Group (3 samples):** HeLa cells treated with DMSO (the solvent the drug is dissolved in).
+
+    -   **Treatment Group (3 samples):** HeLa cells treated with Kinase Inhibitor Y.
+
+-   **Analysis Type:** ***Label-Free Quantification (LFQ) using Data-Dependent Acquisition (DDA).***
+
+### **Part 0: Project Setup, Data Acquisition, and Organization**
+
+**Goal:** To download all the necessary files (raw data, protein database) and organize them logically before we even think about analysis. Good organization is 90% of the battle in bioinformatics.
+
+#### **Step 1: The Tools - Your Bioinformatics Workbench**
+
+First, we need to acquire the software. For this project, we will use the most common academic standard for DDA/LFQ analysis, which is completely free.
+
+-   **MaxQuant:** This will be our main data processing engine. It is an all-in-one program that will take our raw files, perform peak picking, search the database, control the FDR, infer proteins, and perform the label-free quantification.
+
+    -   **Action:** Go to the [**MaxQuant website**](https://www.google.com/url?sa=E&q=https%3A%2F%2Fwww.maxquant.org%2Fdownload.html) and download the latest version. It's a simple .zip file. Unzip it to a memorable location on your computer (e.g., C:\\Bioinformatics_Tools\\).
+
+    -   ***By the way for me ,i rather like coding so i will use MScbase***
+
+-   **A Public Data Repository:** Real scientific data is shared in public archives. The main repository for proteomics is **PRIDE**, which is part of the ProteomeXchange consortium. Our fictional dataset will have a ProteomeXchange ID.
+
+    -   **Action:** No software to download yet, but know that we will be getting our data from a public source like this. For very large datasets, a special fast-download client like Aspera is often used, but for our 6 files, a direct download is fine.
+
+#### **Step 2: The Data - Downloading the Raw Files**
+
+Our lab has "deposited" the raw data to the PRIDE archive under the fictional accession number **PXD012345**. We need to download the 6 raw files that correspond to our experiment.
+
+-   **The Files:**
+
+    1.  `HeLa_Control_rep1.raw`
+
+    2.  `HeLa_Control_rep2.raw`
+
+    3.  `HeLa_Control_rep3.raw`
+
+    4.  `HeLa_Inhibitor_rep1.raw`
+
+    5.  `HeLa_Inhibitor_rep2.raw`
+
+    6.  `HeLa_Inhibitor_rep3.raw`
+
+    (Note: These are Thermo .raw files, the most common type for this kind of experiment.)
+
+-   **Action:** You would go to the PRIDE archive, search for PXD012345, and download these 6 files.
+
+#### **Step 3: Project Organization - Creating a Home for Our Analysis**
+
+This is the most critical step for reproducibility and sanity. We will create a clean folder structure.
+
+-   **Action:**
+
+    1.  Create a main project folder somewhere easy to find. Let's call it `Project_HeLa_KI.`
+
+    2.  Inside `Project_HeLa_KI,` create three sub-folders:
+
+        -   `raw`: This is where you will move the 6 .raw files you just downloaded.
+
+        -   `fasta`: This is where we will put our protein database.
+
+        -   `analysis_output`: This will be the home for all the results generated by MaxQuant.
+
+Your folder structure should now look like this:
+
+```         
+Project_HeLa_KI/
+├── raw/
+│   ├── HeLa_Control_rep1.raw
+│   ├── HeLa_Control_rep2.raw
+│   ├── HeLa_Control_rep3.raw
+│   ├── HeLa_Inhibitor_rep1.raw
+│   ├── HeLa_Inhibitor_rep2.raw
+│   ├── HeLa_Inhibitor_rep3.raw
+├── fasta/
+└── analysis_output/
+```
+
+#### **Step 4: The Protein Database - Getting the "List of Suspects"**
+
+We need the correct protein database to search against. Since our samples are from human cells, we need the human proteome. The best source for this is **UniProt**.
+
+-   **Action:**
+
+    1.  Go to the [**UniProt website**](https://www.google.com/url?sa=E&q=https%3A%2F%2Fwww.uniprot.org%2F).
+
+    2.  In the search bar, search for: proteome:UP000005640 (This is the official ID for the reference human proteome).
+
+    3.  On the search results page, you should see the entry for *Homo sapiens*. Click on it.
+
+    4.  You will see a "Download" button. Click it. A menu will appear.
+
+    5.  **This is important:**
+
+        -   Under "Format", select **FASTA**.
+
+        -   Under "Compressed", select **No**.
+
+        -   Make sure you are downloading the **Reviewed (Swiss-Prot)** database. This is a smaller, higher-quality, manually curated database that is usually the best choice for standard experiments.
+
+    6.  Download the file. It will be named something like UP000005640_9606.fasta.
+
+    7.  **Move this FASTA file into your fasta sub-folder.**
+
+------------------------------------------------------------------------
+
+***`I deal with data with coding`***
+
+### **Part 1: R Environment Setup, Data Conversion, and Project Organization**
+
+**Goal:** To prepare your R environment, convert the proprietary raw data into an open format that R can read, and organize our project for a reproducible coding workflow.
+
+#### **Step 1: The Tools - Your R/Bioconductor Workbench**
+
+First, we need to set up your R environment.
+
+1.  **Install R and RStudio:** If you haven't already, download and install the latest versions of [**R**](https://www.google.com/url?sa=E&q=https%3A%2F%2Fcran.r-project.org%2F) and [**RStudio Desktop**](https://www.google.com/url?sa=E&q=https%3A%2F%2Fposit.co%2Fdownload%2Frstudio-desktop%2F). RStudio is a user-friendly interface for R that is highly recommended.
+
+2.  **Install Bioconductor:** Bioconductor is a repository of R packages specifically for bioinformatics. We install its core packages using a special command. Open RStudio and run this code in the console:
+
+    ``` r
+    if (!requireNamespace("BiocManager", quietly = TRUE))     
+    install.packages("BiocManager") 
+    BiocManager::install()
+    ```
+
+3.  **Install Essential Packages:** Now we can install the specific packages we'll need for this project.
+
+    ``` r
+    BiocManager::install(c("MSnbase", "ProtGenerics", "mzR")) 
+    install.packages("tidyverse") 
+    # For data manipulation and plotting
+    ```
+
+    -   **MSnbase:** This is the ***foundational package for proteomics data in R***. It defines the data structures and provides tools for reading, manipulating, and visualizing mass spec data.
+
+    -   **ProtGenerics:** ***Provides a common set of functions for proteomics.***
+
+    -   **mzR:** This is the backend engine that MSnbase uses to actually read the mass spec data from the files.
+
+    -   **tidyverse:** This is a collection of essential packages (like ggplot2 for plotting and dplyr for data wrangling) for modern data science in R.
+
+#### **Step 2: A Critical Prerequisite - Data Conversion**
+
+This is the most important difference from the MaxQuant workflow. ***R packages like MSnbase cannot read the proprietary vendor formats(供应商专用格式) (e.g., Thermo's .raw files) directly. We must first convert them to an open-standard format.***
+
+-   **The Open Format:** **mzML**. This is a standardized XML-based format that all ***open-source tools can read***.
+
+-   **The Conversion Tool:** **ProteoWizard**. This is the industry-standard, free software for converting between proteomics data formats. Its main tool is called **msConvert.**
+
+-   **Action:**
+
+    1.  Go to the [**ProteoWizard website**](https://www.google.com/url?sa=E&q=http%3A%2F%2Fproteowizard.sourceforge.net%2Fdownload.html) and download the installer for your operating system.
+
+    2.  Install it.
+
+    3.  Launch the MSConvertGUI application.
+
+    4.  Click "Add" and select your 6 .raw files from the raw folder.
+
+    5.  On the right-hand side, under "Output format", select **mzML**.
+
+    6.  Under "Filters", add a filter for **"Peak Picking"**. Select "Vendor" as the algorithm. This performs the ***centroiding*** we discussed in our lessons, which is essential.
+
+    7.  Set an output directory (you can just use the same raw folder for now) and click **"Start"**.
+
+This will create 6 new files: `HeLa_Control_rep1.mzML, HeLa_Control_rep2.mzML, etc`. These are the files we will actually use in R.
+
+#### **Step 3: Project Organization (The R Way)**
+
+A reproducible coding project needs a clean structure.
+
+-   **Action:**
+
+    1.  Create the main project folder `Project_HeLa_KI_R`.
+
+    2.  Inside it, create these sub-folders:
+
+        -   `data_raw:` Move your 6 new .mzML files here.
+
+        -   `data_processed`: This is for processed data we save along the way.
+
+        -   `fasta`: For our protein database.
+
+        -   `scripts`: For our R scripts.
+
+        -   `figures`: For the plots and figures we generate.
+
+    3.  **In RStudio:** Go to File \> New Project... \> Existing Directory and select your `Project_HeLa_KI_R folder.` This creates an `.Rproj` file. From now on, you can just double-click this file to open RStudio, and it will automatically set your working directory to the project folder, which is incredibly helpful.
+
+#### **Step 4: The Protein Database (Same as before)**
+
+This step is identical.
+
+-   **Action:** Download the human reviewed (Swiss-Prot) FASTA file from UniProt (UP000005640_9606.fasta) and place it in your fasta sub-folder.
+
+#### **Step 5: Create Your First R Script**
+
+-   **Action:** In RStudio, go to File \> New File \> R Script. Save this empty script inside your scripts folder as `01_data_loading_and_qc.R.` We will write our code here.
+
+### **End of Part 1: Status Check**
+
+Let's review what we've accomplished. This is the professional setup for any R-based bioinformatics project.
+
+1.  We have a fully configured R environment with all the necessary specialized proteomics packages installed.
+
+2.  We have converted our proprietary raw data into the open-standard **mzML format** that R can read.
+
+3.  We have a perfectly organized project folder and have created an **RStudio Project** to manage it.
+
+4.  We have our protein database ready.
+
+5.  We have our first R script file open and ready for code.
+
+You are now in a position of complete control. Instead of a "black box," every single step of the analysis from here on will be an explicit line of code that you write, which is the ultimate goal for flexibility and reproducibility.
+
+------------------------------------------------------------------------
+
+### **Part 2: Data Loading and Initial Quality Control with R**
+
+**Goal:** To load our converted `.mzML` files into R, create a single, unified experimental object, and perform initial quality control checks to **ensure the data is of good quality.**
+
+#### **Step 1: Setting up the Script and Loading Libraries**
+
+The first thing in any R script should be to load the libraries you'll need. This makes it clear what dependencies the script has.
+
+``` r
+# --------------------------------------------------------------------------
+# Part 2: Data Loading and Initial Quality Control
+# --------------------------------------------------------------------------
+
+# Load necessary libraries
+library(MSnbase)
+library(mzR)
+library(tidyverse) # We'll use ggplot2 from this package for plotting
+library(magrittr) # Provides the pipe operator %>% for cleaner code
+
+# Set a color palette for our plots
+palette <- c("Control" = "#1b9e77", "Inhibitor" = "#d95f02")
+```
+
+-   **Action:** Copy this code block into your R script. Highlight it and press Ctrl + Enter to run it.
+
+#### **Step 2: Locating and Reading the Raw Data Files**
+
+We need to tell R where our .mzML files are. We also need to create a "phenotype" data frame. This is a crucial table that describes our experimental design. It links each raw file to its experimental group.
+
+-   
+
+``` r
+# --- 1. Define file paths and experimental design ---
+
+# Get the full paths to our mzML files
+# list.files() is a great function for this
+mzml_files <- list.files(
+  path = "./data_raw",      # The folder where our files are
+  pattern = ".mzML",         # The file extension we're looking for
+  full.names = TRUE,       # Get the full path, not just the filename
+  recursive = FALSE        # Don't look in sub-folders
+)
+
+# Let's look at the result
+print(mzml_files)
+
+# Create a 'phenotype' data frame (pData) that describes the experiment
+# The row names MUST match the file names (without the path and extension)
+pdata <- data.frame(
+  sample_name = c("Control_1", "Control_2", "Control_3", "Inhibitor_1", "Inhibitor_2", "Inhibitor_3"),
+  sample_group = c(rep("Control", 3), rep("Inhibitor", 3)),
+  row.names = basename(tools::file_path_sans_ext(mzml_files))
+)
+
+# Let's look at our experimental design table
+print(pdata)
+```
+
+-   **Action:** Add this code to your script and run it. You should see the list of your 6 file paths printed in the console, followed by the neatly organized pdata table. This table is the "map" for our entire experiment.
+
+#### **Step 3: Loading the Data into an MSnExp Object**
+
+This is the main event of this section. We will use the ***readMSData()*** function from the MSnbase package to load all 6 files into a single, powerful R object called an ***MSnExp*** object. This object will contain every single spectrum from every file, all neatly organized.
+
+``` r
+# --- 2. Read the raw data into an MSnExp object ---
+
+# The 'readMSData' function is the main workhorse for loading data.
+# We give it our file paths and our phenotype data.
+# 'mode = "onDisk"' is VERY important. It tells MSnbase to not load all the
+# spectral data into RAM, but to keep it on the hard drive. This saves memory
+# and is essential for large experiments.
+raw_data <- readMSData(
+  files = mzml_files,
+  pData = pdata,
+  msLevel. = 1, # We only load MS1 spectra for now for QC
+  mode = "onDisk" 
+)
+
+# Let's inspect the object we created
+print(raw_data)
+```
+
+-   **Action:** Run this code. It might take a minute or two as it reads the header information from all 6 files. The output in the console will be a summary of the object, telling you how many spectra it contains from how many files. This object, ***`raw_data`***, is now the center of our universe for this initial QC.
+
+#### **Step 4: Initial Quality Control - The Total Ion Chromatogram (TIC)(总离子色谱图)**
+
+As we discussed in our theory lessons, the first QC check is to look at the Total Ion Chromatogram (TIC). We want to see if the overall signal was stable and comparable across our runs.
+
+``` r
+# --- 3. Perform Initial Quality Control ---
+
+# Extract the chromatogram data (in this case, the TIC)
+tic_data <- chromatogram(raw_data, aggregationFun = "sum")
+
+# Convert the chromatogram data to a regular data frame for plotting with ggplot2
+tic_df <- as.data.frame(tic_data)
+
+# Let's look at the structure of this data frame
+head(tic_df)
+
+# Now, create the plot using ggplot2
+tic_plot <- ggplot(tic_df, aes(x = rtime / 60, y = intensity, group = sample_name, color = sample_group)) +
+  geom_line(lwd = 0.8) +
+  scale_color_manual(values = palette) +
+  labs(
+    title = "Total Ion Chromatogram (TIC) per Sample",
+    x = "Retention Time (minutes)",
+    y = "Intensity (sum of all ions)",
+    color = "Experimental Group"
+  ) +
+  theme_bw() +
+  theme(legend.position = "top")
+
+# Display the plot
+print(tic_plot)
+
+# Save the plot to our figures folder
+ggsave(
+  filename = "figures/01_tic_plot.png",
+  plot = tic_plot,
+  width = 10,
+  height = 6,
+  dpi = 300
+)
+```
+
+-   **Action:** Run this final block of code. In your RStudio "Plots" pane, you should see a beautiful line plot showing the 6 TICs.
+
+-   **Interpretation:** Look at the plot.
+
+    -   Are the overall shapes roughly similar? (Good)
+
+    -   Are the peak intensities in the same general range? (Good)
+
+    -   Are there any runs where the signal is dramatically lower or where it suddenly drops to zero? (Bad - this would indicate a failed run).
+
+    -   Based on our fictional "good" data, the TICs should look consistent and well-behaved, giving us confidence to proceed.
+
+### **End of Part 2: Status Check**
+
+Congratulations! You have just completed the first, crucial steps of a professional, code-based proteomics analysis.
+
+1.  You have successfully loaded 6 complex mzML files into a single, organized R object (raw_data).
+
+2.  You have a clean, machine-readable table (pdata) that defines your entire experimental design.
+
+3.  You have performed the most important initial QC check by generating, plotting, and saving the Total Ion Chromatograms.
+
+4.  Crucially, every single step is recorded in your R script. You could email this script to a colleague, and they could perfectly reproduce your analysis from the raw data.
+
+------------------------------------------------------------------------
+
+### **Part 3: Peptide Identification using a Standalone Search Engine(独立搜索引擎)**
+
+**Goal:** ***To take our quality-controlled .mzML files, search them against our human protein database to identify peptides, and then perform rigorous statistical validation to generate a high-confidence list of protein identifications.***
+
+**Our Chosen Toolchain:**
+
+-   **Search Engine:** **Comet**. A very fast, robust, and open-source search engine.
+
+-   **Statistical Validation Suite:** **Trans-Proteomic Pipeline (TPP)**. A suite of tools that includes PeptideProphet and ProteinProphet, the ***gold standard*** for post-search statistical validation.
+
+#### **Step 1: Download the Tools**
+
+-   **Action:**
+
+    1.  **Comet:** Go to the [**Comet-MS website**](https://www.google.com/url?sa=E&q=https%3A%2F%2Fcomet-ms.sourceforge.io%2F) and download the pre-compiled binary for your operating system (e.g., Windows or Linux). Unzip it into a tools folder (e.g., C:\\Bioinformatics_Tools\\comet\\).
+
+    2.  **TPP:** Go to the [**TPP website**](https://www.google.com/url?sa=E&q=http.tools.proteomecenter.org%2Fwiki%2Findex.php%3Ftitle%3DTPP_Install) and download the version for your OS. The TPP is a larger suite of command-line tools. Install it to a memorable location.
+
+#### **Step 2: Prepare the Database for Searching**
+
+A critical step for the Target-Decoy strategy is to create the decoy database.
+
+-   **Action:** We will use a tool from the TPP suite to do this. Open a command prompt or terminal. Navigate to your project's fasta directory and run the following command (you may need to provide the full path to the fasta-decoy.pl script from your TPP installation):
+
+    ``` bash
+    # Command to be run in the terminal, inside the 'fasta' folder fasta-decoy.pl UP000005640_9606.fasta --decoy_prefix="decoy_" --
+    output_file="human_proteome_target_decoy.fasta"
+    ```
+
+    -   This command takes our original FASTA file and creates a new one called *`human_proteome_target_decoy.fasta`*. This new file contains all the original "target" protein sequences, plus a decoy version of each one (usually reversed) with "*`decoy_`*" prefixed to its name. This is the file we will give to Comet.
+
+#### **Step 3: Configure and Run the Comet Search**
+
+Comet is configured using a simple text file with parameters.
+
+-   **Action 1: Create the parameter file.**
+
+    -   In your main project folder (*`Project_Heela_KI_R/`*), create a new text file named *`comet.params.txt.`*
+
+    -   ***Copy and paste the following configuration into it***. The comments explain each important setting.
+
+    **code Ini**
+
+    ```         
+    # comet.params.txt - Configuration for our HeLa LFQ search
+
+    database_name = ./fasta/human_proteome_target_decoy.fasta
+    decoy_search = 0 # 0 because we are using a concatenated target-decoy database
+
+    # Mass Tolerances
+    peptide_mass_tolerance = 10.0
+    peptide_mass_units = 2  # 2 = ppm
+    fragment_bin_tolerance = 0.02
+    fragment_bin_offset = 0.0
+
+    # Modifications
+    variable_mod1 = 15.9949 M 0 3 -1 0 0 # Oxidation(氧化) of M
+    variable_mod2 = 42.0106 N-term 0 3 -1 0 0 # Acetylation(乙酰化) of protein N-terminus
+    add_C_carbamidomethyl = 57.02146 # This is our fixed modification on Cysteine(半胱氨酸)
+
+    # Enzyme settings
+    search_enzyme_number = 1  # 1 = Trypsin(胰蛋白酶)
+    num_enzyme_termini = 2    # 2 = fully tryptic
+    allowed_missed_cleavage = 2
+
+    # Output format
+    output_pepxml = 1 # We want pepXML output for the TPP
+    ```
+
+-   **Action 2: Run the search from the command line.**
+
+    -   This is best done with a simple loop. Open your terminal and navigate to your main project directory. Run a command like this (you'll need to provide the full path to comet.exe):
+
+-   
+
+    ``` bash
+    # This loop runs Comet on every mzML file 
+    for file in ./data_raw/*.mzML; do   
+       /path/to/comet.exe -Pcomet.params.txt "$file" 
+    done
+    ```
+
+    -   **What this does:** Comet will run on each of your `6 .mzML` files, one by one. For each input file (e.g., `HeLa_Control_rep1.mzML`), it will create an output file named `HeLa_Control_rep1.pep.xml.` This `.pep.xml` file contains the raw search results (the Peptide-Spectrum Matches). This process will take some time.
+
+#### **Step 4: Perform Statistical Validation with the TPP**
+
+Now we have our 6 `.pep.xml` files full of raw scores. We need to analyze these scores statistically to calculate probabilities and control the FDR. This is what PeptideProphet and ProteinProphet are for.
+
+-   **Action:** This is typically a two-step command-line process. In your terminal (still in the main project directory), run:
+
+    ``` bash
+    # Step 1: Run PeptideProphet on all results to calculate peptide probabilities
+    # It will analyze the scores and create new files with '.interact.pep.xml'
+    xinteract -NHeLa_Inhibitor_Combined.pep.xml -p0.05 -l7 -PPM -d"decoy_" -OAPdl *.pep.xml
+
+    # Step 2: Run ProteinProphet on the combined, validated peptide evidence
+    # This performs the protein inference and calculates protein-level probabilities/FDR
+    proteinprophet HeLa_Inhibitor_Combined.interact.pep.xml HeLa_Inhibitor_Combined.prot.xml DECOY="decoy_"
+    ```
+
+    -   **What this does:** This is a complex but standard TPP workflow.
+
+        1.  `xinteract` is a wrapper(包装器) that runs PeptideProphet. It takes all your raw `.pep.xml` files, analyzes the score distributions for target vs. decoy hits, and calculates a robust probability for each PSM being correct. The `-NHeLa_Inhibitor_Combined.pep.xml` option tells `xinteract` to **combine the results** into a single output file named `HeLa_Inhibitor_Combined.pep.xml`.
+
+        2.  `proteinprophet` then takes that validated peptide evidence, performs the protein inference step (using the principle of parsimony, just as we discussed), and calculates a final probability and FDR for each identified protein group.
+
+### **End of Part 3: Status Check**
+
+This was a significant but essential detour from R. We have used a set of high-performance, specialized command-line tools to perform the most computationally intensive part of the workflow.
+
+**The Final, Crucial Output:**\
+The entire process of this part has generated one critical file: `HeLa_Inhibitor_Combined.prot.xml.`
+
+This single file contains:
+
+-   A list of all the protein groups identified across all 6 runs.
+
+-   The statistical probability (and FDR) associated with each protein identification, derived from the rigorous target-decoy analysis.
+
+-   Information about which peptides support the identification of each protein.
+
+We have successfully turned our raw spectra into a statistically validated and reliable list of proteins. We are now ready to bring this high-quality information back into our R environment.
+
+------------------------------------------------------------------------
+
+### **Part 4: Importing Identifications and Performing MS1-Level Quantification in R**
+
+**Goal:** ***To parse the identification results from our `prot.xml` file, filter them to a 1% protein FDR, and then use this high-confidence list to guide the quantification of MS1 features from the raw data we loaded in Part 2.***
+
+**New R Packages Needed:**\
+For this part, we need a way to parse(解析) the XML output from the TPP. The ***`protViz`*** **package** is excellent for this. We also need a package for quantification. We will use the ***`aLFQ`*** **package** which is specifically designed for label-free quantification workflows in R.
+
+``` r
+# Install new packages needed for this part 
+BiocManager::install(c("protViz", "aLFQ"))
+```
+
+-   **Action:** Open RStudio and run the installation command above. Then, create a new R script in your scripts folder named `02_quantification_and_analysis.R.`
+
+#### **Step 1: Setting up the Script and Loading Data**
+
+We'll start our new script by loading libraries and the raw_data object (after QC) we created in Part 2.
+
+``` r
+# --------------------------------------------------------------------------
+# Part 4: Identification Import and MS1 Quantification
+# --------------------------------------------------------------------------
+
+# Load necessary libraries
+library(MSnbase)
+library(tidyverse)
+library(protViz)
+library(aLFQ) # The main package for this part
+
+# Load the raw MSnExp object we created in the previous script
+# We saved it to keep our workspace clean between steps
+# (Note: In a real workflow, you would save the object at the end of Part 2
+# using save(raw_data, file = "data_processed/raw_data.RData"))
+# For this example, we will just re-run the loading from Part 2.
+
+# --- Re-run from Part 2 to get the 'raw_data' object ---
+mzml_files <- list.files("./data_raw", ".mzML", full.names = TRUE)
+pdata <- data.frame(
+  sample_name = c("Control_1", "Control_2", "Control_3", "Inhibitor_1", "Inhibitor_2", "Inhibitor_3"),
+  sample_group = c(rep("Control", 3), rep("Inhibitor", 3)),
+  row.names = basename(tools::file_path_sans_ext(mzml_files))
+)
+raw_data <- readMSData(files = mzml_files, pData = pdata, msLevel. = 1, mode = "onDisk")
+# --------------------------------------------------------
+```
+
+-   **Action:** Add this code to your new script. It sets up our environment and ensures the raw_data object is loaded and ready.
+
+#### **Step 2: Parse and Filter Protein Identifications**
+
+Now, we read the `prot.xml` file and filter it to get our high-confidence protein list.
+
+``` r
+# --- 1. Parse and Filter Protein Prophet Results ---
+
+# The parse.prot.xml function from protViz reads the TPP output
+prot_xml_path <- "HeLa_Inhibitor_Combined.prot.xml"
+protein_identifications <- parse.prot.xml(prot_xml_path)
+
+# Let's inspect the loaded data
+head(protein_identifications)
+
+# Filter the identifications to a 1% False Discovery Rate (FDR)
+# The 'probability' column from ProteinProphet corresponds to FDR
+# A probability of >= 0.99 corresponds to <= 1% FDR
+high_confidence_proteins <- protein_identifications %>%
+  filter(probability >= 0.99)
+
+# Get a clean list of protein group identifiers
+protein_list <- unique(high_confidence_proteins$protein_group)
+
+# How many high-confidence protein groups did we identify?
+cat("Number of protein groups identified at <1% FDR:", length(protein_list))
+```
+
+-   **Action:** Run this code. It will read the results of our external search, apply the critical 1% FDR filter, and tell us how many reliable protein groups we've identified across the entire experiment. This list, `protein_list`, is our trusted set of proteins.
+
+#### **Step 3: Perform MS1 Feature Detection**
+
+Before we can quantify, we need to go back to our raw MS1 data and find all the "features" (the 3D peaks of m/z, retention time, and intensity). The aLFQ package has functions to do this.
+
+``` r
+# --- 2. MS1 Feature Detection ---
+
+# This step finds all potential peptide peaks in the MS1 data
+# It can take a while to run on all files
+feature_list <- findMs1Features(raw_data)
+
+# Let's inspect the features found in the first sample
+head(feature_list[[1]])
+```
+
+-   **Action:** Run this code. This is a computationally intensive step where the algorithm scans through all the MS1 spectra to find potential peptide signals. The `feature_list` object is a list, where each element contains a table of all features found in one of our raw files.
+
+#### **Step 4: Link Identifications to Features and Quantify**
+
+This is the magic step. We now ***link our high-confidence protein identifications to the MS1 features we just found***. This is essentially the R version of "Match Between Runs". The aLFQ package will then calculate the area under the curve for each feature, giving us our quantification.
+
+``` r
+# --- 3. Link Identifications and Quantify ---
+
+# We need to provide the raw search results (pep.xml) for aLFQ to link them
+pep_xml_files <- list.files(pattern = ".pep.xml", full.names = TRUE)
+
+# This is the main quantification function
+# It aligns retention times, links features to IDs, and calculates peak areas
+protein_quant <- quantify(
+  ms1.features = feature_list,
+  pep.xml = pep_xml_files,
+  fasta = "./fasta/human_proteome_target_decoy.fasta" # Used to get protein info
+)
+
+# The output is a tidy data frame with quantification data
+# Let's look at the result
+head(protein_quant)
+```
+
+-   **Action:** Run this code. This is the second major computational step. The quantify function will:
+
+    1.  Perform retention time alignment across the 6 runs.
+
+    2.  Match the identified peptides (from the `.pep.xml` files) to the MS1 features based on m/z and retention time.
+
+    3.  Transfer identifications to features that were not identified by MS/MS (the "match between runs" principle).
+
+    4.  Carefully calculate the integrated peak area for every feature.
+
+    5.  Roll up the peptide intensities to the protein level.
+
+The resulting `protein_quant` data frame is our first look at the quantitative data.
+
+#### **Step 5: Normalization and Final Data Matrix Creation**
+
+The raw intensities are not yet comparable. We need to normalize them. aLFQ provides a final function to do this and create our final, analysis-ready data matrix.
+
+``` r
+# --- 4. Normalization and Matrix Generation ---
+
+# This function normalizes the data and pivots it into a wide format
+# with proteins as rows and samples as columns
+final_lfq_matrix <- makeProteinTable(protein_quant)
+
+# Let's look at the final, analysis-ready matrix
+# Note that the values are on a log2 scale, which is perfect for statistics
+print(head(final_lfq_matrix))
+```
+
+-   **Action:** Run this final piece of code. The makeProteinTable function performs a robust normalization (similar to median normalization) and transforms the data into the exact format we need for the next step: a matrix where each row is a protein, each column is a sample, and the values are the normalized log2-transformed intensities.
+
+### **End of Part 4: Status Check**
+
+This was a huge and important part of the analysis. Let's recap what we've built in our R script:
+
+1.  We have successfully imported the **externally-generated, statistically validated protein identifications** into R.
+
+2.  We have performed **MS1 feature detection** on our raw data.
+
+3.  We have **linked** these two sources of information to perform robust **label-free quantification**, including retention time alignment and "match between runs."
+
+4.  We have **normalized** the resulting intensities and created a final, clean, log2-transformed **data matrix**.
+
+This `final_lfq_matrix` is the culmination of all our processing so far. It is the direct input for the final stage of the project: differential expression analysis and biological interpretation.
+
+------------------------------------------------------------------------
+
+### Filter the Protein
+
+***You might find out a detail that we did not directly use the protein_list to filter the protein before we quantify the protein,it seems could help us save memory but the truth is not***
+
+The short answer is: **the quantify function in aLFQ does not directly use our filtered protein_list. Instead, it wisely performs its own internal filtering and linking at the peptide level.**\
+
+### The Problem with Using a Pre-Filtered Protein List for Quantification
+
+Imagine we did it the simple way: we give the quantify function our high-confidence protein_list and tell it, "Only quantify the peptides that belong to these proteins."
+
+This would lead to several problems:
+
+1.  **Loss of Peptide-Level Information:** The 1% FDR for proteins was calculated by ProteinProphet based on the combined evidence of all peptides. A protein might be identified with high confidence (e.g., it has 10 supporting peptides), ***but one of those 10 peptides might be a low-confidence or ambiguous identification on its own.*** If we filter at the protein level first, we can't make these granular(精细), peptide-level decisions during quantification.
+
+2.  **Incorrect Quantification of Shared Peptides:** This is the ***most critical issue***. Remember the protein inference problem? A single peptide can map to multiple proteins (e.g., Peptide P maps to Protein A and Protein B). The aLFQ quantification algorithm needs to know this. ***It needs the full, unfiltered peptide evidence to intelligently decide how to "distribute" the intensity of that shared peptide.*** If we only give it a final protein list, it loses all this crucial connectivity information.
+
+3.  **Sub-optimal "Match Between Runs"(次优的运行间匹配):** The "match between runs" or feature transfer works best when it has a comprehensive library of all plausibly identified peptides, their m/z values, and their retention times. ***If we pre-filter the protein list, we might discard a protein that was identified with 2% FDR.*** However, a peptide from that protein might be clearly visible and quantifiable in the MS1 data. By using the full peptide evidence from the `.pep.xml` files, the quantify function has a much larger and more sensitive library to use for transferring identifications.
+
+### The Smarter Approach Used by aLFQ (and MaxQuant)
+
+The quantify function in aLFQ takes a more sophisticated, bottom-up approach, which is why we give it the **raw .pep.xml search results**, not our filtered protein list.
+
+Here is its internal logic:
+
+1.  **Start with Peptides:** It first looks at the **Peptide-Spectrum Matches (PSMs)** from the .pep.xml files. It will apply its own internal quality filter here (e.g., using the PeptideProphet probability for each individual PSM).
+
+2.  **Match PSMs to MS1 Features:** It creates a library of high-quality identified peptides with their measured m/z and retention times. It then uses this library to find and link the MS1 features we detected in Part 4, Step 3. This is where the alignment and "match between runs" happens.
+
+3.  **Quantify Peptides:** It calculates the peak area for all these linked MS1 features, resulting in a quantified list of peptides.
+
+4.  **Perform Protein Inference and Roll-up:** **Only now**, at the very end, does it deal with the protein problem. It uses the peptide-to-protein mapping information (which is also in the .pep.xml and FASTA files) to:
+
+    -   Resolve shared peptides.
+
+    -   Sum up the intensities of unique and shared peptides to calculate a final abundance for each **protein group**.
+
+    -   It effectively re-does the protein inference step in a quantification-aware manner.
+
+    ``` r
+    # --------------------------------------------------------------------------
+    # Part 5: Differential Expression Analysis (CORRECTED WORKFLOW)
+    # --------------------------------------------------------------------------
+
+    # We start with 'final_lfq_matrix' from the end of Part 4.
+    # It contains the quantified data for many proteins.
+
+    # --- NEW STEP: Filter Quantification Matrix with High-Confidence Protein List ---
+
+    # This is the step where we explicitly use our 'protein_list'
+    # Let's get the protein IDs from our quantified matrix
+    quantified_proteins <- rownames(final_lfq_matrix)
+
+    # We must clean these IDs to match the format in 'protein_list'
+    # (i.e., remove isoform suffixes like -1, -2 etc.)
+    quantified_proteins_clean <- str_remove(quantified_proteins, "-\\d+")
+
+    # Now, we perform the crucial filtering operation.
+    # We check which of our quantified proteins are present in our high-confidence list.
+    is_high_confidence <- quantified_proteins_clean %in% protein_list
+
+    # Create the new, validated matrix by keeping only the rows that correspond
+    # to our high-confidence proteins.
+    matrix_validated <- final_lfq_matrix[is_high_confidence, ]
+
+
+    # Let's print a summary to see the effect of this filtering
+    cat("Number of proteins in original quantification matrix:", nrow(final_lfq_matrix), "\n")
+    cat("Number of proteins in our high-confidence list:", length(protein_list), "\n")
+    cat("Number of proteins in the final validated matrix for analysis:", nrow(matrix_validated), "\n")
+
+    # --- From this point on, we use 'matrix_validated' for all downstream steps ---
+
+
+    # Step 1: Handling Missing Values (Now on the validated matrix)
+    # Note the change from 'final_lfq_matrix' to 'matrix_validated'
+    colSums(is.na(matrix_validated))
+    keep <- rowSums(!is.na(matrix_validated)) >= 3
+    matrix_filtered <- matrix_validated[keep, ]
+
+    # ... and the rest of the limma analysis would proceed exactly as before,
+    # but starting with 'matrix_filtered' which is derived from our validated matrix.
+    ```
+
+------------------------------------------------------------------------
+
+### **Part 5: Differential Expression Analysis and Biological Interpretation**
+
+**Goal:** ***To take our final quantified protein matrix, fit a statistical model to identify proteins that are significantly up- or down-regulated, visualize these results with a volcano plot, and prepare the list of "hits" for downstream functional analysis.***
+
+**New R Package Needed:**\
+For this part, we will use the *`limma`* package. It is the gold standard in the R/Bioconductor ecosystem for analyzing differential expression, originally built for microarrays but perfectly adapted for proteomics and other 'omics data. Its use of linear models and empirical Bayes statistics makes it more powerful and reliable than running thousands of simple t-tests.
+
+``` r
+# Install the limma package 
+BiocManager::install("limma")
+```
+
+-   **Action:** Install *`limma.`* We will continue writing in our *`02_quantification_and_analysis.R`* script.
+
+#### **Step 1: Setting up the Script (Continued)**
+
+We'll start by loading the new library at the top of our script.
+
+``` r
+# At the top of 02_quantification_and_analysis.R, add limma
+library(limma)```
+*   **Action:** Add `limma` to your library loading section. For the rest of this part, we will be appending code to the end of the script, working with the `final_lfq_matrix` we created in Part 4.
+
+#### **Step 2: Handling Missing Values**
+
+The `final_lfq_matrix` may still have some `NA` (missing) values, especially for low-abundance proteins. `limma` cannot work with `NA`s, so we must address them. A common strategy is to decide on a threshold: if a protein is missing in too many samples, we remove it; otherwise, we can impute the missing values.
+
+
+# --- 5. Differential Expression Analysis with limma ---
+
+# First, let's inspect the extent of missing data
+# Count the NAs in each column (sample)
+colSums(is.na(final_lfq_matrix))
+
+# A common filtering strategy: keep proteins that are present in at least
+# 2 out of 3 replicates in at least one experimental group.
+# For simplicity in this example, we will keep proteins that are present
+# in at least 3 of our 6 total samples.
+keep <- rowSums(!is.na(final_lfq_matrix)) >= 3
+matrix_filtered <- final_lfq_matrix[keep, ]
+
+# For the remaining NAs, we need to impute. Since these are likely
+# low-abundance proteins (missing not at random), we will impute with
+# a low value from the tail of the data distribution.
+# NOTE: Imputation is a complex topic. This is a simple but common approach.
+# For robust imputation, dedicated packages like `imputeLCMD` are excellent.
+
+# Simple imputation: replace NAs with a value slightly lower than the minimum
+min_val <- min(matrix_filtered, na.rm = TRUE)
+matrix_imputed <- replace(
+  matrix_filtered,
+  is.na(matrix_filtered),
+  min_val - runif(sum(is.na(matrix_filtered)), 0, 1) # Add jitter to avoid identical values
+)
+```
+
+-   **Action:** Run this code. We first filter out proteins with too many missing values and then replace the ***remaining NAs with a small, plausible value***. Our data matrix `matrix_imputed` is now complete and ready for modeling.
+
+#### **Step 3: Setting up the Linear Model**
+
+This is the core of *`limma.`* We need to create two matrices:
+
+1.  **Design Matrix:** This tells *`limma`* which sample belongs to which group.
+
+2.  **Contrast Matrix:** This tells *`limma`* which comparison we want to make (in our case, Inhibitor vs. Control).
+
+``` r
+# Create the design matrix
+# It models the data based on our sample_group factor from pdata
+design <- model.matrix(~ 0 + pdata$sample_group)
+colnames(design) <- c("Control", "Inhibitor")
+rownames(design) <- colnames(matrix_imputed)
+
+# Let's look at the design matrix to understand it
+print(design)
+
+# Create the contrast matrix
+# This defines the comparison we are interested in
+contrast_matrix <- makeContrasts(
+  Inhibitor_vs_Control = Inhibitor - Control,
+  levels = design
+)
+
+# Let's look at the contrast matrix
+print(contrast_matrix)
+```
+
+-   **Action:** Run this code. The `design` matrix is a simple binary matrix indicating group membership. The `contrast` matrix specifies the exact subtraction we want to perform to get our fold change.
+
+#### **Step 4: Fitting the Model and Extracting Results**
+
+Now we run the three main `limma` functions: `lmFit, contrasts.fit, and eBayes.`
+
+``` r
+# Step 1: Fit the linear model for each protein
+fit <- lmFit(matrix_imputed, design)
+
+# Step 2: Apply the contrast (perform the comparison)
+fit2 <- contrasts.fit(fit, contrast_matrix)
+
+# Step 3: Apply Empirical Bayes smoothing
+# This is the "magic" of limma. It borrows information across all proteins
+# to get more stable and reliable variance estimates, increasing our statistical power.
+fit2 <- eBayes(fit2)
+
+# Now, extract a final, tidy results table
+# We ask for all proteins (n = Inf)
+results_table <- topTable(fit2, number = Inf, sort.by = "P")
+
+# Let's look at the top results
+head(results_table)
+```
+
+-   **Action:** Run this code. The r`esults_table` is our final, rich output. For every protein, it contains:
+
+    -   logFC: The log2 Fold Change (the effect size).
+
+    -   P.Value: The raw p-value.
+
+    -   adj.P.Val: The **adjusted p-value** (or q-value), corrected for multiple testing using the `Benjamini-Hochberg method`. This is the most important value for significance.
+
+    -   t: The t-statistic.
+
+    -   B: The B-statistic (log-odds that the protein is differentially expressed).
+
+#### **Step 5: Visualizing Results with a Volcano Plot**
+
+The best way to visualize these results is with a volcano plot.
+
+``` r
+# --- 6. Visualization and Interpretation ---
+
+# Create a new column to label significant proteins
+results_table <- results_table %>%
+  mutate(
+    significance = case_when(
+      logFC > 1 & adj.P.Val < 0.05 ~ "Upregulated",
+      logFC < -1 & adj.P.Val < 0.05 ~ "Downregulated",
+      TRUE ~ "Not Significant"
+    )
+  )
+
+# Create the volcano plot using ggplot2
+volcano_plot <- ggplot(results_table, aes(x = logFC, y = -log10(adj.P.Val), color = significance)) +
+  geom_point(alpha = 0.6, size = 1.5) +
+  scale_color_manual(values = c("Upregulated" = "#d95f02", "Downregulated" = "#1b9e77", "Not Significant" = "grey")) +
+  labs(
+    title = "Inhibitor vs. Control Treatment",
+    subtitle = "Differentially Abundant Proteins",
+    x = "log2(Fold Change)",
+    y = "-log10(Adjusted p-value)"
+  ) +
+  theme_bw() +
+  # Add threshold lines
+  geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
+  geom_vline(xintercept = c(-1, 1), linetype = "dashed")
+
+# Display the plot
+print(volcano_plot)
+
+# Save the plot
+ggsave("figures/02_volcano_plot.png", volcano_plot, width = 8, height = 7, dpi = 300)
+
+# Finally, get our list of significant "hits" for the next stage (functional analysis)
+significant_hits <- results_table %>%
+  filter(significance != "Not Significant")
+
+cat("\nNumber of significantly changed proteins:", nrow(significant_hits))
+print(head(significant_hits))
+```*   **Action:** Run this final block. This will generate and save your volcano plot and create a final data frame, `significant_hits`, containing only the proteins that passed our thresholds (e.g., >2-fold change and <5% FDR).
+
+---
+
+### **End of Project: Final Status and Next Steps**
+
+**Congratulations! You have completed a full, end-to-end, code-based proteomics analysis.**
+
+Let's recap the entire journey:
+1.  **Part 1:** We set up our R environment and converted raw data to an open format.
+2.  **Part 2:** We loaded the data into R and performed initial QC checks (TIC plot).
+3.  **Part 3:** We used powerful external tools (Comet, TPP) to perform database searching and rigorous statistical validation (FDR control).
+4.  **Part 4:** We brought the identification results back into R and performed MS1-level label-free quantification, alignment, and normalization.
+5.  **Part 5:** We used the state-of-the-art `limma` package to perform differential expression analysis and visualized the results in a volcano plot.
+
+**The Final Output:**
+You now have the `significant_hits` data frame. This list of protein IDs, along with their fold changes and p-values, is the direct input for the biological interpretation steps we discussed in our theory lessons: **Functional Enrichment Analysis (GO, KEGG)** and **Network Analysis (STRING)**. You would now use R packages like `clusterProfiler` or `STRINGdb` to discover the biological story hidden in your list of hits.
+```
+
+------------------------------------------------------------------------
+
+### **Part 6: Biological Interpretation - Uncovering the Story**
+
+**Goal:** To take our list of differentially abundant proteins and use functional enrichment and network analysis to understand the underlying biological processes, pathways, and interactions that are affected by the kinase inhibitor.
+
+**New R Packages Needed:**
+
+-   **clusterProfiler:** The gold standard Bioconductor package for functional enrichment analysis (GO, KEGG, and more).
+
+-   **org.Hs.eg.db:** The organism-specific annotation package for Homo sapiens. This package contains the mappings between different types of gene/protein identifiers.
+
+-   **STRINGdb:** An R client for the STRING database to perform PPI network analysis.
+
+-   **AnnotationDbi:** A core Bioconductor package for working with annotation databases.
+
+``` r
+# Install new packages needed for this part 
+BiocManager::install(c("clusterProfiler", "org.Hs.eg.db", "STRINGdb", "AnnotationDbi"))
+```
+
+-   **Action:** Install these packages. We will create a new, final R script in our scripts folder named `03_interpretation.R.`
+
+#### **Step 1: Setting up the Script and Loading Results**
+
+We start by loading our libraries and the results from the previous analysis.
+
+``` r
+# --------------------------------------------------------------------------
+# Part 6: Biological Interpretation and Functional Analysis
+# --------------------------------------------------------------------------
+
+# Load necessary libraries
+library(clusterProfiler)
+library(org.Hs.eg.db) # Human-specific annotations
+library(STRINGdb)
+library(AnnotationDbi)
+library(tidyverse)
+
+# For a real project, you would save your results from the previous script and load them here
+# At the end of script 02, you would run:
+# save(results_table, file = "data_processed/limma_results.RData")
+
+# In this script, you would start by loading:
+# load("data_processed/limma_results.RData")
+
+# For this continuous example, we will just assume 'results_table' is in our environment
+# Let's re-create our 'significant_hits' list
+significant_hits <- results_table %>%
+  filter(adj.P.Val < 0.05 & abs(logFC) > 1)
+```
+
+-   **Action:** Add this code to your new script. It sets up our environment and defines our list of significant proteins to work with.
+
+#### **Step 2: A Crucial Step - ID Mapping**
+
+The protein IDs in our results are likely UniProt IDs (e.g., "P04637"). Most enrichment tools, like clusterProfiler, ***work best with Entrez Gene IDs (e.g., "7157"). Our first job is to map our IDs.***
+
+``` r
+# --- 1. Map UniProt IDs to Entrez Gene IDs ---
+
+# The row names of our results are the protein IDs
+uniprot_ids <- rownames(significant_hits)
+
+# The 'mapIds' function is the tool for this job
+# We need to clean up potential isoform IDs first (e.g., P04637-2)
+uniprot_ids_clean <- str_remove(uniprot_ids, "-\\d+")
+
+entrez_ids <- mapIds(
+  org.Hs.eg.db,
+  keys = uniprot_ids_clean,
+  keytype = "UNIPROT",
+  column = "ENTREZID",
+  multiVals = "first" # If one UniProt ID maps to multiple Entrez IDs, take the first one
+)
+
+# Add the Entrez IDs to our results table
+significant_hits$entrez <- entrez_ids
+
+# Remove any proteins for which we couldn't find an Entrez ID
+significant_hits_mapped <- significant_hits %>%
+  filter(!is.na(entrez))
+```
+
+-   **Action:** Run this code. You now have a results table with a new column for Entrez IDs, ready for `clusterProfiler`.
+
+#### **Step 3: Gene Ontology (GO) Enrichment Analysis**
+
+Let's find out which "Biological Processes" are over-represented in our list of significant proteins.
+
+``` r
+## --- 2. Gene Ontology (GO) Enrichment Analysis ---
+
+# We need a "universe" - all the proteins we identified, not just the significant ones.
+# This is crucial for a correct statistical test.
+all_protein_ids <- str_remove(rownames(results_table), "-\\d+")
+universe_entrez <- mapIds(org.Hs.eg.db, keys = all_protein_ids, keytype = "UNIPROT", column = "ENTREZID", multiVals = "first")
+universe_entrez_clean <- unique(universe_entrez[!is.na(universe_entrez)])
+
+# Run the enrichment analysis
+go_results <- enrichGO(
+  gene = significant_hits_mapped$entrez,
+  universe = universe_entrez_clean,
+  OrgDb = org.Hs.eg.db,
+  keyType = "ENTREZID",
+  ont = "BP", # BP = Biological Process, can also be "MF" or "CC"
+  pAdjustMethod = "BH",
+  pvalueCutoff = 0.05,
+  qvalueCutoff = 0.1
+)
+
+# Let's look at the results
+head(as.data.frame(go_results))
+
+# The best way to visualize is with a dot plot
+dotplot(go_results, showCategory = 15) + ggtitle("Enriched GO Biological Processes")
+```
+
+-   **Action:** Run this code. It performs the hypergeometric test for all GO terms. The resulting table and dot plot will show you the most significantly affected biological processes. You might see terms like "cell cycle regulation," "response to DNA damage," or "apoptosis," giving you your first major clue about the drug's effect.
+
+#### **Step 4: KEGG Pathway Enrichment Analysis**
+
+Now let's see if our proteins map to any known molecular pathways.
+
+``` r
+# --- 3. KEGG Pathway Enrichment Analysis ---
+
+# Run the enrichment analysis for KEGG
+kegg_results <- enrichKEGG(
+  gene = significant_hits_mapped$entrez,
+  universe = universe_entrez_clean,
+  organism = "hsa", # hsa = Homo sapiens
+  pvalueCutoff = 0.05,
+  qvalueCutoff = 0.1
+)
+
+# Visualize the results
+dotplot(kegg_results, showCategory = 15) + ggtitle("Enriched KEGG Pathways")
+```
+
+-   **Action:** Run this code. This is a very powerful step. If the dot plot shows an enrichment for the "p53 signaling pathway," for example, you have a very strong hypothesis that your kinase inhibitor interacts with this famous cancer-related pathway.
+
+#### **Step 5: Protein-Protein Interaction (PPI) Network Analysis**
+
+Finally, let's see how our significant proteins interact with each other.
+
+``` r
+# --- 4. Protein-Protein Interaction (PPI) Network ---
+
+# Initialize the STRING database object
+string_db <- STRINGdb$new(version = "11.5", species = 9606, # 9606 is the species code for Human
+                         score_threshold = 400, input_directory = "") # 400 is a medium confidence score
+
+# Map our protein IDs to STRING IDs
+mapped_proteins <- string_db$map(significant_hits_mapped, "entrez", removeUnmappedRows = TRUE)
+
+# Get the interactions for our mapped proteins
+interactions <- string_db$get_interactions(mapped_proteins$STRING_id)
+
+# Plot the network
+# We can color the nodes by their up/down regulation
+# Create a payload for coloring
+payload <- mapped_proteins %>%
+  mutate(color = ifelse(logFC > 0, "#d95f02", "#1b9e77")) %>%
+  select(STRING_id, color)
+
+string_db$plot_network(mapped_proteins$STRING_id, payload = payload)
+```
+
+-   **Action:** Run this code. This will generate an image of your interaction network. Look for clusters of nodes (modules) and highly connected nodes (hubs). For example, you might see that TP53 (the protein name for p53) is a central hub connected to many other downregulated proteins, visually confirming the result from your KEGG analysis.
+
+### **Grand Conclusion: From Raw Data to a Biological Hypothesis**
+
+We have completed the entire journey. Let's synthesize our fictional results into a coherent story that you could present in a lab meeting.
+
+1.  **Project Setup:** We started with 6 raw mass spec files from a well-defined experiment comparing a kinase inhibitor to a control.
+
+2.  **Processing & QC:** We used R to load the data, confirmed its quality, and then used a high-performance external search engine (Comet/TPP) to get a list of **\~3,500 high-confidence protein groups** at a 1% FDR.
+
+3.  **Quantification:** We brought these identifications back into R and performed robust label-free quantification, resulting in a clean, normalized data matrix.
+
+4.  **Statistical Analysis:** Using limma, we ran a differential expression analysis and found **150 proteins** that were significantly up- or down-regulated (our significant_hits).
+
+5.  **Biological Interpretation:** Our functional analysis of these 150 hits revealed a powerful story:
+
+    -   **GO Analysis:** Showed a strong enrichment for terms like "regulation of cell cycle" and "apoptotic process."
+
+    -   **KEGG Analysis:** Pinpointed the "p53 signaling pathway" as the most significantly affected pathway.
+
+    -   **PPI Network Analysis:** Visualized these proteins, revealing a tightly interconnected module of downregulated proteins centered on the famous tumor suppressor **TP53** as a major hub.
+
+**The Final Hypothesis:**\
+"Our proteomic analysis demonstrates that Kinase Inhibitor Y has a significant impact on the HeLa cell proteome. The drug causes a coordinated downregulation of key proteins involved in the p53 signaling pathway. The central tumor suppressor protein, TP53, appears to be a key hub in this response, which is linked to an observed enrichment in proteins that regulate the cell cycle and apoptosis. This strongly suggests the drug's mechanism of action involves the activation of p53-mediated tumor suppressive functions."
