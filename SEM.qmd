@@ -1,0 +1,11 @@
+---
+title: SEM 教程
+authors:
+  - name: JAYZ
+    affiliation: The University OF Myself
+    roles: writing
+    corresponding: true
+bibliography: references.bib
+---
+
+**What the fuck do i need learn it is ,i dont think it is neccessary for my major,but fuck it ,here we go**
