@@ -253,3 +253,122 @@ The PPI network is not just a pretty picture. It is a structured data source tha
 -   **Crucially**, we have revisited the **STRING database** and understand it as the primary, evidence-based source for this blueprint of the cell.
 
 We have now completed our tour of the three foundational concepts. We know what network pharmacology is, where to get our data, and what the underlying map looks like. We are fully prepared to start our practical project.
+
+---
+
+## **😗Part 2: The Practical Workflow🥱**
+
+---
+
+### **Project: Investigating the Network Mechanism of Quercetin Against Colon Cancer🤤**
+
+---
+
+
+### **Lesson 4: Step 1 - Target Identification**
+
+**Goal:** To use a combination of predictive web servers and curated databases to generate our two primary lists of genes/proteins: 1. The predicted targets of our drug, **Quercetin**. 2. The known targets associated with our disease, **Colon Cancer**.
+
+---
+#### **Chunk 1: Finding the Drug - Defining Quercetin**
+
+**Explanation:** Before we can find the targets of a drug, we need to be able to represent it in a way that bioinformatics tools can understand. We can't just type "Quercetin." We need its chemical structure, most commonly represented as a **SMILES string**.
+
+**Action:**
+1.  Go to a large chemical database like **PubChem** ([https://pubchem.ncbi.nlm.nih.gov/](https://pubchem.ncbi.nlm.nih.gov/)).
+2.  In the search bar, type **"Quercetin"**.
+3.  On the Quercetin compound page, look for the **"Canonical SMILES"**.
+4.  **Copy this string.** It will look like this: `C1=CC(=C(C=C1C2=C(C(=O)C3=C(C=C(C=C3O2)O)O)O)O)O`
+5.  Create a project folder on your computer (e.g., `Project_Network_Pharmacology`). Inside, create a `data` subfolder.
+6.  Open a simple text editor and save this SMILES string in a file named `quercetin_smiles.txt` inside your `data` folder.
+
+*   **Verification:** You have successfully found and saved the unambiguous, machine-readable identifier for our drug.
+---
+
+#### **Chunk 2: Predicting the Drug Targets with SwissTargetPrediction**
+
+**Explanation:** Now we will use the powerful SwissTargetPrediction web server. It will take our SMILES string and, based on chemical similarity, predict the most likely human protein targets.
+
+**Action:** 1. Go to the **SwissTargetPrediction** website (<http://www.swisstargetprediction.ch/>). 2. Paste the SMILES string for Quercetin into the search box. 3. Make sure the species is set to **"Homo sapiens"**. 4. Click **"Predict targets"**. 5. The server will run the analysis and return a results page. This page shows a list of protein targets, ranked by a "Probability" score. 6. We want to export this data. Click the **"CSV"** button to download the results as a comma-separated values file. 7. Save this file in your `data` folder as `quercetin_predicted_targets.csv`.
+
+-   **Verification:** Open the downloaded CSV file in a spreadsheet program (like Excel or Google Sheets) or a text editor. You will see a clean table. The most important columns are:
+    -   `Target`: The common name of the protein target (e.g., "Serine/threonine-protein kinase PIM1").
+    -   `Uniprot ID`: The stable, universal identifier for that protein (e.g., "P11309").
+    -   `Probability`: The model's confidence in the prediction. This file is our raw list of predicted drug targets.
+
+---
+#### **Chunk 3: Finding the Disease Targets with GeneCards**
+
+**Explanation:** Now we switch hats and find the targets for our disease. We will use the comprehensive GeneCards database to get a well-annotated list of genes associated with Colon Cancer.
+
+**Action:**
+1.  Go to the **GeneCards** website ([https://www.genecards.org/](https://www.genecards.org/)).
+2.  In the search bar, type **"colon cancer"** and press Enter.
+3.  GeneCards will show you a results page. It should have a section or link for the "Gene list" associated with the disease. Click on it.
+4.  This will take you to a large table of genes. Each gene has a "GCid" and a "Relevance Score" indicating how strongly it is associated with the disease.
+5.  We want to download this data. Look for a "Download" button or link.
+6.  Download the table as a text or CSV file.
+7.  Save this file in your `data` folder as `colon_cancer_targets.csv`.
+
+*   **Verification:** Open the downloaded CSV file. You will see a large table with many columns. The most important columns for us are:
+    *   `Gene Symbol`: The official symbol for the gene (e.g., "APC", "KRAS", "TP53").
+    *   `Relevance score`: The score from GeneCards.
+    This file is our raw list of disease-associated targets.
+---
+
+#### **Chunk 4: Creating Clean Target Lists**
+
+**Explanation:** The raw downloaded files are a great start, but we need to process them into simple, clean lists of just the gene symbols for our next step. We can do this easily in R.
+
+**Action:** 1. In RStudio, create a new R Project for this analysis. 2. Create a new R script and save it as `01_target_processing.R`. 3. Add and run the following code:
+
+``` r
+# Load tidyverse for data manipulation
+library(tidyverse)
+
+# --- 1. Process Quercetin Predicted Targets ---
+# Load the CSV file from SwissTargetPrediction
+quercetin_raw <- read_csv("data/quercetin_predicted_targets.csv")
+
+# We only care about the "Common name" column, which contains the gene symbol.
+# Let's also only keep targets with a probability > 0 as a minimal filter.
+quercetin_targets <- quercetin_raw %>%
+  filter(Probability > 0) %>%
+  pull(`Common name`) %>% # The pull() function extracts a single column as a vector
+  unique() # Ensure we have no duplicates
+
+# Save this clean list to a file
+write_lines(quercetin_targets, "data/quercetin_targets_clean.txt")
+cat("Found", length(quercetin_targets), "unique predicted targets for Quercetin.\n")
+
+
+# --- 2. Process Colon Cancer Targets ---
+# Load the data from GeneCards
+cancer_raw <- read_delim("data/colon_cancer_targets.csv", delim = ",") # Use read_delim for flexibility
+
+# We only care about the "Gene Symbol" column.
+# Let's filter for a relevance score > 1 to keep moderately to highly associated genes.
+cancer_targets <- cancer_raw %>%
+  filter(`Relevance score` > 1.0) %>%
+  pull(`Gene Symbol`) %>%
+  unique()
+
+# Save this clean list to a file
+write_lines(cancer_targets, "data/colon_cancer_targets_clean.txt")
+cat("Found", length(cancer_targets), "unique targets for Colon Cancer.\n")
+```
+
+-   **Verification:** After running this R script, you will have two new, simple text files in your `data` folder:
+    -   `quercetin_targets_clean.txt`: A single column of gene symbols.
+    -   `colon_cancer_targets_clean.txt`: A single column of gene symbols. The `cat()` commands in the R script also print a summary to the console, telling you exactly how many targets are in each of your final lists. This confirms the successful completion of our data acquisition and cleaning step.
+
+------------------------------------------------------------------------
+
+### **Lesson 4: Summary & Status Check**
+
+-   **Conceptually**, we understand that the first practical step of any network pharmacology project is to acquire two lists of gene/protein identifiers: one for the drug's targets and one for the disease's targets.
+-   **Practically**, we have used premier, web-based bioinformatics tools (**SwissTargetPrediction** and **GeneCards**) to acquire this data for our specific project.
+-   **Crucially**, we have followed the "Trust, but Verify" principle by not just downloading the data, but by writing a simple R script to **clean and format** it, and to **report summary statistics** (the number of targets in each list).
+
+We have successfully completed the data collection phase. We now possess the two essential lists of "characters" for our story. The next logical step is to see where these two lists overlap.
+
