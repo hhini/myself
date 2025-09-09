@@ -1,0 +1,9 @@
+---
+title:  分子对接教程
+authors:
+  - name: JAYZ
+    affiliation: The University OF Myself
+    roles: writing
+    corresponding: true
+bibliography: references.bib
+---
