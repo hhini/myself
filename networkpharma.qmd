@@ -759,11 +759,11 @@ You are now equipped with the fundamental knowledge to use Cytoscape.
 
 -   You know how to run the core **NetworkAnalyzer** tool to calculate topological properties, which are the basis for identifying the most important nodes.
 
----
+------------------------------------------------------------------------
 
 ### **Lesson 7: Step 4 - Network Analysis and Key Node Identification😮**
 
-**Goal:** To use the NetworkAnalyzer tool in Cytoscape to calculate key topological metrics for each protein (node) in our network, and to use these metrics to identify the most important "hub" and "bottleneck" proteins.
+**Goal:** ***`To use the NetworkAnalyzer tool in Cytoscape to calculate key topological metrics for each protein (node) in our network, and to use these metrics to identify the most important "hub" and "bottleneck" proteins.`***
 
 #### **1. Core Concepts: Measuring "Importance" in a Network**
 
@@ -777,17 +777,17 @@ How do we decide which protein in a network is the "most important"? We can't ju
 
     -   **The Analogy:** In a social network, the person with the highest degree is the one with the most friends. They are a social "hub."
 
-    -   **The Biological Interpretation:** A protein with a very high degree is a **hub protein**. It interacts with many other proteins. Hubs are often critical points of signal integration and regulation. A drug that targets a hub can have widespread, cascading effects throughout the network. In our drug-disease network, the node with the highest degree is a top candidate for being a key driver of the drug's effect.
+    -   **The Biological Interpretation:** A protein with a very high degree is a **hub protein**. It interacts with many other proteins. ***Hubs are often critical points of signal integration and regulation.*** A drug that targets a hub can have widespread, cascading effects throughout the network. In our drug-disease network, the node with the highest degree is a top candidate for being a key driver of the drug's effect.
 
--   **Concept 2: Betweenness Centrality (Finding the "Bottlenecks")**
+-   **Concept 2: Betweenness Centrality(中介中心性) (Finding the "Bottlenecks")**
 
-    -   **The Question:** Which protein is most critical for connecting different parts of the network?
+    -   **The Question:** ***Which protein is most critical for connecting different parts of the network***?
 
     -   **The Metric:** **Betweenness Centrality**. This is a more sophisticated measure. For every pair of nodes in the network, you find the shortest path between them. The betweenness centrality of a given node is the number of these shortest paths that pass through that node.
 
     -   **The Analogy:** Think of a city's road map. A "hub" is a major intersection with many roads leading into it (high degree). A "bottleneck" is a specific bridge that is the only way to get from one side of the city to the other (high betweenness centrality). Even if that bridge doesn't have the most roads connected to it, its removal would fragment the network.
 
-    -   **The Biological Interpretation:** A protein with high betweenness centrality is a **bottleneck protein**. It may not have the most connections, but it is crucial for communication between different functional modules or pathways. Targeting a bottleneck can be a very effective way to disrupt the flow of information in a disease network.
+    -   **The Biological Interpretation:** A protein with high betweenness centrality is a **bottleneck protein**. It may not have the most connections, ***but it is crucial for communication between different functional modules or pathways.*** Targeting a bottleneck can be a very effective way to disrupt the flow of information in a disease network.
 
 #### **2. Practical Application: Analyzing the Network in Cytoscape**
 
@@ -799,7 +799,7 @@ We will now use Cytoscape's built-in tools to calculate these metrics and then u
 
 **Action:**
 
-1.  With your network visible in Cytoscape, go to the main menu: **Tools \> NetworkAnalyzer \> Analyze Network...**.
+1.  With your network visible in Cytoscape, go to the main menu: **`Tools > NetworkAnalyzer > Analyze Network...`**`.`
 
 2.  A small dialog box will pop up.
 
@@ -821,13 +821,13 @@ We will now use Cytoscape's built-in tools to calculate these metrics and then u
 
 2.  **Click on the header** to sort the entire table by this column. Click it again to sort in descending order.
 
-3.  The proteins at the very top of the table are now your **top hub proteins**. Note down the top 5-10 gene symbols.
+3.  ***The proteins at the very top of the table are now your*** **top hub proteins**. Note down the top 5-10 gene symbols.
 
 4.  Now, find the column header for **BetweennessCentrality** and click it to sort in descending order.
 
 5.  The proteins at the top of this list are your **top bottleneck proteins**. Note down these names as well.
 
--   **Verification:** You have now generated a data-driven, quantitative list of your most topologically important proteins. The list of top hubs (e.g., EGFR, SRC, JUN) will likely contain well-known cancer-related proteins, which verifies that your network is biologically meaningful.
+-   **Verification:** You have now generated a data-driven, quantitative list of your most topologically important proteins. ***The list of top hubs (e.GFR,g., E SRC, JUN) will likely contain well-known cancer-related proteins, which verifies that your network is biologically meaningful.***
 
 #### **Chunk 3: Visualize Centrality Using Node Size**
 
@@ -861,3 +861,284 @@ We will now use Cytoscape's built-in tools to calculate these metrics and then u
 
     2.  We then created a **verifiable visualization** by mapping the Degree data to the Node Size, allowing us to instantly and intuitively identify the hub proteins in our network.
 
+------------------------------------------------------------------------
+
+### **Lesson 8: Step 5 - Final Pathway Analysis and Hypothesis Generation🤗**
+
+**Goal:** ***`To take the short list of key hub/bottleneck proteins identified from our network analysis, perform a final, focused functional enrichment analysis on them, and synthesize all of our findings into a single, coherent, and data-driven hypothesis.`***
+
+#### **1. Core Concepts**
+
+-   **The "Signal from the Noise":** Why are we doing this final enrichment step? Our first enrichment analysis in Lesson 5 was on all the common targets. This gave us a broad overview. However, that list might have contained many proteins that are part of the disease but are on the periphery of the network. The list of **key topological proteins** we have now is much more focused. These are the proteins that are not only involved in the drug-disease interaction but are also structurally critical to the network that connects them. Analyzing their function gives us a much cleaner "signal" about the most critical processes being modulated.
+
+-   **Synthesizing the Narrative:** This is the final step in any scientific data analysis. It involves telling a story that connects all the pieces of evidence we have gathered. Our story must include:
+
+    1.  The **drug** (Quercetin).
+
+    2.  The key **direct targets** (our top hub proteins).
+
+    3.  The key **biological pathways** that these targets are enriched in.
+
+    4.  The link to the **disease** (Colon Cancer).
+
+-   **The Structure of a Good Hypothesis:** A strong hypothesis from a network pharmacology study is specific and mechanistic. It should follow a template like:\
+    "We predict that **\[The Drug\]** exerts its therapeutic effect against **\[The Disease\]** primarily by targeting a set of key hub proteins, including **\[Key Protein A, Key Protein B\]**. These proteins are central nodes in the **\[Name of Enriched Pathway\]**, and their modulation by the drug is predicted to disrupt this pathway, leading to a therapeutic outcome like **\[e.g., induction of apoptosis, inhibition of proliferation\]**."
+
+#### **2. Practical Application: Final Analysis and Synthesis**
+
+We will now perform the final enrichment analysis and then write out our concluding hypothesis.
+
+#### **Chunk 1: Extracting and Analyzing Key Proteins**
+
+**Explanation:** First, we need our final, high-confidence list of key proteins. We will define this as the "Top 20" proteins based on their Degree from our Cytoscape analysis in the last lesson. Then we will perform a KEGG pathway enrichment on this short, focused list.
+
+**Action:**
+
+1.  Go back to your Cytoscape session.
+
+2.  In the **Node Table**, make sure it is sorted in descending order by the **Degree** column.
+
+3.  Select the top 20 rows.
+
+4.  Copy the gene symbols from the name (or display name) column for these top 20 proteins.
+
+5.  We will now take this list back to R for the final enrichment analysis. Continue in your `01_target_processing.R` script.
+
+``` r
+# --- 5. Final Enrichment of Key Hub Proteins ---
+# (Continuing in the '01_target_processing.R' script)
+
+# Paste the list of the Top 20 Hub Proteins you copied from Cytoscape.
+# This is our final, high-confidence list.
+key_hub_proteins <- c(
+  "SRC", "EGFR", "JUN", "MAPK1", "MAPK3", "PIK3R1", "HRAS", "AKT1",
+  "PTK2", "RELA", "CASP3", "APP", "GSK3B", "PLCG1", "PRKACA", "ESR1",
+  "RXRA", "STAT3", "AR", "PIK3CA"
+) # Note: This is a representative example list. Your list may vary.
+
+# Convert these gene symbols to Entrez IDs for clusterProfiler
+key_entrez_ids <- mapIds(org.Hs.eg.db,
+                         keys = key_hub_proteins,
+                         keyType = "SYMBOL",
+                         column = "ENTREZID",
+                         multiVals = "first")
+
+# Run KEGG enrichment on ONLY these key proteins
+# The "universe" is all the proteins in our original common_targets list
+universe_entrez <- mapIds(org.Hs.eg.db, keys = common_targets, keyType = "SYMBOL", column = "ENTREZID", multiVals="first")
+
+key_kegg_enrichment <- enrichKEGG(
+  gene = key_entrez_ids,
+  universe = universe_entrez, # Providing the correct background
+  organism = "hsa",
+  pvalueCutoff = 0.05
+)
+
+# Visualize the final, most important pathway results
+dotplot(key_kegg_enrichment, showCategory = 15) + 
+  ggtitle("Key KEGG Pathways Modulated by Quercetin Hubs")
+
+# Let's save this final, most important plot
+ggsave("figures/final_hub_pathway_enrichment.png", width = 10, height = 8)
+```
+
+-   **Action:** Run this final analysis chunk.
+
+-   **Verification:** The new dot plot is our final piece of evidence. It is the most important result of our entire study. It shows which specific biological pathways are most significantly enriched among the most structurally important proteins in our drug-disease network. You will likely see that the number of significant pathways is smaller and more focused than our first enrichment analysis, and key cancer-related pathways like **"Pathways in cancer," "PI3K-Akt signaling pathway,"** and **"MAPK signaling pathway"** will likely be at the very top.
+
+#### **Chunk 2: Synthesizing the Final Hypothesis**
+
+**Explanation:** Now, we act as scientists. We look at all the evidence we have generated and weave it into a coherent story.
+
+**Action (A Thought Process):**
+
+1.  **Recall the Drug and Disease:** We are studying Quercetin against Colon Cancer.
+
+2.  **Identify the Key Hubs:** Look at our `key_hub_proteins` list. We see major, famous cancer proteins like EGFR, SRC, AKT1, and MAPK1.
+
+3.  **Identify the Top Enriched Pathway:** Look at the dot plot we just generated. The "PI3K-Akt signaling pathway" is the most significant result.
+
+4.  **Connect the Dots:** We know that the PI3K-Akt pathway is a central pathway that controls cell survival and proliferation and is frequently dysregulated in cancer. Our results show that Quercetin's key targets are central hubs in this exact pathway.
+
+5.  **Formulate the Hypothesis:** Now we can write out our final conclusion using the template from the Core Concepts.
+
+### **Grand Conclusion of the Canonical Network Pharmacology Project**
+
+**The Final Hypothesis:**
+
+"Our network pharmacology analysis predicts that the flavonoid **Quercetin** exerts its therapeutic effects against **Colon Cancer** through a multi-target mechanism. By predicting Quercetin's protein targets and intersecting them with known colon cancer-associated genes, we constructed a core drug-disease interaction network. Topological analysis of this network identified several key **hub proteins**, including the well-known oncogenes **SRC, EGFR, and AKT1**. A focused functional analysis of these hub proteins revealed a highly significant enrichment for the **'PI3K-Akt signaling pathway'** (KEGG: hsa04151). Therefore, we hypothesize that Quercetin's primary anti-cancer mechanism involves ***`binding to these central hubs`***, which in turn disrupts the PI3K-Akt signaling cascade, leading to an inhibition of cancer cell proliferation and survival."
+
+This final paragraph is the culmination of our entire project. It is specific, it is mechanistic, and every single part of it is directly supported by a verifiable step in our bioinformatics workflow. The next step would be to take this computational hypothesis back to the lab for experimental validation.
+
+------------------------------------------------------------------------
+
+## **🥩The "DEG-driven" Network Pharmacology Workflow🥶**
+
+**Project:** "Investigating the Network Mechanism of a Novel Kinase Inhibitor (Drug 'X') on MCF7 Breast Cancer Cells, Based on Experimental RNA-seq Data."
+
+**The Starting Point:** We have two files:
+
+1.  `drug_X_predicted_targets.txt`: A list of the drug's predicted direct protein targets, which we got from SwissTargetPrediction (exactly as we did for Quercetin).
+
+2.  `MCF7_drug_X_DEGs.csv`: The results table from a DESeq2 analysis of an RNA-seq experiment. It contains all genes, their log2FoldChange, and their adjusted p-values after treating MCF7 cells with Drug X.
+
+**The Goal:** To build a network that explains how the drug's direct binding actions lead to the observed transcriptional changes (the DEGs).
+
+### **Lesson 1 (of this section): Step 1 - Preparing the Target Lists**
+
+**Goal:** To define our two primary lists of genes: the Drug_Targets and the Experimental_Targets (the DEGs).
+
+#### **Chunk 1: Define the Drug's Direct Targets**
+
+**Explanation:** This step is identical to the canonical workflow. We assume we have already used SwissTargetPrediction to generate our list of predicted protein targets for "Drug X".
+
+**Action (in R):**\
+Let's start a new R script for this project: 01_deg_driven_analysis.R.
+
+``` r
+library(tidyverse)
+
+# --- 1. Load and Define Target Lists ---
+
+# Load the predicted direct targets for Drug X
+drug_targets <- read_lines("data/drug_X_predicted_targets.txt")
+
+cat("Found", length(drug_targets), "predicted direct targets for Drug X.\n")
+```
+
+-   **Verification:** This is our first list, `drug_targets`. It might contain \~100 proteins.
+
+#### **Chunk 2: Define the Experimental Targets (DEGs)**
+
+**Explanation:** This is the key difference. Instead of going to GeneCards, our "disease targets" are the genes that were significantly altered in our actual experiment. We will load the DEG results file and apply a statistical cutoff to define this list.
+
+**Action (in R):**
+
+``` r
+# Load the full results from the RNA-seq experiment
+deg_full_results <- read_csv("data/MCF7_drug_X_DEGs.csv")
+
+# Define our list of significant DEGs
+# We will use a standard cutoff: adjusted p-value < 0.05 and |log2FC| > 1
+experimental_targets <- deg_full_results %>%
+  filter(padj < 0.05, abs(log2FoldChange) > 1) %>%
+  pull(gene_symbol) %>% # pull the gene symbol column
+  unique()
+
+cat("Found", length(experimental_targets), "significant DEGs (Experimental Targets).\n")
+```
+
+-   **Verification:** This is our second, and much larger, list: experimental_targets. It might contain several hundred or even a few thousand genes.
+-   ***Most DEGs can be directly mapped to their protein products using databases like UniProt or Ensembl. Cytoscape itself doesn’t do this mapping automatically, but you can prepare the list externally and import it.***
+
+### **Lesson 2: Step 2 - Building and Analyzing the Integrated Network**
+
+**Goal:** To combine both lists, build a single integrated PPI network, and analyze it to find the key proteins that connect the drug's direct action to its downstream effects.
+
+#### **Chunk 1: Create the Combined Seed List for STRING**
+
+**Explanation:** To see the connections, we need to build a network that contains all the relevant players. This means we will take the **union** of our two lists (all unique genes from both lists combined), not the intersection. This combined list will be our "seed" list for querying the STRING database.
+
+**Action (in R):**
+
+``` r
+# Combine the two lists and get all unique gene symbols
+combined_seed_list <- union(drug_targets, experimental_targets)
+
+cat("Total number of unique proteins for building the network:", length(combined_seed_list), "\n")
+
+# Save this list to a file so we can paste it into Cytoscape
+write_lines(combined_seed_list, "data/combined_seed_list_for_string.txt")
+```
+
+-   **Verification:** You now have a single, large list of all the proteins that are either a direct drug target, an experimentally observed DEG, or both. This is the list you will now take to Cytoscape.
+
+#### **Chunk 2: Build the Network in Cytoscape**
+
+**Explanation:** This process is **exactly the same** as Lesson 6 in the canonical workflow.
+
+**Action:**
+
+1.  Copy the contents of `combined_seed_list_for_string.txt` to your clipboard.
+
+2.  Go to **Cytoscape**.
+
+3.  Use the **STRING: protein query** to import a network from this list, using a confidence cutoff of **0.4**.
+
+4.  **Result:** Cytoscape will build a large network containing both the drug's direct targets and the DEGs, and all the known interactions that connect them.
+
+#### **Chunk 3: Analyze the Network to Find Key Nodes**
+
+**Explanation:** This process is **exactly the same** as Lesson 7 in the canonical workflow.
+
+**Action:**
+
+1.  In Cytoscape, run **Tools \> NetworkAnalyzer \> Analyze Network...**.
+
+2.  This calculates the Degree and BetweennessCentrality for every node in your large, integrated network.
+
+3.  **Sort the Node Table** by Degree to identify the top hub proteins.
+
+-   **The Critical Insight:** When you look at the list of top hubs, you will now find a fascinating mix of proteins. Some might be from your original drug_targets list, while others might be proteins from your experimental_targets list that were not direct drug targets but are clearly central to the network's response. This immediately helps you find the key "mediator" proteins.
+
+### **Lesson 3: Step 3 - Integrating Data and Generating a Hypothesis**
+
+**Goal:** To make our network even more informative by overlaying our experimental data (the log2 fold changes) onto it, and then using this integrated view to generate a powerful final hypothesis.
+
+#### **Chunk 1: Import Experimental Data into Cytoscape**
+
+**Explanation:** A network is most powerful when it's layered with experimental data. We will import our full DEG results table and map the log2FoldChange values to the color of the nodes.
+
+**Action:**
+
+1.  In Cytoscape, go to **File \> Import \> Table from File...**.
+
+2.  Select your MCF7_drug_X_DEGs.csv file.
+
+3.  In the import dialog, make sure the "Key" column is set to your gene_symbol column. This tells Cytoscape how to match the rows in your data file to the nodes in your network.
+
+4.  Click "OK".
+
+5.  **Verification:** Go to the **Node Table**. You will see that new columns have been added, including log2FoldChange and padj, directly from your experimental data.
+
+#### **Chunk 2: Map Fold Change to Node Color**
+
+**Explanation:** Now we will use the Style interface to color our network.
+
+**Action:**
+
+1.  Go to the **"Style"** tab in the Control Panel.
+
+2.  Select the **"Fill Color"** property for Nodes.
+
+3.  Set the **"Column"** to log2FoldChange.
+
+4.  Set the **"Mapping Type"** to **"Continuous Mapping"**.
+
+5.  Choose a color scheme. A classic "Red-White-Blue" diverging palette is perfect. Red for upregulated (positive log2FC), blue for downregulated (negative log2FC), and white for no change.
+
+-   **Verification:** Look at your network. It is no longer a simple diagram; it is a **data-rich visualization**. You can now see at a glance:
+
+    -   Which parts of the network were transcriptionally **upregulated (red)**.
+
+    -   Which parts were **downregulated (blue)**.
+
+    -   You can also see if your direct drug targets (which may be grey if they weren't themselves DEGs) are interacting primarily with red or blue nodes.
+
+#### **Chunk 3: The Final Hypothesis**
+
+**Explanation:** By integrating the network topology (the hubs) with the experimental data (the colors), we can now generate a sophisticated and verifiable hypothesis.
+
+**Action (A Thought Process):**
+
+1.  **Identify a top hub protein** from your network analysis (e.g., the protein STAT3).
+
+2.  Note that STAT3 might be one of your predicted direct drug_targets, but it might be colored white/grey in your network, meaning its own gene expression didn't change.
+
+3.  **Observe its neighbors.** You look at the network and see that STAT3 is directly connected to 20 other proteins, and 15 of them are colored bright blue (strongly downregulated).
+
+4.  **Formulate the Hypothesis:**
+
+"Our DEG-driven network analysis reveals that Drug X's mechanism is likely mediated through the transcription factor **STAT3**. Although STAT3 itself is not transcriptionally altered, it is a predicted direct target of Drug X and acts as a central hub in the interaction network. We observed that the majority of STAT3's direct interaction partners are significantly **downregulated** following drug treatment. Therefore, we hypothesize that Drug X directly binds to and inhibits the activity of the STAT3 protein, which in turn leads to the observed transcriptional suppression of its target gene network, resulting in an anti-proliferative effect."
+
+This is a far more powerful and detailed hypothesis than we could have generated with the canonical method alone, because it directly links the drug's physical action to the specific experimental results you observed.
