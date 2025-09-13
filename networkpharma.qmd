@@ -339,7 +339,7 @@ We have now completed our tour of the three foundational concepts. We know what 
 
 **Action:** 1. In RStudio, create a new R Project for this analysis. 2. Create a new R script and save it as `01_target_processing.R`. 3. Add and run the following code:
 
-``` r
+```r
 # Load tidyverse for data manipulation
 library(tidyverse)
 
