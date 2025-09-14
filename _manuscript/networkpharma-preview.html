@@ -1,0 +1,1672 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="generator" content="quarto-1.8.24">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+    <title>网络药理学 教程</title>
+    <style>
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      div.columns{display: flex; gap: min(4vw, 1.5em);}
+      div.column{flex: auto; overflow-x: auto;}
+      div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+      ul.task-list{list-style: none;}
+      ul.task-list li input[type="checkbox"] {
+        width: 0.8em;
+        margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+        vertical-align: middle;
+      }
+      /* CSS for syntax highlighting */
+      html { -webkit-text-size-adjust: 100%; }
+      pre > code.sourceCode { white-space: pre; position: relative; }
+      pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+      pre > code.sourceCode > span:empty { height: 1.2em; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode > span { color: inherit; text-decoration: inherit; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      pre > code.sourceCode { white-space: pre-wrap; }
+      pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+      }
+      pre.numberSource code
+        { counter-reset: source-line 0; }
+      pre.numberSource code > span
+        { position: relative; left: -4em; counter-increment: source-line; }
+      pre.numberSource code > span > a:first-child::before
+        { content: counter(source-line);
+          position: relative; left: -1em; text-align: right; vertical-align: baseline;
+          border: none; display: inline-block;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+        }
+      pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+      div.sourceCode
+        {   }
+      @media screen {
+      pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+      }
+    </style>
+
+    <style>
+      body.hypothesis-enabled #quarto-embed-header {
+        padding-right: 36px;
+      }
+
+      #quarto-embed-header {
+        height: 3em;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: solid 1px;
+      }
+
+      #quarto-embed-header h6 {
+        font-size: 1.1em;
+        padding-top: 0.6em;
+        margin-left: 1em;
+        margin-right: 1em;
+        font-weight: 400;
+      }
+
+      #quarto-embed-header a.quarto-back-link,
+      #quarto-embed-header a.quarto-download-embed {
+        font-size: 0.8em;
+        margin-top: 1em;
+        margin-bottom: 1em;
+        margin-left: 1em;
+        margin-right: 1em;
+      }
+
+      .quarto-back-container {
+        padding-left: 0.5em;
+        display: flex;
+      }
+
+      .headroom {
+          will-change: transform;
+          transition: transform 200ms linear;
+      }
+
+      .headroom--pinned {
+          transform: translateY(0%);
+      }
+
+      .headroom--unpinned {
+          transform: translateY(-100%);
+      }      
+    </style>
+
+    <script>
+    window.document.addEventListener("DOMContentLoaded", function () {
+
+      var header = window.document.querySelector("#quarto-embed-header");
+      const titleBannerEl = window.document.querySelector("body > #title-block-header");
+      if (titleBannerEl) {
+        titleBannerEl.style.paddingTop = header.clientHeight + "px";
+      }
+      const contentEl = window.document.getElementById('quarto-content');
+      for (const child of contentEl.children) {
+        child.style.paddingTop = header.clientHeight + "px";
+        child.style.marginTop = "1em";
+      }
+
+      // Use the article root if the `back` call doesn't work. This isn't perfect
+      // but should typically work
+      window.quartoBackToArticle = () => {
+        var currentUrl = window.location.href;
+        window.history.back();
+        setTimeout(() => {
+            // if location was not changed in 100 ms, then there is no history back
+            if(currentUrl === window.location.href){              
+                // redirect to site root
+                window.location.href = "index.html";
+            }
+        }, 100);
+      }
+
+      const headroom = new window.Headroom(header, {
+        tolerance: 5,
+        onPin: function () {
+        },
+        onUnpin: function () {
+        },
+      });
+      headroom.init();
+    });
+    </script>
+
+    
+<script src="site_libs/manuscript-notebook/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dc55a5b9e770e841cd82e46aadbfb9b0.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-4d7f0bce1131f3e5f9547cd857cfbfc8.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+     <script async="" src="https://hypothes.is/embed.js"></script>
+<script>
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    document.body.classList.add('hypothesis-enabled');
+  });
+</script>  
+      </head>
+
+  <body class="quarto-notebook quarto-light">
+    <div id="quarto-embed-header" class="headroom fixed-top bg-primary">
+      
+      <a onclick="window.quartoBackToArticle(); return false;" class="btn btn-primary quarto-back-link" href=""><i class="bi bi-caret-left"></i> Back to Article</a>
+      <h6><i class="bi bi-journal-code"></i> 网络药理学 教程</h6>
+
+            <a href="./networkpharma.qmd" class="btn btn-primary quarto-download-embed" download="networkpharma.qmd">Download Source</a>
+          </div>
+
+     <header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">网络药理学 教程</h1>
+          </div>
+
+    
+    <div class="quarto-title-meta-container">
+      <div class="quarto-title-meta-column-start">
+            <div class="quarto-title-meta-author">
+          <div class="quarto-title-meta-heading">Author</div>
+          <div class="quarto-title-meta-heading">Affiliation</div>
+          
+                <div class="quarto-title-meta-contents">
+            <p class="author">JAYZ </p>
+          </div>
+                <div class="quarto-title-meta-contents">
+                    <p class="affiliation">
+                        The University OF Myself
+                      </p>
+                  </div>
+                    </div>
+        
+        <div class="quarto-title-meta">
+
+                      
+          
+                
+              </div>
+      </div>
+      <div class="quarto-title-meta-column-end quarto-other-formats-target">
+      </div>
+    </div>
+
+
+
+    <div class="quarto-other-links-text-target">
+    </div>  </div>
+</header><div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
+<div id="quarto-sidebar-toc-left" class="sidebar toc-left">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#网络药理学" id="toc-网络药理学" class="nav-link active" data-scroll-target="#网络药理学"><strong>🫡网络药理学🎃</strong></a>
+  <ul class="collapse">
+  <li><a href="#part-1-the-conceptual-foundations" id="toc-part-1-the-conceptual-foundations" class="nav-link" data-scroll-target="#part-1-the-conceptual-foundations"><strong>🤗Part 1: The Conceptual Foundations🤖</strong></a>
+  <ul class="collapse">
+  <li><a href="#lesson-1-the-core-concepts---beyond-a-single-target" id="toc-lesson-1-the-core-concepts---beyond-a-single-target" class="nav-link" data-scroll-target="#lesson-1-the-core-concepts---beyond-a-single-target"><strong>Lesson 1: The Core Concepts - Beyond a Single Target😏</strong></a></li>
+  <li><a href="#lesson-1-summary-status-check" id="toc-lesson-1-summary-status-check" class="nav-link" data-scroll-target="#lesson-1-summary-status-check"><strong>Lesson 1: Summary &amp; Status Check</strong></a></li>
+  <li><a href="#lesson-2-the-building-blocks---the-data-you-need" id="toc-lesson-2-the-building-blocks---the-data-you-need" class="nav-link" data-scroll-target="#lesson-2-the-building-blocks---the-data-you-need"><strong>Lesson 2: The Building Blocks - The Data You Need🤫</strong></a></li>
+  <li><a href="#lesson-2-summary-status-check" id="toc-lesson-2-summary-status-check" class="nav-link" data-scroll-target="#lesson-2-summary-status-check"><strong>Lesson 2: Summary &amp; Status Check</strong></a></li>
+  <li><a href="#lesson-3-the-blueprint---the-protein-protein-interaction-ppi-network" id="toc-lesson-3-the-blueprint---the-protein-protein-interaction-ppi-network" class="nav-link" data-scroll-target="#lesson-3-the-blueprint---the-protein-protein-interaction-ppi-network"><strong>Lesson 3: The Blueprint - The Protein-Protein Interaction (PPI) Network🫥</strong></a></li>
+  <li><a href="#lesson-3-summary-status-check" id="toc-lesson-3-summary-status-check" class="nav-link" data-scroll-target="#lesson-3-summary-status-check"><strong>Lesson 3: Summary &amp; Status Check</strong></a></li>
+  </ul></li>
+  <li><a href="#part-2-the-practical-workflow" id="toc-part-2-the-practical-workflow" class="nav-link" data-scroll-target="#part-2-the-practical-workflow"><strong>😗Part 2: The Practical Workflow🥱</strong></a></li>
+  <li><a href="#project-investigating-the-network-mechanism-of-quercetin-against-colon-cancer" id="toc-project-investigating-the-network-mechanism-of-quercetin-against-colon-cancer" class="nav-link" data-scroll-target="#project-investigating-the-network-mechanism-of-quercetin-against-colon-cancer"><strong>Project: Investigating the Network Mechanism of Quercetin Against Colon Cancer🤤</strong></a></li>
+  <li><a href="#lesson-4-step-1---target-identification" id="toc-lesson-4-step-1---target-identification" class="nav-link" data-scroll-target="#lesson-4-step-1---target-identification"><strong>Lesson 4: Step 1 - Target Identification😶‍🌫️</strong></a>
+  <ul class="collapse">
+  <li><a href="#lesson-4-summary-status-check" id="toc-lesson-4-summary-status-check" class="nav-link" data-scroll-target="#lesson-4-summary-status-check"><strong>Lesson 4: Summary &amp; Status Check</strong></a></li>
+  <li><a href="#lesson-5-step-2---finding-the-drug-disease-common-targets" id="toc-lesson-5-step-2---finding-the-drug-disease-common-targets" class="nav-link" data-scroll-target="#lesson-5-step-2---finding-the-drug-disease-common-targets"><strong>Lesson 5: Step 2 - Finding the “Drug-Disease” Common Targets😎</strong></a></li>
+  <li><a href="#lesson-5-summary-status-check" id="toc-lesson-5-summary-status-check" class="nav-link" data-scroll-target="#lesson-5-summary-status-check"><strong>Lesson 5: Summary &amp; Status Check</strong></a></li>
+  <li><a href="#lesson-6-step-3---constructing-the-ppi-network" id="toc-lesson-6-step-3---constructing-the-ppi-network" class="nav-link" data-scroll-target="#lesson-6-step-3---constructing-the-ppi-network"><strong>Lesson 6: Step 3 - Constructing the PPI Network🤗</strong></a></li>
+  <li><a href="#lesson-6-summary-status-check" id="toc-lesson-6-summary-status-check" class="nav-link" data-scroll-target="#lesson-6-summary-status-check"><strong>Lesson 6: Summary &amp; Status Check</strong></a></li>
+  </ul></li>
+  <li><a href="#by-the-waydetour-a-beginners-guide-to-cytoscape" id="toc-by-the-waydetour-a-beginners-guide-to-cytoscape" class="nav-link" data-scroll-target="#by-the-waydetour-a-beginners-guide-to-cytoscape"><strong>🌮BY THE WAY:Detour: A Beginner’s Guide to Cytoscape🍗</strong></a>
+  <ul class="collapse">
+  <li><a href="#detour-summary" id="toc-detour-summary" class="nav-link" data-scroll-target="#detour-summary"><strong>Detour Summary</strong></a></li>
+  <li><a href="#lesson-7-step-4---network-analysis-and-key-node-identification" id="toc-lesson-7-step-4---network-analysis-and-key-node-identification" class="nav-link" data-scroll-target="#lesson-7-step-4---network-analysis-and-key-node-identification"><strong>Lesson 7: Step 4 - Network Analysis and Key Node Identification😮</strong></a></li>
+  <li><a href="#lesson-7-summary-status-check" id="toc-lesson-7-summary-status-check" class="nav-link" data-scroll-target="#lesson-7-summary-status-check"><strong>Lesson 7: Summary &amp; Status Check</strong></a></li>
+  <li><a href="#lesson-8-step-5---final-pathway-analysis-and-hypothesis-generation" id="toc-lesson-8-step-5---final-pathway-analysis-and-hypothesis-generation" class="nav-link" data-scroll-target="#lesson-8-step-5---final-pathway-analysis-and-hypothesis-generation"><strong>Lesson 8: Step 5 - Final Pathway Analysis and Hypothesis Generation🤗</strong></a></li>
+  <li><a href="#grand-conclusion-of-the-canonical-network-pharmacology-project" id="toc-grand-conclusion-of-the-canonical-network-pharmacology-project" class="nav-link" data-scroll-target="#grand-conclusion-of-the-canonical-network-pharmacology-project"><strong>Grand Conclusion of the Canonical Network Pharmacology Project</strong></a></li>
+  </ul></li>
+  <li><a href="#the-deg-driven-network-pharmacology-workflow" id="toc-the-deg-driven-network-pharmacology-workflow" class="nav-link" data-scroll-target="#the-deg-driven-network-pharmacology-workflow"><strong>🥩The “DEG-driven” Network Pharmacology Workflow🥶</strong></a>
+  <ul class="collapse">
+  <li><a href="#lesson-1-of-this-section-step-1---preparing-the-target-lists" id="toc-lesson-1-of-this-section-step-1---preparing-the-target-lists" class="nav-link" data-scroll-target="#lesson-1-of-this-section-step-1---preparing-the-target-lists"><strong>Lesson 1 (of this section): Step 1 - Preparing the Target Lists</strong></a></li>
+  <li><a href="#lesson-2-step-2---building-and-analyzing-the-integrated-network" id="toc-lesson-2-step-2---building-and-analyzing-the-integrated-network" class="nav-link" data-scroll-target="#lesson-2-step-2---building-and-analyzing-the-integrated-network"><strong>Lesson 2: Step 2 - Building and Analyzing the Integrated Network</strong></a></li>
+  <li><a href="#lesson-3-step-3---integrating-data-and-generating-a-hypothesis" id="toc-lesson-3-step-3---integrating-data-and-generating-a-hypothesis" class="nav-link" data-scroll-target="#lesson-3-step-3---integrating-data-and-generating-a-hypothesis"><strong>Lesson 3: Step 3 - Integrating Data and Generating a Hypothesis</strong></a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+</nav>
+</div>
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+</div>
+<main class="content quarto-banner-title-block" id="quarto-document-content">      
+
+       <section id="网络药理学" class="level1">
+<h1><strong>🫡网络药理学🎃</strong></h1>
+<hr>
+<section id="part-1-the-conceptual-foundations" class="level2">
+<h2 class="anchored" data-anchor-id="part-1-the-conceptual-foundations"><strong>🤗Part 1: The Conceptual Foundations🤖</strong></h2>
+<hr>
+<section id="lesson-1-the-core-concepts---beyond-a-single-target" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-1-the-core-concepts---beyond-a-single-target"><strong>Lesson 1: The Core Concepts - Beyond a Single Target😏</strong></h3>
+<p><strong>Goal:</strong> <strong><em><code>To build a rock-solid understanding of the central idea behind network pharmacology and to define the key terms we will use throughout this entire field</code>.</em></strong></p>
+<section id="the-old-idea-the-magic-bullet" class="level4">
+<h4 class="anchored" data-anchor-id="the-old-idea-the-magic-bullet"><strong>The Old Idea: The “Magic Bullet”</strong></h4>
+<p>For over a century, the dominant idea in pharmacology was the “magic bullet,” a term coined by the great scientist Paul Ehrlich.</p>
+<ul>
+<li><strong>The Concept:</strong> A perfect drug is like a sniper’s bullet. It has <strong>one specific target</strong> in the body (usually a single protein/enzyme), <strong><em>it hits that target with high precision, and this single action cures the disease.</em></strong> All other interactions are considered “off-target effects(脱靶效应)” or side effects(副作用).</li>
+<li><strong>The Analogy:</strong> A light switch. To turn on the lights in a room, you flip one specific switch. You don’t need to touch anything else.</li>
+<li><strong>An Example:</strong> A highly specific kinase(激酶) inhibitor might be designed to block the activity of only one kinase that is known to be overactive in a cancer cell.</li>
+</ul>
+<p><strong>The Problem with This Simple Model:</strong> While beautifully simple, this model often fails to explain reality.</p>
+<p>1. <strong>Complex Diseases:</strong> Most chronic diseases, like cancer, heart disease, or Alzheimer’s, are <strong><em>not caused by a single faulty protein</em></strong>. They are <strong>network diseases</strong>, arising from the breakdown of an entire system with many interconnected parts.</p>
+<p>2. <strong>Drug Promiscuity:</strong> Most drugs are not perfect snipers(狙击手). They are more like shotguns. <strong><em>A single drug molecule often binds to multiple, sometimes dozens, of different proteins in the cell.</em></strong></p>
+</section>
+<section id="the-new-idea-network-pharmacology" class="level4">
+<h4 class="anchored" data-anchor-id="the-new-idea-network-pharmacology"><strong>The New Idea: Network Pharmacology</strong></h4>
+<p>Network pharmacology embraces this complexity. It starts with a completely different set of assumptions.</p>
+<ul>
+<li><strong>The Concept:</strong> A disease is a <strong>disruption of a network(网络的中断)</strong>. A drug works by <strong>re-tuning or perturbing that network(重新调整或者扰乱网络)</strong>. <strong><em>The therapeutic effect comes from the drug’s collective action on multiple targets, which then ripples through(波及) the interconnected biological system to restore a healthier state.</em></strong></li>
+<li><strong>The Analogy:</strong> A sound mixing board in a recording studio. A song (a healthy cell) sounds good because dozens of faders (proteins) are all at the right level. In a disease state, many of these faders are in the wrong positions, making the song sound terrible. A good drug is not a single switch; it’s the sound engineer’s hand <strong>moving a coordinated set of faders</strong> to bring the song back into harmony. Some faders are moved a lot, some are moved a little, but it’s the <em>collective</em> change that fixes the song.</li>
+<li><strong>The Goal:</strong> The goal of network pharmacology is to <strong>create a map of this mixing board</strong> and to predict which faders a specific drug is likely to move.</li>
+</ul>
+</section>
+<section id="the-key-terms-our-cast-of-characters" class="level4">
+<h4 class="anchored" data-anchor-id="the-key-terms-our-cast-of-characters"><strong>The Key Terms: Our Cast of Characters</strong></h4>
+<p>To tell this story, we need to be precise about our terminology. There are four main “characters” in every network pharmacology analysis.</p>
+<ol type="1">
+<li><strong>The Drug / Compound(s):</strong>
+<ul>
+<li><strong>Definition:</strong> The therapeutic agent we are studying.</li>
+<li><strong>Examples:</strong>
+<ul>
+<li>A single, well-defined small molecule like <strong>Aspirin</strong>.</li>
+<li>A natural product like <strong>Quercetin</strong> (a chemical found in apples and onions).</li>
+<li>A complex mixture, like the dozens of different chemical compounds found in a <strong>Ginseng extract</strong>. In this case, our “drug” is actually a list of many different molecules.</li>
+</ul></li>
+</ul></li>
+<li><strong>The Drug Target(s):</strong>
+<ul>
+<li><strong>Definition:</strong> A protein in the body that the drug physically binds to or interacts with, causing a change in the protein’s activity.</li>
+<li><strong>Our Goal:</strong> To find all the known or predicted targets for our drug.</li>
+<li><strong>Example:</strong> A key target of Aspirin is the protein Cyclooxygenase-2 (COX-2).</li>
+</ul></li>
+<li><strong>The Disease:</strong>
+<ul>
+<li><strong>Definition:</strong> The specific pathological condition we want to treat.</li>
+<li><strong>Examples:</strong> Colon Cancer, Alzheimer’s Disease, Influenza.</li>
+</ul></li>
+<li><strong>The Disease Target(s):</strong>
+<ul>
+<li><strong>Definition:</strong> A gene or its corresponding protein that is known to be implicated in the disease. <strong><em>This could be a gene that is frequently mutated in the disease, or a protein whose activity is abnormally high or low</em></strong>.</li>
+<li><strong>Our Goal:</strong> To find a comprehensive list of all genes associated with our disease.</li>
+<li><strong>Example:</strong> The gene <em>APC</em> is a famous tumor suppressor that is a key disease target in Colon Cancer.</li>
+</ul></li>
+</ol>
+<p><strong>The Central Hypothesis of Network Pharmacology:</strong> We can formally state the core idea like this: <strong>An effective drug works by modulating a network of its targets, and this network significantly overlaps with the network of targets known to be involved in the disease.</strong></p>
+<p>Our entire practical workflow will be about finding these two sets of targets and then analyzing their overlap and their connections.</p>
+</section>
+</section>
+<section id="lesson-1-summary-status-check" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-1-summary-status-check"><strong>Lesson 1: Summary &amp; Status Check</strong></h3>
+<ul>
+<li><strong>Conceptually</strong>, we have made the critical shift from the simplistic “magic bullet” model to the more realistic <strong>“network” model</strong> of drug action. We understand that diseases are complex network perturbations and that drugs act by modulating these networks.</li>
+<li>We have clearly defined our <strong>four main characters</strong>: the Drug, the Drug Targets, the Disease, and the Disease Targets.</li>
+<li><strong>Crucially</strong>, we have framed the entire field around a central, testable hypothesis: the idea that the drug’s target network must intersect with the disease’s target network.</li>
+</ul>
+<p>We now understand <em>why</em> we are doing this and <em>what</em> we are looking for. The next logical step is to learn about the specific bioinformatics databases where we can find the information about these “characters.”</p>
+<hr>
+</section>
+<section id="lesson-2-the-building-blocks---the-data-you-need" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-2-the-building-blocks---the-data-you-need"><strong>Lesson 2: The Building Blocks - The Data You Need🤫</strong></h3>
+<p><strong>Goal:</strong> <strong><em><code>To identify the key online databases and web servers that provide the three essential lists of information needed for any network pharmacology project: the drug's targets, the disease's targets, and the protein interaction network that links them.</code></em></strong></p>
+<section id="finding-the-drug-targets" class="level4">
+<h4 class="anchored" data-anchor-id="finding-the-drug-targets"><strong>1. Finding the Drug Targets</strong></h4>
+<p><strong>The Challenge:</strong> We have a drug (e.g., Quercetin). How do we find the list of proteins it is likely to interact with in the human body? <strong><em>We use a combination of databases that store experimental data and web servers that make predictions.</em></strong></p>
+<p><strong>Key Resource 1: <code>DrugBank</code></strong></p>
+<ul>
+<li><p><strong>What it is:</strong> A comprehensive, expert-curated database that is like the Wikipedia of drugs. For thousands of approved and experimental drugs, it contains a wealth of information, including their known protein targets.</p></li>
+<li><p><strong>How to use it:</strong> You go to the DrugBank website and simply search for your drug (e.g., “Aspirin”). The entry will have a “Targets” section listing the proteins it is known to bind to.</p></li>
+<li><p><strong>When to use it:</strong> This is the best source for <strong>well-studied, approved drugs</strong>.</p></li>
+</ul>
+<p><strong>Key Resource 2: <code>STITCH</code></strong></p>
+<ul>
+<li><p><strong>What it is:</strong> A database of known and predicted <strong>chemical-protein interactions</strong>. It’s broader than <code>DrugBank</code> and includes many experimental chemicals and natural products, not just clinical drugs. It aggregates data from experiments, databases, and text-mining of scientific literature.</p></li>
+<li><p><strong>How to use it:</strong> You search for your chemical compound. The results show a network of its interacting proteins. <strong><em>Each interaction has a confidence score</em></strong>.</p></li>
+<li><p><strong>When to use it:</strong> Excellent for <strong>natural products</strong> or <strong>experimental compounds</strong> that might not be in <code>DrugBank.</code></p></li>
+</ul>
+<p><strong>Key Resource 3: <code>SwissTargetPrediction</code> (A Predictive Tool)</strong></p>
+<ul>
+<li><p><strong>What it is:</strong> This is a fundamentally different and incredibly powerful tool. It is a <strong>web server</strong>, not just a database. It answers the question: “I have a new or unstudied chemical. <strong><em>Based on its 2D/3D chemical structure, what proteins is it likely to bind to?“</em></strong></p></li>
+<li><p><strong>How it works (The Logic of “Chemical Similarity”):</strong> The core principle is that <strong>structurally similar molecules often have similar biological functions</strong>. The server has a massive <strong><em>database of known ligands and their targets</em></strong>. When you submit your molecule’s structure, <strong><em>it rapidly calculates its similarity to all the known ligands in its database</em></strong>. If your molecule is 95% similar to a known inhibitor of the protein EGFR, the server will predict that EGFR is a probable target for your molecule.</p></li>
+<li><p><strong>How to use it:</strong> You provide the chemical structure of your molecule (usually as a SMILES string, which is a text-based way of representing a chemical structure). The server returns a ranked list of the most probable protein targets.</p></li>
+<li><p><strong>When to use it:</strong> This is <strong>essential for novel compounds, natural products, or any molecule</strong> where the experimental target data is limited. This is the main tool for hypothesis generation.</p></li>
+</ul>
+</section>
+<section id="finding-the-disease-targets" class="level4">
+<h4 class="anchored" data-anchor-id="finding-the-disease-targets"><strong>2. Finding the Disease Targets</strong></h4>
+<p><strong>The Challenge:</strong> We have a disease (e.g., Colon Cancer). How do we find a comprehensive list of all the genes and proteins that are known to be involved in this disease?</p>
+<p><strong>Key Resource 1: <code>GeneCards</code></strong></p>
+<ul>
+<li><p><strong>What it is:</strong> A “human gene compendium.” It is one of the best and most user-friendly starting points. It integrates information from over 150 other databases.</p></li>
+<li><p><strong>How to use it:</strong> <strong><em>You search for your disease (e.g., “colon cancer”). GeneCards provides a single, unified “Gene List” associated with that disease, complete with scores indicating the strength of the association.</em></strong></p></li>
+<li><p><strong>When to use it:</strong> <strong>Almost always.</strong> It is the perfect tool to get a comprehensive, well-documented list of disease-associated genes.</p></li>
+</ul>
+<p><strong>Key Resource 2: <code>OMIM</code> (Online Mendelian Inheritance in Man)</strong></p>
+<ul>
+<li><p><strong>What it is:</strong> A highly curated catalog of human genes and genetic disorders. It is more <strong><em>focused on the genetic and hereditary aspects of disease.</em></strong></p></li>
+<li><p><strong>How to use it:</strong> You search for the disease. It provides detailed text summaries of the disease’s genetic basis and lists the key genes involved.</p></li>
+<li><p><strong>When to use it:</strong> Excellent for diseases with a strong known genetic component.</p></li>
+</ul>
+<p><strong>Key Resource 3: <code>DisGeNET</code></strong></p>
+<ul>
+<li><p><strong>What it is:</strong> A database specifically focused on <strong>gene-disease associations</strong>. It systematically collects and scores evidence from scientific literature and other databases.</p></li>
+<li><p><strong>How to use it:</strong> You can search by disease to get a list of associated genes, or by gene to see all the diseases it is linked to.</p></li>
+<li><p><strong>When to use it:</strong> A very good, systematic alternative or complement to GeneCards for generating a high-quality disease gene list.</p></li>
+</ul>
+</section>
+<section id="the-blueprint-that-connects-everything-the-ppi-network" class="level4">
+<h4 class="anchored" data-anchor-id="the-blueprint-that-connects-everything-the-ppi-network"><strong>3. The Blueprint that Connects Everything: The PPI Network</strong></h4>
+<p><strong>The Challenge:</strong> We will soon have two separate lists: drug targets and disease targets. How do we know how they are related to each other functionally? <strong><em>The answer is that we need a “map” of the human cell’s proteome that shows how all proteins are connected.</em></strong></p>
+<p><strong>The Key Resource: <code>STRING</code> Database</strong></p>
+<ul>
+<li><p><strong>What it is:</strong> We’ve used this before! STRING is a database of known and predicted <strong>Protein-Protein Interactions (PPIs)</strong>. It is the functional “scaffolding” of the cell.</p></li>
+<li><p><strong>How it works:</strong> It aggregates evidence from many sources:</p>
+<ul>
+<li><p>Experimental data (e.g., two proteins were physically pulled out of a cell together).</p></li>
+<li><p>Co-expression data (e.g., two genes are always turned on at the same time).</p></li>
+<li><p>Text mining of millions of scientific papers.</p></li>
+</ul></li>
+<li><p><strong>Its Role in Network Pharmacology:</strong> The PPI network is the <strong>universe</strong> in which our analysis takes place. <strong><em>It’s the map that allows us to see if the drug targets are “close” to the disease targets</em></strong>. We can ask questions like, “Is my drug target, Protein A, directly interacting with a known disease target, Protein B?” or “Does my drug target sit ‘upstream’ in a signaling pathway that controls many disease targets?”</p></li>
+</ul>
+</section>
+</section>
+<section id="lesson-2-summary-status-check" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-2-summary-status-check"><strong>Lesson 2: Summary &amp; Status Check</strong></h3>
+<ul>
+<li><p><strong>Conceptually</strong>, we have identified the three distinct categories of information that form the “building blocks” of our analysis. We know that we need data on drug-target interactions, gene-disease associations, and the underlying protein-protein interaction network.</p></li>
+<li><p><strong>Practically</strong>, we have learned the names and purposes of the key, high-quality bioinformatics resources that provide this information. We now have a “shopping list” of where to go to get our data:</p>
+<ul>
+<li><p><strong>For Drug Targets:</strong> Start with <strong>SwissTargetPrediction</strong> (for prediction) and <strong>STITCH/DrugBank</strong> (for known targets).</p></li>
+<li><p><strong>For Disease Targets:</strong> Start with <strong>GeneCards</strong>.</p></li>
+<li><p><strong>For the Network Context:</strong> Use the <strong>STRING</strong> database.</p></li>
+</ul></li>
+</ul>
+<p>We are no longer just talking about abstract concepts. We now have a concrete plan for data acquisition. We are ready to start our practical project by visiting these websites and collecting our initial lists.</p>
+<hr>
+</section>
+<section id="lesson-3-the-blueprint---the-protein-protein-interaction-ppi-network" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-3-the-blueprint---the-protein-protein-interaction-ppi-network"><strong>Lesson 3: The Blueprint - The Protein-Protein Interaction (PPI) Network🫥</strong></h3>
+<p><strong>Goal:</strong> To understand the structure and meaning of a PPI network, what the “nodes” and “edges” represent, and how this network serves as the fundamental framework for linking drug targets to disease targets.</p>
+<section id="core-concepts-the-network-as-a-map" class="level4">
+<h4 class="anchored" data-anchor-id="core-concepts-the-network-as-a-map"><strong>1. Core Concepts: The Network as a Map</strong></h4>
+<ul>
+<li><p><strong>What is a Network (or Graph)?</strong></p>
+<ul>
+<li><p>In bioinformatics, a network is a simple but powerful way to represent relationships between biological entities. It consists of two parts:</p>
+<ol type="1">
+<li><p><strong>Nodes (or Vertices):</strong> These are the individual “things” we are studying. In a PPI network, <strong>each node is a unique protein</strong>.</p></li>
+<li><p><strong>Edges (or Links):</strong> These are the lines that connect the nodes. In a PPI network, <strong>an edge between two nodes means there is evidence that those two proteins interact.</strong></p></li>
+</ol></li>
+</ul></li>
+<li><p><strong>What Does an “Interaction” Mean?</strong></p>
+<ul>
+<li><p>This is a critical point. An edge in a PPI network can represent many different kinds of relationships, <strong><em>and the STRING database (our main source) is brilliant because it captures this diversity. An edge could mean:</em></strong></p>
+<ul>
+<li><p><strong>Physical Binding:</strong> The two proteins physically stick to each other to form a complex. (This is the classic, strongest definition).</p></li>
+<li><p><strong>Functional Association:</strong> The two proteins are part of the same signaling pathway, and one activates the other (e.g., a kinase phosphorylating its substrate（磷酸激酶激化底物).</p></li>
+<li><p><strong>Co-expression:</strong> The genes for the two proteins are consistently turned on and off at the same time across many experiments.</p></li>
+<li><p><strong>Genomic Proximity:</strong> The genes for the two proteins are located next to each other on the chromosome (common in bacteria).</p></li>
+<li><p><strong>Literature Co-mention:</strong> The two proteins are frequently mentioned together in the abstracts of scientific papers.</p></li>
+</ul></li>
+</ul></li>
+<li><p><strong>The PPI Network as the “Interactome”</strong></p>
+<ul>
+<li><p>The complete set of all possible protein-protein interactions in an organism is called its <strong>“interactome.”</strong></p></li>
+<li><p>The STRING database is our best attempt at building a comprehensive map of the human interactome. It is not complete and is constantly being updated as new research is published, but it is our essential blueprint.</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="extending-knowledge-properties-of-biological-networks" class="level4">
+<h4 class="anchored" data-anchor-id="extending-knowledge-properties-of-biological-networks"><strong>2. Extending Knowledge: Properties of Biological Networks</strong></h4>
+<p>Biological networks are not random webs. They have specific, important properties that we can exploit in our analysis.</p>
+<ul>
+<li><p><strong>They are “Scale-Free.”</strong></p>
+<ul>
+<li><p><strong>The Concept:</strong> This is the most famous property of biological networks. It means that the distribution of connections is not a nice bell curve. Instead, it follows a “power law.”</p></li>
+<li><p><strong>The Implication:</strong> Most proteins (nodes) in the network have only a few connections (a low “degree”). However, there are a few special proteins that are connected to a huge number of other proteins. These are called <strong>“hubs.”</strong></p></li>
+<li><p><strong>The Analogy:</strong> Think of an airline route map. Most airports are small and have only a few routes. But a few airports, like Atlanta or Chicago, are massive hubs with connections to hundreds of other cities.</p></li>
+<li><p><strong>Why it matters for us:</strong> These hub proteins are often critically important for the cell. A drug that targets a hub protein is likely to have a much larger and more widespread effect on the network than a drug that targets a minor, poorly connected protein. Identifying hubs will be a key part of our analysis.</p></li>
+</ul></li>
+<li><p><strong>They have “Modularity.”</strong></p>
+<ul>
+<li><p><strong>The Concept:</strong> Proteins with related functions tend to form tightly interconnected clusters or “communities” within the larger network.</p></li>
+<li><p><strong>The Analogy:</strong> In a social network, you will find dense clusters of friends who all went to the same high school or work at the same company. These are modules.</p></li>
+<li><p><strong>Why it matters for us:</strong> These modules often represent specific biological pathways or protein complexes (like the proteasome or the ribosome). If we find that a drug’s targets are heavily concentrated in one specific module, it gives us a powerful clue about its mechanism of action.</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="the-role-of-the-ppi-network-in-our-workflow" class="level4">
+<h4 class="anchored" data-anchor-id="the-role-of-the-ppi-network-in-our-workflow"><strong>3. The Role of the PPI Network in Our Workflow</strong></h4>
+<p>Let’s put this all together. Here is how the PPI network acts as the central player in our upcoming practical analysis:</p>
+<ol type="1">
+<li><p><strong>Foundation:</strong> We start by considering the entire human interactome from STRING as our underlying map.</p></li>
+<li><p><strong>Finding the Overlap:</strong> We will identify our list of drug targets and our list of disease targets.</p></li>
+<li><p><strong>Building the Drug-Disease Network:</strong> We will then query the STRING database and ask it to “pull out” a sub-network. This sub-network will contain <strong>only our targets of interest</strong> and the known interactions <strong>between them</strong>.</p></li>
+<li><p><strong>Analysis:</strong> This smaller, specific drug-disease network is what we will analyze. We will look for its hubs, its bottlenecks, and its modules. The proteins that are topologically important in this specific sub-network are our best candidates for explaining the drug’s effect on the disease.</p></li>
+</ol>
+<p>The PPI network is not just a pretty picture. It is a structured data source that provides the functional context and the links that allow us to connect the chemistry of a drug to the biology of a disease.</p>
+</section>
+</section>
+<section id="lesson-3-summary-status-check" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-3-summary-status-check"><strong>Lesson 3: Summary &amp; Status Check</strong></h3>
+<ul>
+<li><p><strong>Conceptually</strong>, we now understand that a PPI network is a map of protein interactions, composed of <strong>nodes (proteins)</strong> and <strong>edges (interactions)</strong>. We know that these networks are not random; they have important properties like being <strong>scale-free (having hubs)</strong> and <strong>modular (having clusters)</strong>.</p></li>
+<li><p>We have a clear mental model of the role of the PPI network in our analysis: it is the <strong>scaffolding</strong> upon which we will build and analyze our specific drug-disease interaction network.</p></li>
+<li><p><strong>Crucially</strong>, we have revisited the <strong>STRING database</strong> and understand it as the primary, evidence-based source for this blueprint of the cell.</p></li>
+</ul>
+<p>We have now completed our tour of the three foundational concepts. We know what network pharmacology is, where to get our data, and what the underlying map looks like. We are fully prepared to start our practical project.</p>
+<hr>
+</section>
+</section>
+<section id="part-2-the-practical-workflow" class="level2">
+<h2 class="anchored" data-anchor-id="part-2-the-practical-workflow"><strong>😗Part 2: The Practical Workflow🥱</strong></h2>
+<hr>
+</section>
+<section id="project-investigating-the-network-mechanism-of-quercetin-against-colon-cancer" class="level2">
+<h2 class="anchored" data-anchor-id="project-investigating-the-network-mechanism-of-quercetin-against-colon-cancer"><strong>Project: Investigating the Network Mechanism of Quercetin Against Colon Cancer🤤</strong></h2>
+<hr>
+</section>
+<section id="lesson-4-step-1---target-identification" class="level2">
+<h2 class="anchored" data-anchor-id="lesson-4-step-1---target-identification"><strong>Lesson 4: Step 1 - Target Identification😶‍🌫️</strong></h2>
+<p><strong>Goal:</strong> <strong><em><code>To use a combination of predictive web servers and curated databases to generate our two primary lists of genes/proteins: 1. The predicted targets of our drug, Quercetin. 2. The known targets associated with our disease, Colon Cancer.</code></em></strong></p>
+<section id="chunk-1-finding-the-drug---defining-quercetin" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-1-finding-the-drug---defining-quercetin"><strong>Chunk 1: Finding the Drug - Defining Quercetin</strong></h4>
+<p><strong>Explanation:</strong> Before we can find the targets of a drug, we need to be able to represent it in a way that bioinformatics tools can understand. We can’t just type “Quercetin.” We need its chemical structure, most commonly represented as a <strong>SMILES string</strong>.</p>
+<p><strong>Action:</strong></p>
+<ol type="1">
+<li><p>Go to a large chemical database like <strong>PubChem</strong> (<a href="https://www.google.com/url?sa=E&amp;q=https%3A%2F%2Fpubchem.ncbi.nlm.nih.gov%2F"><strong>https://pubchem.ncbi.nlm.nih.gov/</strong></a>).</p></li>
+<li><p>In the search bar, type <strong>“Quercetin”</strong>.</p></li>
+<li><p>On the Quercetin compound page, look for the <strong>“Canonical SMILES”</strong>.</p></li>
+<li><p><strong>Copy this string.</strong> It will look like this: <strong><em><code>C1=CC(=C(C=C1C2=C(C(=O)C3=C(C=C(C=C3O2)O)O)O)O)O</code></em></strong></p></li>
+<li><p>Create a project folder on your computer (e.g., <code>Project_Network_Pharmacology</code>). Inside, create a data <code>subfolder.</code></p></li>
+<li><p>Open a simple text editor and save this SMILES string in a file named <code>quercetin_smiles.txt</code> inside your data folde</p></li>
+</ol>
+<ul>
+<li><strong>Verification:</strong> You have successfully found and saved the unambiguous, machine-readable identifier for our drug.</li>
+</ul>
+</section>
+<section id="chunk-2-predicting-the-drug-targets-with-swisstargetprediction" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-2-predicting-the-drug-targets-with-swisstargetprediction"><strong>Chunk 2: Predicting the Drug Targets with SwissTargetPrediction</strong></h4>
+<p><strong>Explanation:</strong> Now we will use the powerful <code>SwissTargetPrediction web serevr</code>. It will take our SMILES string and, based on chemical similarity, predict the most likely human protein targets.</p>
+<p><strong>Action:</strong> 1. Go to the <strong>SwissTargetPrediction</strong> website (<a href="https://www.google.com/url?sa=E&amp;q=http%3A%2F%2Fwww.swisstargetprediction.ch%2F"><strong>http://www.swisstargetprediction.ch/</strong></a>).</p>
+<ol type="1">
+<li><p>Paste the SMILES string for Quercetin into the search box.</p></li>
+<li><p>Make sure the species is set to <strong>“Homo sapiens”</strong>.</p></li>
+<li><p>Click <strong>“Predict targets”</strong>.</p></li>
+<li><p>The server will run the analysis and return a results page. <strong>This page shows a list of protein targets, ranked by a “Probability” score.</strong></p></li>
+<li><p>We want to export this data. Click the <strong>“CSV”</strong> button to download the results as a comma-separated values file.</p></li>
+<li><p>Save this file in your data folder as <code>quercetin_predicted_targets.csv.</code></p></li>
+</ol>
+<ul>
+<li><strong>Verification:</strong> Open the downloaded CSV file in a spreadsheet program (like Excel or Google Sheets) or a text editor. You will see a clean table. The most important columns are:
+<ul>
+<li><code>Target</code>: The common name of the protein target (e.g., “Serine(丝氨酸)/threonine-protein kinase(苏氨酸蛋白激酶) PIM1”).</li>
+<li><code>Uniprot ID</code>: The stable, universal identifier for that protein (e.g., “P11309”).</li>
+<li><code>Probability</code>: The model’s confidence in the prediction. This file is our raw list of predicted drug targets.</li>
+</ul></li>
+</ul>
+</section>
+<section id="chunk-3-finding-the-disease-targets-with-genecards" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-3-finding-the-disease-targets-with-genecards"><strong>Chunk 3: Finding the Disease Targets with GeneCards</strong></h4>
+<p><strong>Explanation:</strong> Now we switch hats and find the targets for our disease. We will use the comprehensive GeneCards database to get a well-annotated list of genes associated with Colon Cancer.</p>
+<p><strong>Action:</strong> Go to the <strong>GeneCards</strong> website (<a href="https://www.google.com/url?sa=E&amp;q=https%3A%2F%2Fwww.genecards.org%2F"><strong>https://www.genecards.org/</strong></a>).</p>
+<ol type="1">
+<li><p>In the search bar, type <strong>“colon cancer”</strong> and press Enter.</p></li>
+<li><p>GeneCards will show you a results page. It should have a section or link for the “Gene list” associated with the disease. Click on it.</p></li>
+<li><p>This will take you to a large table of genes. Each gene has a “GCid” and a “Relevance Score” indicating how strongly it is associated with the disease.</p></li>
+<li><p>We want to download this data. Look for a “Download” button or link.</p></li>
+<li><p>Download the table as a text or CSV file.</p></li>
+<li><p>Save this file in your data folder as <code>colon_cancer_targets.csv</code></p></li>
+</ol>
+<ul>
+<li><strong>Verification:</strong> Open the downloaded CSV file. You will see a large table with many columns. The most important columns for us are:
+<ul>
+<li><code>Gene Symbol</code>: The official symbol for the gene (e.g., “APC”, “KRAS”, “TP53”).</li>
+<li><code>Relevance score</code>: The score from GeneCards. This file is our raw list of disease-associated targets.</li>
+</ul></li>
+</ul>
+</section>
+<section id="chunk-4-creating-clean-target-lists" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-4-creating-clean-target-lists"><strong>Chunk 4: Creating Clean Target Lists</strong></h4>
+<p><strong>Explanation:</strong> The raw downloaded files are a great start, but we need to process them into simple, clean lists of just the gene symbols for our next step. We can do this easily in R.</p>
+<p><strong>Action:</strong> 1. In RStudio, create a new R Project for this analysis. 2. Create a new R script and save it as <code>01_target_processing.R</code>. 3. Add and run the following code:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load tidyverse for data manipulation</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 1. Process Quercetin Predicted Targets ---</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the CSV file from SwissTargetPrediction</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>quercetin_raw <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/quercetin_predicted_targets.csv"</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># We only care about the "Common name" column, which contains the gene symbol.</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Let's also only keep targets with a probability &gt; 0 as a minimal filter.</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>quercetin_targets <span class="ot">&lt;-</span> quercetin_raw <span class="sc">%&gt;%</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Probability <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(<span class="st">`</span><span class="at">Common name</span><span class="st">`</span>) <span class="sc">%&gt;%</span> <span class="co"># The pull() function extracts a single column as a vector</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unique</span>() <span class="co"># Ensure we have no duplicates</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Save this clean list to a file</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="fu">write_lines</span>(quercetin_targets, <span class="st">"data/quercetin_targets_clean.txt"</span>)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Found"</span>, <span class="fu">length</span>(quercetin_targets), <span class="st">"unique predicted targets for Quercetin.</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 2. Process Colon Cancer Targets ---</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the data from GeneCards</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>cancer_raw <span class="ot">&lt;-</span> <span class="fu">read_delim</span>(<span class="st">"data/colon_cancer_targets.csv"</span>, <span class="at">delim =</span> <span class="st">","</span>) <span class="co"># Use read_delim for flexibility</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co"># We only care about the "Gene Symbol" column.</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Let's filter for a relevance score &gt; 1 to keep moderately to highly associated genes.</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>cancer_targets <span class="ot">&lt;-</span> cancer_raw <span class="sc">%&gt;%</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="st">`</span><span class="at">Relevance score</span><span class="st">`</span> <span class="sc">&gt;</span> <span class="fl">1.0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(<span class="st">`</span><span class="at">Gene Symbol</span><span class="st">`</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unique</span>()</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Save this clean list to a file</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="fu">write_lines</span>(cancer_targets, <span class="st">"data/colon_cancer_targets_clean.txt"</span>)</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Found"</span>, <span class="fu">length</span>(cancer_targets), <span class="st">"unique targets for Colon Cancer.</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><strong>Verification:</strong> After running this R script, you will have two new, simple text files in your <code>data</code> folder:
+<ul>
+<li><code>quercetin_targets_clean.txt</code>: A single column of gene symbols.</li>
+<li><code>colon_cancer_targets_clean.txt</code>: A single column of gene symbols. The <code>cat()</code> commands in the R script also print a summary to the console, telling you exactly how many targets are in each of your final lists. This confirms the successful completion of our data acquisition and cleaning step.</li>
+</ul></li>
+</ul>
+</section>
+<section id="lesson-4-summary-status-check" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-4-summary-status-check"><strong>Lesson 4: Summary &amp; Status Check</strong></h3>
+<ul>
+<li><strong>Conceptually</strong>, we understand that the first practical step of any network pharmacology project is to acquire two lists of gene/protein identifiers: one for the drug’s targets and one for the disease’s targets.</li>
+<li><strong>Practically</strong>, we have used premier, web-based bioinformatics tools (<strong>SwissTargetPrediction</strong> and <strong>GeneCards</strong>) to acquire this data for our specific project.</li>
+<li><strong>Crucially</strong>, we have followed the “Trust, but Verify” principle by not just downloading the data, but by writing a simple R script to <strong>clean and format</strong> it, and to <strong>report summary statistics</strong> (the number of targets in each list).</li>
+</ul>
+<hr>
+</section>
+<section id="lesson-5-step-2---finding-the-drug-disease-common-targets" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-5-step-2---finding-the-drug-disease-common-targets"><strong>Lesson 5: Step 2 - Finding the “Drug-Disease” Common Targets😎</strong></h3>
+<p><strong>Goal:</strong> <strong><em>To take our two clean lists of targets (<code>quercetin_targets_clean.txt</code> and <code>colon_cancer_targets_clean.txt</code>) and find the genes/proteins that appear on both lists. These “common targets” represent the most direct link between the drug’s activity and the disease’s biology.</em></strong></p>
+<section id="core-concepts" class="level4">
+<h4 class="anchored" data-anchor-id="core-concepts"><strong>1. Core Concepts</strong></h4>
+<ul>
+<li><p><strong>The “Intersection”:</strong> In mathematics and computer science, the “intersection” of two sets is the collection of all elements that are common to both sets. This is exactly what we want to find. If Set A is {1, 2, 3} and Set B is {3, 4, 5}, their intersection is {3}.</p></li>
+<li><p><strong>The Biological Significance:</strong> Why are these common targets so important? They are proteins that are simultaneously:</p>
+<ol type="1">
+<li><p>Predicted to be physically modulated by our drug, Quercetin.</p></li>
+<li><p>Known from extensive research to be functionally involved in the pathology of Colon Cancer.</p></li>
+</ol></li>
+<li><p><strong>The First Hypothesis:</strong> <strong><em>These proteins are our strongest, first-line candidates for explaining the therapeutic mechanism</em></strong>. By analyzing the functions of just these common targets, we can get an immediate, high-level idea of which biological processes are at the heart of the drug-disease interaction.</p></li>
+</ul>
+</section>
+<section id="practical-application-finding-the-intersection-in-r" class="level4">
+<h4 class="anchored" data-anchor-id="practical-application-finding-the-intersection-in-r"><strong>2. Practical Application: Finding the Intersection in R</strong></h4>
+<p>We will continue in our R script, <code>01_target_processing.R</code>.</p>
+</section>
+<section id="chunk-1-loading-the-clean-data" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-1-loading-the-clean-data"><strong>Chunk 1: Loading the Clean Data</strong></h4>
+<p><strong>Explanation:</strong> First, we need to load the two clean text files that we created at the end of the last lesson back into our R session.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This code continues in the '01_target_processing.R' script</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># (Assuming the tidyverse library is already loaded)</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 3. Find Drug-Disease Common Targets ---</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the clean lists back into R</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># (If you are running this in a new session)</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>quercetin_targets <span class="ot">&lt;-</span> <span class="fu">read_lines</span>(<span class="st">"data/quercetin_targets_clean.txt"</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>cancer_targets <span class="ot">&lt;-</span> <span class="fu">read_lines</span>(<span class="st">"data/colon_cancer_targets_clean.txt"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><strong>Action:</strong> Add this chunk to your script and run it. You now have two character vectors in your R environment: <code>quercetin_targets</code> and <code>cancer_targets.</code></li>
+</ul>
+</section>
+<section id="chunk-2-calculating-the-intersection" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-2-calculating-the-intersection"><strong>Chunk 2: Calculating the Intersection</strong></h4>
+<p><strong>Explanation:</strong> R has a built-in, highly efficient function called intersect() that does exactly what we need. We simply give it our two vectors as input.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Find the common elements between the two vectors</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>common_targets <span class="ot">&lt;-</span> <span class="fu">intersect</span>(quercetin_targets, cancer_targets)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Let's see how many common targets we found and what they are</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Number of Quercetin targets:"</span>, <span class="fu">length</span>(quercetin_targets), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Number of Colon Cancer targets:"</span>, <span class="fu">length</span>(cancer_targets), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Number of Common targets:"</span>, <span class="fu">length</span>(common_targets), <span class="st">"</span><span class="sc">\n\n</span><span class="st">"</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"--- List of Common Targets ---</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(common_targets)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Save this important list to a file for later use</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="fu">write_lines</span>(common_targets, <span class="st">"data/common_targets.txt"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><p><strong>Action:</strong> Run this chunk.</p></li>
+<li><p><strong>Verification:</strong> The printed output in the console is our proof. It gives us a clear summary of the numbers and lists the gene symbols of the proteins that are at the intersection. Seeing this list (e.g., “EGFR”, “SRC”, “PIK3CA”) confirms that our drug is predicted to act on proteins that are indeed highly relevant to colon cancer.</p></li>
+</ul>
+</section>
+<section id="chunk-3-initial-functional-analysis-of-common-targets" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-3-initial-functional-analysis-of-common-targets"><strong>Chunk 3: Initial Functional Analysis of Common Targets</strong></h4>
+<p><strong>Explanation:</strong> Now that we have this high-confidence list of common targets, what do they do? We can get a quick preview of their collective function by performing a standard GO and KEGG enrichment analysis, just like we did in our other ’omics projects. <strong><em>This will tell us if these direct points of action are concentrated in any specific biological pathways.</em></strong> We will use the popular clusterProfiler package.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 4. Functional Enrichment of Common Targets ---</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Install packages if you don't have them</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># BiocManager::install(c("clusterProfiler", "org.Hs.eg.db"))</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(clusterProfiler)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(org.Hs.eg.db)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co"># We need to convert our gene symbols to Entrez IDs for clusterProfiler</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>entrez_ids <span class="ot">&lt;-</span> <span class="fu">mapIds</span>(org.Hs.eg.db,</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>                     <span class="at">keys =</span> common_targets,</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>                     <span class="at">keyType =</span> <span class="st">"SYMBOL"</span>,</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>                     <span class="at">column =</span> <span class="st">"ENTREZID"</span>,</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>                     <span class="at">multiVals =</span> <span class="st">"first"</span>)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Run KEGG enrichment analysis</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>kegg_enrichment <span class="ot">&lt;-</span> <span class="fu">enrichKEGG</span>(</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">gene =</span> entrez_ids,</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">organism =</span> <span class="st">"hsa"</span>, <span class="co"># Homo sapiens</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">pvalueCutoff =</span> <span class="fl">0.05</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize the KEGG results</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="fu">dotplot</span>(kegg_enrichment, <span class="at">showCategory =</span> <span class="dv">15</span>) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"Enriched KEGG Pathways for Common Targets"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><p><strong>Action:</strong> Run this chunk.</p></li>
+<li><p><strong>Verification and Interpretation:</strong> The dot plot that is generated is our first major biological insight. It answers the question: “What are the primary pathways where the drug’s action and the disease’s pathology overlap?” You might see pathways like “Pathways in cancer,” “<code>PI3K-Akt signaling pathway</code>,” or “<code>Ras signaling pathway</code>.” This provides strong, early evidence for the drug’s mechanism and verifies that our list of common targets is biologically coherent and relevant.</p></li>
+</ul>
+</section>
+</section>
+<section id="lesson-5-summary-status-check" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-5-summary-status-check"><strong>Lesson 5: Summary &amp; Status Check</strong></h3>
+<ul>
+<li><p><strong>Conceptually</strong>, we understand that finding the <strong>intersection</strong> of the drug and disease target lists is the first and most direct way to identify key mechanistic proteins.</p></li>
+<li><p><strong>Practically</strong>, we have used the simple <code>intersect()</code> function in R to generate our list of <strong>common targets</strong>.</p></li>
+<li><p><strong>Crucially</strong>, we have followed the “Trust, but Verify” principle by not just finding the list, but by immediately performing a <strong>functional enrichment analysis</strong> on it. The resulting dot plot provides a verifiable and interpretable summary of the core biological processes that are being targeted, confirming that our approach is on the right track.</p></li>
+</ul>
+<hr>
+</section>
+<section id="lesson-6-step-3---constructing-the-ppi-network" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-6-step-3---constructing-the-ppi-network"><strong>Lesson 6: Step 3 - Constructing the PPI Network🤗</strong></h3>
+<p><strong>Goal:</strong> <strong><em><code>To use our list of common targets to retrieve a specific sub-network from the STRING database. This sub-network will consist only of our proteins of interest and the high-confidence interactions that exist between them.</code></em></strong></p>
+<section id="core-concepts-1" class="level4">
+<h4 class="anchored" data-anchor-id="core-concepts-1"><strong>1. Core Concepts</strong></h4>
+<ul>
+<li><p><strong>From a List to a Network:</strong> A simple list of genes is informative, but it doesn’t show relationships. A network is a much richer data structure. By constructing a PPI network, we are explicitly adding a layer of biological context. We are moving from asking “Which proteins are involved?” to “<strong>How are the involved proteins connected?</strong>”</p></li>
+<li><p><strong>The “Sub-Network” Concept:</strong> The entire human interactome in the STRING database contains ~20,000 proteins and millions of interactions. Trying to look at the whole thing is impossible and uninformative. The power of this step is in <strong>filtering</strong> <strong><em>this massive background network</em></strong>. We are telling STRING: “<strong><em>Show me a map, but only include the cities (proteins) that are on my list (common_targets.txt) and the direct highways (interactions) between them</em></strong>.”</p></li>
+<li><p><strong>The Importance of Confidence:</strong> STRING aggregates data from many sources, <strong><em>some of which are higher quality than others</em></strong> (e.g., data from a direct experiment is more reliable than a prediction from text-mining). Therefore, every interaction (edge) in STRING has a <strong>confidence score</strong> (from 0 to 1). <strong><em>It is a standard and crucial practice to filter this network and keep only the</em></strong> <strong>high-confidence interactions</strong> (e.g., score &gt; 0.4 or 0.7). <strong><em>This removes noisy, speculative connections and ensures our final network is based on robust evidence.</em></strong></p></li>
+</ul>
+</section>
+<section id="practical-application-building-the-network-with-string-and-r" class="level4">
+<h4 class="anchored" data-anchor-id="practical-application-building-the-network-with-string-and-r"><strong>2. Practical Application: Building the Network with STRING and R</strong></h4>
+<p>We have two excellent ways to do this: using the user-friendly <code>STRING</code> web server or using the more powerful and reproducible <code>STRINGdb</code> R package. We will describe the R method, as it is more in line with a bioinformatics workflow.</p>
+</section>
+<section id="chunk-1-setup-and-loading-data" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-1-setup-and-loading-data"><strong>Chunk 1: Setup and Loading Data</strong></h4>
+<p><strong>Explanation:</strong> We will start a new R script for our network analysis. We’ll install and load the <code>STRINGdb</code> package and our list of common targets.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- New Script: 02_network_analysis.R ---</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Install required packages</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># BiocManager::install("STRINGdb")</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("tidyverse")</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Load libraries</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(STRINGdb)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 1. Load Common Targets ---</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>common_targets <span class="ot">&lt;-</span> <span class="fu">read_lines</span>(<span class="st">"data/common_targets.txt"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><strong>Action:</strong> Create a new R script, 02_network_analysis.R, and run this setup chunk.</li>
+</ul>
+</section>
+<section id="chunk-2-initialize-stringdb-and-map-identifiers" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-2-initialize-stringdb-and-map-identifiers"><strong>Chunk 2: Initialize STRINGdb and Map Identifiers</strong></h4>
+<p><strong>Explanation:</strong> First, we create an object that connects R to the <code>STRING</code> database. We specify the species (“Homo sapiens” is species ID 9606) and a confidence score threshold. A score of 400 (which corresponds to 0.4) is a good default for medium confidence. Then, we need to map our gene symbols to the stable protein identifiers used by <code>STRING</code>. The package has a handy function for this.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 2. Initialize STRINGdb and Map IDs ---</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the STRINGdb object</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># We'll set the score threshold to 400 (medium confidence)</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>string_db <span class="ot">&lt;-</span> STRINGdb<span class="sc">$</span><span class="fu">new</span>(<span class="at">version =</span> <span class="st">"11.5"</span>, </span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>                          <span class="at">species =</span> <span class="dv">9606</span>, <span class="co"># Homo sapiens</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>                          <span class="at">score_threshold =</span> <span class="dv">400</span>, </span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>                          <span class="at">input_directory =</span> <span class="st">""</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Map our gene symbols to STRING identifiers</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>mapped_targets <span class="ot">&lt;-</span> string_db<span class="sc">$</span><span class="fu">map</span>(</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(<span class="at">gene =</span> common_targets),</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="st">"gene"</span>,</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">removeUnmappedRows =</span> <span class="cn">TRUE</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Let's see how many of our genes were successfully mapped</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Successfully mapped"</span>, <span class="fu">nrow</span>(mapped_targets), <span class="st">"out of"</span>, <span class="fu">length</span>(common_targets), <span class="st">"genes to STRING IDs.</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><p><strong>Action:</strong> Run this chunk.</p></li>
+<li><p><strong>Verification:</strong> The <code>cat()</code> command is our proof. It tells us how many of our genes were found in the <code>STRING</code> database. A high mapping rate confirms that our gene list is valid and recognized by the database.</p></li>
+</ul>
+</section>
+<section id="chunk-3-retrieve-the-ppi-network-and-visualize" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-3-retrieve-the-ppi-network-and-visualize"><strong>Chunk 3: Retrieve the PPI Network and Visualize</strong></h4>
+<p><strong>Explanation:</strong> Now for the main event. We use the mapped IDs to ask <code>STRING</code> to build and plot the interaction network.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 3. Get and Plot the PPI Network ---</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># This function retrieves the interactions and creates a plot object</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># We give it our mapped IDs and tell it to hide disconnected nodes.</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>ppi_plot <span class="ot">&lt;-</span> string_db<span class="sc">$</span><span class="fu">plot_network</span>(mapped_targets<span class="sc">$</span>STRING_id, </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">add_link =</span> <span class="cn">FALSE</span>, <span class="co"># Don't add extra web links to the plot</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">add_summary =</span> <span class="cn">FALSE</span>) <span class="co"># Don't add the text summary to the plot</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the plot</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(ppi_plot)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Save the plot to our figures folder</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="st">"figures/01_common_targets_ppi_network.png"</span>, ppi_plot, <span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="dv">8</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><p><strong>Action:</strong> Run this chunk.</p></li>
+<li><p><strong>Verification:</strong> A network diagram will appear in your RStudio “Plots” pane and will be saved as a PNG file. <strong><em>This is your primary output and verification for this lesson</em></strong>. You should see a web of interconnected nodes (your proteins). <strong><em>The thickness of the lines (edges) corresponds to the strength of the evidence for that interaction. Seeing a well-connected “hairball(毛团)” rather than a set of isolated dots is proof that your common targets are not a random collection, but a set of functionally related, interacting proteins.</em></strong></p></li>
+</ul>
+</section>
+<section id="chunk-4-exporting-the-network-for-deeper-analysis" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-4-exporting-the-network-for-deeper-analysis"><strong>Chunk 4: Exporting the Network for Deeper Analysis</strong></h4>
+<p><strong>Explanation:</strong> While the R plot is great for a quick look, the most powerful network analysis is often done in a dedicated, interactive software tool called <strong><code>Cytoscape</code></strong>. To do this, <strong><em>we need to export our network data from R into a simple table format (an “edge list”) that Cytoscape can read.</em></strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 4. Export Network Data for Cytoscape ---</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the interaction data as a data frame</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>interaction_data <span class="ot">&lt;-</span> string_db<span class="sc">$</span><span class="fu">get_interactions</span>(mapped_targets<span class="sc">$</span>STRING_id)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co"># The 'interaction_data' data frame has columns 'from', 'to', and 'combined_score'.</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co"># This is a standard "edge list" format.</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(interaction_data)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co"># We need to add the gene symbols back for easier interpretation in Cytoscape</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co"># We do this by merging with our 'mapped_targets' data frame.</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>from_mapped <span class="ot">&lt;-</span> mapped_targets <span class="sc">%&gt;%</span> <span class="fu">rename</span>(<span class="at">from =</span> STRING_id, <span class="at">from_gene =</span> gene)</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>to_mapped <span class="ot">&lt;-</span> mapped_targets <span class="sc">%&gt;%</span> <span class="fu">rename</span>(<span class="at">to =</span> STRING_id, <span class="at">to_gene =</span> gene)</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>edge_list <span class="ot">&lt;-</span> interaction_data <span class="sc">%&gt;%</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(from_mapped, <span class="at">by =</span> <span class="st">"from"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(to_mapped, <span class="at">by =</span> <span class="st">"to"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(from_gene, to_gene, combined_score) <span class="co"># Keep only the important columns</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Save this edge list as a CSV file</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(edge_list, <span class="st">"data/ppi_network_edgelist.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><p><strong>Action:</strong> Run this final chunk.</p></li>
+<li><p><strong>Verification:</strong> Check your data folder. You will now have a new file, <code>ppi_network_edgelist.csv</code>. Open it. It’s a simple, three-column table: <code>from_gene, to_gene, combined_score</code>. This is a universal format for describing a network, and it is the perfect input for our next lesson, where we will analyze its structure.</p></li>
+</ul>
+</section>
+</section>
+<section id="lesson-6-summary-status-check" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-6-summary-status-check"><strong>Lesson 6: Summary &amp; Status Check</strong></h3>
+<ul>
+<li><p><strong>Conceptually</strong>, we understand that we are not analyzing the entire human interactome, but rather a specific <strong>sub-network</strong> composed of our proteins of interest. We also appreciate the importance of using a <strong>confidence score</strong> to filter for high-quality interactions.</p></li>
+<li><p><strong>Practically</strong>, we have used the <code>STRINGdb</code> R package to programmatically retrieve and visualize this sub-network.</p></li>
+<li><p><strong>Crucially</strong>, we have followed the “Trust, but Verify” principle by confirming the number of mapped genes, by visually inspecting the generated network plot, and by exporting the network data into a clean, verifiable <strong>edge list file</strong>.</p></li>
+</ul>
+<p>We have successfully built our network. We have the blueprint of the interactions. The next and final analytical step is to analyze the shape and structure of this network to find out which of these proteins are the most important.</p>
+<hr>
+</section>
+</section>
+<section id="by-the-waydetour-a-beginners-guide-to-cytoscape" class="level2">
+<h2 class="anchored" data-anchor-id="by-the-waydetour-a-beginners-guide-to-cytoscape"><strong>🌮BY THE WAY:Detour: A Beginner’s Guide to Cytoscape🍗</strong></h2>
+<p><strong>Goal:</strong> To understand what Cytoscape is, how to get data into it, how to control its visual style, and how to use its core analysis features.</p>
+<section id="what-is-cytoscape" class="level4">
+<h4 class="anchored" data-anchor-id="what-is-cytoscape"><strong>1. What is Cytoscape?</strong></h4>
+<ul>
+<li><p><strong>The Concept:</strong> Cytoscape is an open-source, standalone software application for visualizing and analyzing networks. Think of it as the Photoshop or Illustrator for biological networks. It is not an R package; it’s a program you download and run on your computer.</p></li>
+<li><p><strong>The Power:</strong> Its strength lies in its interactivity. You can click on nodes, drag them around, change their colors and sizes based on data, and explore the network structure visually. It also has a powerful “App Store” where you can add hundreds of specialized analysis tools.</p></li>
+<li><p><strong>Action:</strong> Go to the <a href="https://www.google.com/url?sa=E&amp;q=https%3A%2F%2Fcytoscape.org%2F"><strong>Cytoscape website</strong></a> and download and install the latest version.</p></li>
+</ul>
+</section>
+<section id="the-cytoscape-interface-a-quick-tour" class="level4">
+<h4 class="anchored" data-anchor-id="the-cytoscape-interface-a-quick-tour"><strong>2. The Cytoscape Interface: A Quick Tour</strong></h4>
+<p>When you open Cytoscape, you’ll see a few key panels.</p>
+<ul>
+<li><p><strong>A) The Network View Window (Center):</strong> This is the main canvas where your network will be displayed. You can zoom with your mouse wheel and pan by clicking and dragging the background.</p></li>
+<li><p><strong>B) The Control Panel (Left):</strong> This is where you control everything. It has several tabs:</p>
+<ul>
+<li><p><strong>Network:</strong> Shows all the networks you have loaded.</p></li>
+<li><p><strong>Style:</strong> This is the most important tab. It lets you control the visual properties (color, size, shape, label) of your nodes and edges.</p></li>
+<li><p><strong>Select:</strong> Lets you select nodes/edges based on rules.</p></li>
+</ul></li>
+<li><p><strong>C) The Table Panel (Bottom):</strong> This is a spreadsheet that contains all the data associated with your nodes and edges. Every row is a node (or edge), and every column is an attribute (like gene name, degree, fold change, etc.). This panel is directly linked to the Network View.</p></li>
+</ul>
+</section>
+<section id="getting-data-into-cytoscape-the-two-main-ways" class="level4">
+<h4 class="anchored" data-anchor-id="getting-data-into-cytoscape-the-two-main-ways"><strong>3. Getting Data Into Cytoscape: The Two Main Ways</strong></h4>
+<p>There are two primary ways we will get our network data into Cytoscape.</p>
+<p><strong>Method 1: The STRING App (Easiest and Most Common)</strong></p>
+<ul>
+<li><p><strong>The Concept:</strong> Cytoscape has a built-in app that connects directly to the STRING database. This is the most seamless way to build a network from a list of genes.</p></li>
+<li><p><strong>The Workflow:</strong></p>
+<ol type="1">
+<li><p>In Cytoscape, go to the “Search” bar at the top.</p></li>
+<li><p>Make sure the dropdown next to it is set to “STRING: protein query” (or similar).</p></li>
+<li><p>Paste your list of gene symbols (e.g., our common_targets list) into the search bar.</p></li>
+<li><p>Press Enter.</p></li>
+<li><p>The STRING app will open a dialog box. You can set the confidence score cutoff (e.g., 0.4 for medium confidence) and click “Import”.</p></li>
+<li><p><strong>Result:</strong> Cytoscape will automatically query the STRING database, fetch your proteins and the interactions between them, and draw the network for you. The data (like confidence scores) will be automatically loaded into the Table Panel.</p></li>
+</ol></li>
+</ul>
+<p><strong>Method 2: Importing a Pre-made Network File</strong></p>
+<ul>
+<li><p><strong>The Concept:</strong> Sometimes you might have a network already defined in a simple text file (e.g., from another program or a publication). The standard format is a simple two-column file: Source_Node Target_Node. Each row defines one edge.</p></li>
+<li><p><strong>The Workflow:</strong></p>
+<ol type="1">
+<li><p>Go to File &gt; Import &gt; Network from File…</p></li>
+<li><p>Select your text file.</p></li>
+<li><p>A dialog box will appear. You need to tell Cytoscape which column is the “Source” and which is the “Target”.</p></li>
+<li><p>Click “OK”.</p></li>
+<li><p><strong>Result:</strong> Cytoscape will draw the network defined in your file.</p></li>
+</ol></li>
+</ul>
+</section>
+<section id="the-most-important-skill-mapping-data-to-visual-styles" class="level4">
+<h4 class="anchored" data-anchor-id="the-most-important-skill-mapping-data-to-visual-styles"><strong>4. The Most Important Skill: Mapping Data to Visual Styles</strong></h4>
+<p>This is the key to making your network tell a story. The “Style” tab in the Control Panel is where this happens.</p>
+<ul>
+<li><p><strong>The Concept:</strong> You can make the visual properties of nodes and edges <strong>dependent on the data</strong> in your Table Panel.</p></li>
+<li><p><strong>Example 1: Sizing Nodes by Importance.</strong></p>
+<ol type="1">
+<li><p>In the <strong>Style</strong> tab, find the “Node” properties at the bottom.</p></li>
+<li><p>Click on the “Size” property.</p></li>
+<li><p>For the “Column” dropdown, select a data column, for example, “Degree” (which represents how many connections a node has).</p></li>
+<li><p>For the “Mapping Type” dropdown, select “Continuous Mapping”.</p></li>
+<li><p><strong>Result:</strong> Cytoscape will now automatically resize all the nodes in your network. The unimportant nodes with a low degree will be small, and the important “hub” nodes with a high degree will be large.</p></li>
+</ol></li>
+<li><p><strong>Example 2: Coloring Nodes by Experimental Data.</strong></p>
+<ol type="1">
+<li><p>First, you need to import your experimental data. Go to File &gt; Import &gt; Table from File… and load a simple CSV file that has a column for “Gene Symbol” and another for “log2FoldChange”. Cytoscape will merge this data into the main Node Table.</p></li>
+<li><p>In the <strong>Style</strong> tab, click on the “Fill Color” property for Nodes.</p></li>
+<li><p>For the “Column” dropdown, select your “log2FoldChange” column.</p></li>
+<li><p>For the “Mapping Type”, select “Continuous Mapping”.</p></li>
+<li><p>Choose a color gradient (e.g., blue for negative, white for zero, red for positive).</p></li>
+<li><p><strong>Result:</strong> Cytoscape will color all the nodes in your network based on their expression values. You can see at a glance which parts of the network were upregulated (red) and which were downregulated (blue).</p></li>
+</ol></li>
+</ul>
+</section>
+<section id="core-analysis-the-networkanalyzer-tool" class="level4">
+<h4 class="anchored" data-anchor-id="core-analysis-the-networkanalyzer-tool"><strong>5. Core Analysis: The NetworkAnalyzer Tool</strong></h4>
+<p>Cytoscape has powerful built-in analysis tools. The most fundamental one is NetworkAnalyzer.</p>
+<ul>
+<li><p><strong>The Workflow:</strong></p>
+<ol type="1">
+<li><p>Go to the menu Tools &gt; NetworkAnalyzer &gt; Analyze Network…</p></li>
+<li><p>Choose whether to treat the network as “directed” or “undirected” (for PPI, undirected is standard).</p></li>
+<li><p>Click “OK”.</p></li>
+</ol></li>
+<li><p><strong>The Result:</strong> NetworkAnalyzer calculates a dozen different topology statistics for every node and edge in your network. It creates new columns in your Table Panel for things like:</p>
+<ul>
+<li><p><strong>Degree:</strong> The number of connections (to find hubs).</p></li>
+<li><p><strong>Betweenness Centrality:</strong> The “bottleneck” score.</p></li>
+<li><p><strong>Clustering Coefficient:</strong> How tightly connected a node’s neighbors are.</p></li>
+</ul></li>
+<li><p>Once these columns are created, you can then use them in the <strong>Style</strong> tab to visually map them, just as we did with Degree in the example above.</p></li>
+</ul>
+</section>
+<section id="detour-summary" class="level3">
+<h3 class="anchored" data-anchor-id="detour-summary"><strong>Detour Summary</strong></h3>
+<p>You are now equipped with the fundamental knowledge to use Cytoscape.</p>
+<ul>
+<li><p>You know that it’s an <strong>interactive program</strong> for network visualization and analysis.</p></li>
+<li><p>You know how to get data into it, primarily using the <strong>STRING app</strong>.</p></li>
+<li><p>You understand the most powerful concept: <strong>mapping data from the Table Panel to visual styles</strong> (like size and color) to make your network meaningful.</p></li>
+<li><p>You know how to run the core <strong>NetworkAnalyzer</strong> tool to calculate topological properties, which are the basis for identifying the most important nodes.</p></li>
+</ul>
+<hr>
+</section>
+<section id="lesson-7-step-4---network-analysis-and-key-node-identification" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-7-step-4---network-analysis-and-key-node-identification"><strong>Lesson 7: Step 4 - Network Analysis and Key Node Identification😮</strong></h3>
+<p><strong>Goal:</strong> <strong><em><code>To use the NetworkAnalyzer tool in Cytoscape to calculate key topological metrics for each protein (node) in our network, and to use these metrics to identify the most important "hub" and "bottleneck" proteins.</code></em></strong></p>
+<section id="core-concepts-measuring-importance-in-a-network" class="level4">
+<h4 class="anchored" data-anchor-id="core-concepts-measuring-importance-in-a-network"><strong>1. Core Concepts: Measuring “Importance” in a Network</strong></h4>
+<p>How do we decide which protein in a network is the “most important”? We can’t just guess. We use precise mathematical measures of <strong>centrality</strong>. A protein’s centrality is a measure of its topological significance within the network. There are many types of centrality, but we will focus on the two most common and intuitive ones for this analysis.</p>
+<ul>
+<li><p><strong>Concept 1: Degree Centrality (Finding the “Hubs”)</strong></p>
+<ul>
+<li><p><strong>The Question:</strong> Which protein has the most direct connections or interactions?</p></li>
+<li><p><strong>The Metric:</strong> <strong>Degree</strong>. The degree of a node is simply the number of edges connected to it.</p></li>
+<li><p><strong>The Analogy:</strong> In a social network, the person with the highest degree is the one with the most friends. They are a social “hub.”</p></li>
+<li><p><strong>The Biological Interpretation:</strong> A protein with a very high degree is a <strong>hub protein</strong>. It interacts with many other proteins. <strong><em>Hubs are often critical points of signal integration and regulation.</em></strong> A drug that targets a hub can have widespread, cascading effects throughout the network. In our drug-disease network, the node with the highest degree is a top candidate for being a key driver of the drug’s effect.</p></li>
+</ul></li>
+<li><p><strong>Concept 2: Betweenness Centrality(中介中心性) (Finding the “Bottlenecks”)</strong></p>
+<ul>
+<li><p><strong>The Question:</strong> <strong><em>Which protein is most critical for connecting different parts of the network</em></strong>?</p></li>
+<li><p><strong>The Metric:</strong> <strong>Betweenness Centrality</strong>. This is a more sophisticated measure. For every pair of nodes in the network, you find the shortest path between them. The betweenness centrality of a given node is the number of these shortest paths that pass through that node.</p></li>
+<li><p><strong>The Analogy:</strong> Think of a city’s road map. A “hub” is a major intersection with many roads leading into it (high degree). A “bottleneck” is a specific bridge that is the only way to get from one side of the city to the other (high betweenness centrality). Even if that bridge doesn’t have the most roads connected to it, its removal would fragment the network.</p></li>
+<li><p><strong>The Biological Interpretation:</strong> A protein with high betweenness centrality is a <strong>bottleneck protein</strong>. It may not have the most connections, <strong><em>but it is crucial for communication between different functional modules or pathways.</em></strong> Targeting a bottleneck can be a very effective way to disrupt the flow of information in a disease network.</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="practical-application-analyzing-the-network-in-cytoscape" class="level4">
+<h4 class="anchored" data-anchor-id="practical-application-analyzing-the-network-in-cytoscape"><strong>2. Practical Application: Analyzing the Network in Cytoscape</strong></h4>
+<p>We will now use Cytoscape’s built-in tools to calculate these metrics and then use the Style mapping feature to visualize them.</p>
+</section>
+<section id="chunk-1-calculate-network-statistics" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-1-calculate-network-statistics"><strong>Chunk 1: Calculate Network Statistics</strong></h4>
+<p><strong>Explanation:</strong> We will use the NetworkAnalyzer app, which is a core part of Cytoscape, to automatically compute the Degree, Betweenness Centrality, and many other metrics for every node in our network.</p>
+<p><strong>Action:</strong></p>
+<ol type="1">
+<li><p>With your network visible in Cytoscape, go to the main menu: <strong><code>Tools &gt; NetworkAnalyzer &gt; Analyze Network...</code></strong><code>.</code></p></li>
+<li><p>A small dialog box will pop up.</p>
+<ul>
+<li>Ensure the option <strong>“Treat the network as undirected”</strong> is selected. This is the standard for most PPI networks where an interaction is a mutual relationship.</li>
+</ul></li>
+<li><p>Click <strong>“OK”</strong>.</p></li>
+<li><p>The analysis will run very quickly. A new “Results Panel” window might pop up showing a lot of detailed statistics. You can close this window for now.</p></li>
+</ol>
+<ul>
+<li><strong>Verification:</strong> The real magic happens in the background. Go to the <strong>Table Panel</strong> at the bottom of the Cytoscape window. Click on the <strong>Node Table</strong> tab. You will see that NetworkAnalyzer has added many new columns to your table. Scroll to the right and you will find columns named <strong>Degree</strong> and <strong>BetweennessCentrality</strong>. The fact that these columns are now populated with numerical values for every protein is your proof that the analysis was successful.</li>
+</ul>
+</section>
+<section id="chunk-2-identify-key-nodes-from-the-data-table" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-2-identify-key-nodes-from-the-data-table"><strong>Chunk 2: Identify Key Nodes from the Data Table</strong></h4>
+<p><strong>Explanation:</strong> Now that we have the data, we can find our key proteins by simply sorting the table.</p>
+<p><strong>Action:</strong></p>
+<ol type="1">
+<li><p>In the <strong>Node Table</strong>, find the column header for <strong>Degree</strong>.</p></li>
+<li><p><strong>Click on the header</strong> to sort the entire table by this column. Click it again to sort in descending order.</p></li>
+<li><p><strong><em>The proteins at the very top of the table are now your</em></strong> <strong>top hub proteins</strong>. Note down the top 5-10 gene symbols.</p></li>
+<li><p>Now, find the column header for <strong>BetweennessCentrality</strong> and click it to sort in descending order.</p></li>
+<li><p>The proteins at the top of this list are your <strong>top bottleneck proteins</strong>. Note down these names as well.</p></li>
+</ol>
+<ul>
+<li><strong>Verification:</strong> You have now generated a data-driven, quantitative list of your most topologically important proteins. <strong><em>The list of top hubs (e.GFR,g., E SRC, JUN) will likely contain well-known cancer-related proteins, which verifies that your network is biologically meaningful.</em></strong></li>
+</ul>
+</section>
+<section id="chunk-3-visualize-centrality-using-node-size" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-3-visualize-centrality-using-node-size"><strong>Chunk 3: Visualize Centrality Using Node Size</strong></h4>
+<p><strong>Explanation:</strong> A long list of names is useful, but a visual representation is much more powerful. We will now use Cytoscape’s Style mapping to make the most important nodes visually stand out.</p>
+<p><strong>Action:</strong></p>
+<ol type="1">
+<li><p>Go to the <strong>Control Panel</strong> on the left and click on the <strong>“Style”</strong> tab.</p></li>
+<li><p>You will see a list of visual properties. Find the <strong>“Node”</strong> property called <strong>“Size”</strong>.</p></li>
+<li><p>Click on the small down arrow next to the Size property to expand its mapping options.</p></li>
+<li><p>For the <strong>“Column”</strong> dropdown, select the <strong>Degree</strong> column that we just created.</p></li>
+<li><p>For the <strong>“Mapping Type”</strong> dropdown, select <strong>“Continuous Mapping”</strong>.</p></li>
+<li><p>A new graphical interface will appear. This allows you to define the relationship between the degree value and the node size. A simple linear relationship is a good start. You can double-click on the graph to add control points (e.g., make nodes with a very low degree have a size of 20, and nodes with the highest degree have a size of 100).</p></li>
+</ol>
+<ul>
+<li><strong>Verification:</strong> Look at your <strong>Network View</strong>. It will have instantly and automatically updated. The network is no longer a uniform hairball. You can now immediately see the <strong>hub proteins</strong> because they are drawn as the <strong>largest nodes</strong>. This visual hierarchy immediately draws your eye to the most connected and potentially most important proteins, providing a powerful and intuitive view of your network’s structure. You can repeat this process, mapping BetweennessCentrality to the node border width or another property, to visualize multiple metrics at once.</li>
+</ul>
+</section>
+</section>
+<section id="lesson-7-summary-status-check" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-7-summary-status-check"><strong>Lesson 7: Summary &amp; Status Check</strong></h3>
+<ul>
+<li><p><strong>Conceptually</strong>, we have defined and distinguished between the two key measures of network centrality: <strong>Degree (for hubs)</strong> and <strong>Betweenness Centrality (for bottlenecks)</strong>.</p></li>
+<li><p><strong>Practically</strong>, we have used Cytoscape’s core <strong>NetworkAnalyzer</strong> tool to calculate these metrics for every protein in our drug-disease network.</p></li>
+<li><p><strong>Crucially</strong>, we have followed the “Trust, but Verify” principle in two ways:</p>
+<ol type="1">
+<li><p>We <strong>verified the analysis</strong> by inspecting the new data columns (Degree, BetweennessCentrality) in the Node Table.</p></li>
+<li><p>We then created a <strong>verifiable visualization</strong> by mapping the Degree data to the Node Size, allowing us to instantly and intuitively identify the hub proteins in our network.</p></li>
+</ol></li>
+</ul>
+<hr>
+</section>
+<section id="lesson-8-step-5---final-pathway-analysis-and-hypothesis-generation" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-8-step-5---final-pathway-analysis-and-hypothesis-generation"><strong>Lesson 8: Step 5 - Final Pathway Analysis and Hypothesis Generation🤗</strong></h3>
+<p><strong>Goal:</strong> <strong><em><code>To take the short list of key hub/bottleneck proteins identified from our network analysis, perform a final, focused functional enrichment analysis on them, and synthesize all of our findings into a single, coherent, and data-driven hypothesis.</code></em></strong></p>
+<section id="core-concepts-2" class="level4">
+<h4 class="anchored" data-anchor-id="core-concepts-2"><strong>1. Core Concepts</strong></h4>
+<ul>
+<li><p><strong>The “Signal from the Noise”:</strong> Why are we doing this final enrichment step? Our first enrichment analysis in Lesson 5 was on all the common targets. This gave us a broad overview. However, that list might have contained many proteins that are part of the disease but are on the periphery of the network. The list of <strong>key topological proteins</strong> we have now is much more focused. These are the proteins that are not only involved in the drug-disease interaction but are also structurally critical to the network that connects them. Analyzing their function gives us a much cleaner “signal” about the most critical processes being modulated.</p></li>
+<li><p><strong>Synthesizing the Narrative:</strong> This is the final step in any scientific data analysis. It involves telling a story that connects all the pieces of evidence we have gathered. Our story must include:</p>
+<ol type="1">
+<li><p>The <strong>drug</strong> (Quercetin).</p></li>
+<li><p>The key <strong>direct targets</strong> (our top hub proteins).</p></li>
+<li><p>The key <strong>biological pathways</strong> that these targets are enriched in.</p></li>
+<li><p>The link to the <strong>disease</strong> (Colon Cancer).</p></li>
+</ol></li>
+<li><p><strong>The Structure of a Good Hypothesis:</strong> A strong hypothesis from a network pharmacology study is specific and mechanistic. It should follow a template like:<br>
+“We predict that <strong>[The Drug]</strong> exerts its therapeutic effect against <strong>[The Disease]</strong> primarily by targeting a set of key hub proteins, including <strong>[Key Protein A, Key Protein B]</strong>. These proteins are central nodes in the <strong>[Name of Enriched Pathway]</strong>, and their modulation by the drug is predicted to disrupt this pathway, leading to a therapeutic outcome like <strong>[e.g., induction of apoptosis, inhibition of proliferation]</strong>.”</p></li>
+</ul>
+</section>
+<section id="practical-application-final-analysis-and-synthesis" class="level4">
+<h4 class="anchored" data-anchor-id="practical-application-final-analysis-and-synthesis"><strong>2. Practical Application: Final Analysis and Synthesis</strong></h4>
+<p>We will now perform the final enrichment analysis and then write out our concluding hypothesis.</p>
+</section>
+<section id="chunk-1-extracting-and-analyzing-key-proteins" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-1-extracting-and-analyzing-key-proteins"><strong>Chunk 1: Extracting and Analyzing Key Proteins</strong></h4>
+<p><strong>Explanation:</strong> First, we need our final, high-confidence list of key proteins. We will define this as the “Top 20” proteins based on their Degree from our Cytoscape analysis in the last lesson. Then we will perform a KEGG pathway enrichment on this short, focused list.</p>
+<p><strong>Action:</strong></p>
+<ol type="1">
+<li><p>Go back to your Cytoscape session.</p></li>
+<li><p>In the <strong>Node Table</strong>, make sure it is sorted in descending order by the <strong>Degree</strong> column.</p></li>
+<li><p>Select the top 20 rows.</p></li>
+<li><p>Copy the gene symbols from the name (or display name) column for these top 20 proteins.</p></li>
+<li><p>We will now take this list back to R for the final enrichment analysis. Continue in your <code>01_target_processing.R</code> script.</p></li>
+</ol>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 5. Final Enrichment of Key Hub Proteins ---</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># (Continuing in the '01_target_processing.R' script)</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Paste the list of the Top 20 Hub Proteins you copied from Cytoscape.</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># This is our final, high-confidence list.</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>key_hub_proteins <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"SRC"</span>, <span class="st">"EGFR"</span>, <span class="st">"JUN"</span>, <span class="st">"MAPK1"</span>, <span class="st">"MAPK3"</span>, <span class="st">"PIK3R1"</span>, <span class="st">"HRAS"</span>, <span class="st">"AKT1"</span>,</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"PTK2"</span>, <span class="st">"RELA"</span>, <span class="st">"CASP3"</span>, <span class="st">"APP"</span>, <span class="st">"GSK3B"</span>, <span class="st">"PLCG1"</span>, <span class="st">"PRKACA"</span>, <span class="st">"ESR1"</span>,</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"RXRA"</span>, <span class="st">"STAT3"</span>, <span class="st">"AR"</span>, <span class="st">"PIK3CA"</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>) <span class="co"># Note: This is a representative example list. Your list may vary.</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert these gene symbols to Entrez IDs for clusterProfiler</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>key_entrez_ids <span class="ot">&lt;-</span> <span class="fu">mapIds</span>(org.Hs.eg.db,</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>                         <span class="at">keys =</span> key_hub_proteins,</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>                         <span class="at">keyType =</span> <span class="st">"SYMBOL"</span>,</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>                         <span class="at">column =</span> <span class="st">"ENTREZID"</span>,</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>                         <span class="at">multiVals =</span> <span class="st">"first"</span>)</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Run KEGG enrichment on ONLY these key proteins</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="co"># The "universe" is all the proteins in our original common_targets list</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>universe_entrez <span class="ot">&lt;-</span> <span class="fu">mapIds</span>(org.Hs.eg.db, <span class="at">keys =</span> common_targets, <span class="at">keyType =</span> <span class="st">"SYMBOL"</span>, <span class="at">column =</span> <span class="st">"ENTREZID"</span>, <span class="at">multiVals=</span><span class="st">"first"</span>)</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>key_kegg_enrichment <span class="ot">&lt;-</span> <span class="fu">enrichKEGG</span>(</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">gene =</span> key_entrez_ids,</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">universe =</span> universe_entrez, <span class="co"># Providing the correct background</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">organism =</span> <span class="st">"hsa"</span>,</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">pvalueCutoff =</span> <span class="fl">0.05</span></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize the final, most important pathway results</span></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a><span class="fu">dotplot</span>(key_kegg_enrichment, <span class="at">showCategory =</span> <span class="dv">15</span>) <span class="sc">+</span> </span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Key KEGG Pathways Modulated by Quercetin Hubs"</span>)</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Let's save this final, most important plot</span></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="st">"figures/final_hub_pathway_enrichment.png"</span>, <span class="at">width =</span> <span class="dv">10</span>, <span class="at">height =</span> <span class="dv">8</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><p><strong>Action:</strong> Run this final analysis chunk.</p></li>
+<li><p><strong>Verification:</strong> The new dot plot is our final piece of evidence. It is the most important result of our entire study. It shows which specific biological pathways are most significantly enriched among the most structurally important proteins in our drug-disease network. You will likely see that the number of significant pathways is smaller and more focused than our first enrichment analysis, and key cancer-related pathways like <strong>“Pathways in cancer,” “PI3K-Akt signaling pathway,”</strong> and <strong>“MAPK signaling pathway”</strong> will likely be at the very top.</p></li>
+</ul>
+</section>
+<section id="chunk-2-synthesizing-the-final-hypothesis" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-2-synthesizing-the-final-hypothesis"><strong>Chunk 2: Synthesizing the Final Hypothesis</strong></h4>
+<p><strong>Explanation:</strong> Now, we act as scientists. We look at all the evidence we have generated and weave it into a coherent story.</p>
+<p><strong>Action (A Thought Process):</strong></p>
+<ol type="1">
+<li><p><strong>Recall the Drug and Disease:</strong> We are studying Quercetin against Colon Cancer.</p></li>
+<li><p><strong>Identify the Key Hubs:</strong> Look at our <code>key_hub_proteins</code> list. We see major, famous cancer proteins like EGFR, SRC, AKT1, and MAPK1.</p></li>
+<li><p><strong>Identify the Top Enriched Pathway:</strong> Look at the dot plot we just generated. The “PI3K-Akt signaling pathway” is the most significant result.</p></li>
+<li><p><strong>Connect the Dots:</strong> We know that the PI3K-Akt pathway is a central pathway that controls cell survival and proliferation and is frequently dysregulated in cancer. Our results show that Quercetin’s key targets are central hubs in this exact pathway.</p></li>
+<li><p><strong>Formulate the Hypothesis:</strong> Now we can write out our final conclusion using the template from the Core Concepts.</p></li>
+</ol>
+</section>
+</section>
+<section id="grand-conclusion-of-the-canonical-network-pharmacology-project" class="level3">
+<h3 class="anchored" data-anchor-id="grand-conclusion-of-the-canonical-network-pharmacology-project"><strong>Grand Conclusion of the Canonical Network Pharmacology Project</strong></h3>
+<p><strong>The Final Hypothesis:</strong></p>
+<p>“Our network pharmacology analysis predicts that the flavonoid <strong>Quercetin</strong> exerts its therapeutic effects against <strong>Colon Cancer</strong> through a multi-target mechanism. By predicting Quercetin’s protein targets and intersecting them with known colon cancer-associated genes, we constructed a core drug-disease interaction network. Topological analysis of this network identified several key <strong>hub proteins</strong>, including the well-known oncogenes <strong>SRC, EGFR, and AKT1</strong>. A focused functional analysis of these hub proteins revealed a highly significant enrichment for the <strong>‘PI3K-Akt signaling pathway’</strong> (KEGG: hsa04151). Therefore, we hypothesize that Quercetin’s primary anti-cancer mechanism involves <strong><em><code>binding to these central hubs</code></em></strong>, which in turn disrupts the PI3K-Akt signaling cascade, leading to an inhibition of cancer cell proliferation and survival.”</p>
+<p>This final paragraph is the culmination of our entire project. It is specific, it is mechanistic, and every single part of it is directly supported by a verifiable step in our bioinformatics workflow. The next step would be to take this computational hypothesis back to the lab for experimental validation.</p>
+<hr>
+</section>
+</section>
+<section id="the-deg-driven-network-pharmacology-workflow" class="level2">
+<h2 class="anchored" data-anchor-id="the-deg-driven-network-pharmacology-workflow"><strong>🥩The “DEG-driven” Network Pharmacology Workflow🥶</strong></h2>
+<p><strong>Project:</strong> “Investigating the Network Mechanism of a Novel Kinase Inhibitor (Drug ‘X’) on MCF7 Breast Cancer Cells, Based on Experimental RNA-seq Data.”</p>
+<p><strong>The Starting Point:</strong> We have two files:</p>
+<ol type="1">
+<li><p><code>drug_X_predicted_targets.txt</code>: A list of the drug’s predicted direct protein targets, which we got from SwissTargetPrediction (exactly as we did for Quercetin).</p></li>
+<li><p><code>MCF7_drug_X_DEGs.csv</code>: The results table from a DESeq2 analysis of an RNA-seq experiment. It contains all genes, their log2FoldChange, and their adjusted p-values after treating MCF7 cells with Drug X.</p></li>
+</ol>
+<p><strong>The Goal:</strong> To build a network that explains how the drug’s direct binding actions lead to the observed transcriptional changes (the DEGs).</p>
+<section id="lesson-1-of-this-section-step-1---preparing-the-target-lists" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-1-of-this-section-step-1---preparing-the-target-lists"><strong>Lesson 1 (of this section): Step 1 - Preparing the Target Lists</strong></h3>
+<p><strong>Goal:</strong> To define our two primary lists of genes: the Drug_Targets and the Experimental_Targets (the DEGs).</p>
+<section id="chunk-1-define-the-drugs-direct-targets" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-1-define-the-drugs-direct-targets"><strong>Chunk 1: Define the Drug’s Direct Targets</strong></h4>
+<p><strong>Explanation:</strong> This step is identical to the canonical workflow. We assume we have already used SwissTargetPrediction to generate our list of predicted protein targets for “Drug X”.</p>
+<p><strong>Action (in R):</strong><br>
+Let’s start a new R script for this project: 01_deg_driven_analysis.R.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 1. Load and Define Target Lists ---</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the predicted direct targets for Drug X</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>drug_targets <span class="ot">&lt;-</span> <span class="fu">read_lines</span>(<span class="st">"data/drug_X_predicted_targets.txt"</span>)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Found"</span>, <span class="fu">length</span>(drug_targets), <span class="st">"predicted direct targets for Drug X.</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><strong>Verification:</strong> This is our first list, <code>drug_targets</code>. It might contain ~100 proteins.</li>
+</ul>
+</section>
+<section id="chunk-2-define-the-experimental-targets-degs" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-2-define-the-experimental-targets-degs"><strong>Chunk 2: Define the Experimental Targets (DEGs)</strong></h4>
+<p><strong>Explanation:</strong> This is the key difference. Instead of going to GeneCards, our “disease targets” are the genes that were significantly altered in our actual experiment. We will load the DEG results file and apply a statistical cutoff to define this list.</p>
+<p><strong>Action (in R):</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the full results from the RNA-seq experiment</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>deg_full_results <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/MCF7_drug_X_DEGs.csv"</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Define our list of significant DEGs</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co"># We will use a standard cutoff: adjusted p-value &lt; 0.05 and |log2FC| &gt; 1</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>experimental_targets <span class="ot">&lt;-</span> deg_full_results <span class="sc">%&gt;%</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(padj <span class="sc">&lt;</span> <span class="fl">0.05</span>, <span class="fu">abs</span>(log2FoldChange) <span class="sc">&gt;</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(gene_symbol) <span class="sc">%&gt;%</span> <span class="co"># pull the gene symbol column</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unique</span>()</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Found"</span>, <span class="fu">length</span>(experimental_targets), <span class="st">"significant DEGs (Experimental Targets).</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><strong>Verification:</strong> This is our second, and much larger, list: experimental_targets. It might contain several hundred or even a few thousand genes.</li>
+<li><strong><em>Most DEGs can be directly mapped to their protein products using databases like UniProt or Ensembl. Cytoscape itself doesn’t do this mapping automatically, but you can prepare the list externally and import it.</em></strong></li>
+</ul>
+</section>
+</section>
+<section id="lesson-2-step-2---building-and-analyzing-the-integrated-network" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-2-step-2---building-and-analyzing-the-integrated-network"><strong>Lesson 2: Step 2 - Building and Analyzing the Integrated Network</strong></h3>
+<p><strong>Goal:</strong> To combine both lists, build a single integrated PPI network, and analyze it to find the key proteins that connect the drug’s direct action to its downstream effects.</p>
+<section id="chunk-1-create-the-combined-seed-list-for-string" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-1-create-the-combined-seed-list-for-string"><strong>Chunk 1: Create the Combined Seed List for STRING</strong></h4>
+<p><strong>Explanation:</strong> To see the connections, we need to build a network that contains all the relevant players. This means we will take the <strong>union</strong> of our two lists (all unique genes from both lists combined), not the intersection. This combined list will be our “seed” list for querying the STRING database.</p>
+<p><strong>Action (in R):</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine the two lists and get all unique gene symbols</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>combined_seed_list <span class="ot">&lt;-</span> <span class="fu">union</span>(drug_targets, experimental_targets)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Total number of unique proteins for building the network:"</span>, <span class="fu">length</span>(combined_seed_list), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Save this list to a file so we can paste it into Cytoscape</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="fu">write_lines</span>(combined_seed_list, <span class="st">"data/combined_seed_list_for_string.txt"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><strong>Verification:</strong> You now have a single, large list of all the proteins that are either a direct drug target, an experimentally observed DEG, or both. This is the list you will now take to Cytoscape.</li>
+</ul>
+</section>
+<section id="chunk-2-build-the-network-in-cytoscape" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-2-build-the-network-in-cytoscape"><strong>Chunk 2: Build the Network in Cytoscape</strong></h4>
+<p><strong>Explanation:</strong> This process is <strong>exactly the same</strong> as Lesson 6 in the canonical workflow.</p>
+<p><strong>Action:</strong></p>
+<ol type="1">
+<li><p>Copy the contents of <code>combined_seed_list_for_string.txt</code> to your clipboard.</p></li>
+<li><p>Go to <strong>Cytoscape</strong>.</p></li>
+<li><p>Use the <strong>STRING: protein query</strong> to import a network from this list, using a confidence cutoff of <strong>0.4</strong>.</p></li>
+<li><p><strong>Result:</strong> Cytoscape will build a large network containing both the drug’s direct targets and the DEGs, and all the known interactions that connect them.</p></li>
+</ol>
+</section>
+<section id="chunk-3-analyze-the-network-to-find-key-nodes" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-3-analyze-the-network-to-find-key-nodes"><strong>Chunk 3: Analyze the Network to Find Key Nodes</strong></h4>
+<p><strong>Explanation:</strong> This process is <strong>exactly the same</strong> as Lesson 7 in the canonical workflow.</p>
+<p><strong>Action:</strong></p>
+<ol type="1">
+<li><p>In Cytoscape, run <strong>Tools &gt; NetworkAnalyzer &gt; Analyze Network…</strong>.</p></li>
+<li><p>This calculates the Degree and BetweennessCentrality for every node in your large, integrated network.</p></li>
+<li><p><strong>Sort the Node Table</strong> by Degree to identify the top hub proteins.</p></li>
+</ol>
+<ul>
+<li><strong>The Critical Insight:</strong> When you look at the list of top hubs, you will now find a fascinating mix of proteins. Some might be from your original drug_targets list, while others might be proteins from your experimental_targets list that were not direct drug targets but are clearly central to the network’s response. This immediately helps you find the key “mediator” proteins.</li>
+</ul>
+</section>
+</section>
+<section id="lesson-3-step-3---integrating-data-and-generating-a-hypothesis" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-3-step-3---integrating-data-and-generating-a-hypothesis"><strong>Lesson 3: Step 3 - Integrating Data and Generating a Hypothesis</strong></h3>
+<p><strong>Goal:</strong> To make our network even more informative by overlaying our experimental data (the log2 fold changes) onto it, and then using this integrated view to generate a powerful final hypothesis.</p>
+<section id="chunk-1-import-experimental-data-into-cytoscape" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-1-import-experimental-data-into-cytoscape"><strong>Chunk 1: Import Experimental Data into Cytoscape</strong></h4>
+<p><strong>Explanation:</strong> A network is most powerful when it’s layered with experimental data. We will import our full DEG results table and map the log2FoldChange values to the color of the nodes.</p>
+<p><strong>Action:</strong></p>
+<ol type="1">
+<li><p>In Cytoscape, go to <strong>File &gt; Import &gt; Table from File…</strong>.</p></li>
+<li><p>Select your MCF7_drug_X_DEGs.csv file.</p></li>
+<li><p>In the import dialog, make sure the “Key” column is set to your gene_symbol column. This tells Cytoscape how to match the rows in your data file to the nodes in your network.</p></li>
+<li><p>Click “OK”.</p></li>
+<li><p><strong>Verification:</strong> Go to the <strong>Node Table</strong>. You will see that new columns have been added, including log2FoldChange and padj, directly from your experimental data.</p></li>
+</ol>
+</section>
+<section id="chunk-2-map-fold-change-to-node-color" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-2-map-fold-change-to-node-color"><strong>Chunk 2: Map Fold Change to Node Color</strong></h4>
+<p><strong>Explanation:</strong> Now we will use the Style interface to color our network.</p>
+<p><strong>Action:</strong></p>
+<ol type="1">
+<li><p>Go to the <strong>“Style”</strong> tab in the Control Panel.</p></li>
+<li><p>Select the <strong>“Fill Color”</strong> property for Nodes.</p></li>
+<li><p>Set the <strong>“Column”</strong> to log2FoldChange.</p></li>
+<li><p>Set the <strong>“Mapping Type”</strong> to <strong>“Continuous Mapping”</strong>.</p></li>
+<li><p>Choose a color scheme. A classic “Red-White-Blue” diverging palette is perfect. Red for upregulated (positive log2FC), blue for downregulated (negative log2FC), and white for no change.</p></li>
+</ol>
+<ul>
+<li><p><strong>Verification:</strong> Look at your network. It is no longer a simple diagram; it is a <strong>data-rich visualization</strong>. You can now see at a glance:</p>
+<ul>
+<li><p>Which parts of the network were transcriptionally <strong>upregulated (red)</strong>.</p></li>
+<li><p>Which parts were <strong>downregulated (blue)</strong>.</p></li>
+<li><p>You can also see if your direct drug targets (which may be grey if they weren’t themselves DEGs) are interacting primarily with red or blue nodes.</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="chunk-3-the-final-hypothesis" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-3-the-final-hypothesis"><strong>Chunk 3: The Final Hypothesis</strong></h4>
+<p><strong>Explanation:</strong> By integrating the network topology (the hubs) with the experimental data (the colors), we can now generate a sophisticated and verifiable hypothesis.</p>
+<p><strong>Action (A Thought Process):</strong></p>
+<ol type="1">
+<li><p><strong>Identify a top hub protein</strong> from your network analysis (e.g., the protein STAT3).</p></li>
+<li><p>Note that STAT3 might be one of your predicted direct drug_targets, but it might be colored white/grey in your network, meaning its own gene expression didn’t change.</p></li>
+<li><p><strong>Observe its neighbors.</strong> You look at the network and see that STAT3 is directly connected to 20 other proteins, and 15 of them are colored bright blue (strongly downregulated).</p></li>
+<li><p><strong>Formulate the Hypothesis:</strong></p></li>
+</ol>
+<p>“Our DEG-driven network analysis reveals that Drug X’s mechanism is likely mediated through the transcription factor <strong>STAT3</strong>. Although STAT3 itself is not transcriptionally altered, it is a predicted direct target of Drug X and acts as a central hub in the interaction network. We observed that the majority of STAT3’s direct interaction partners are significantly <strong>downregulated</strong> following drug treatment. Therefore, we hypothesize that Drug X directly binds to and inhibits the activity of the STAT3 protein, which in turn leads to the observed transcriptional suppression of its target gene network, resulting in an anti-proliferative effect.”</p>
+<p>This is a far more powerful and detailed hypothesis than we could have generated with the canonical method alone, because it directly links the drug’s physical action to the specific experimental results you observed.</p>
+</section>
+</section>
+</section>
+</section>
+     </main>
+<!-- /main column -->  <script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>  </div> <!-- /content --> 
+  
+</body></html>

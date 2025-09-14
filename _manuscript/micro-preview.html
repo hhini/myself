@@ -264,6 +264,12 @@
   <li><a href="#grand-conclusion-of-the-entire-microbiome-curriculum" id="toc-grand-conclusion-of-the-entire-microbiome-curriculum" class="nav-link" data-scroll-target="#grand-conclusion-of-the-entire-microbiome-curriculum"><strong>Grand Conclusion of the Entire Microbiome Curriculum</strong></a></li>
   </ul></li>
   </ul></li>
+  <li><a href="#a-menu-of-advanced-downstream-microbiome-analyses" id="toc-a-menu-of-advanced-downstream-microbiome-analyses" class="nav-link" data-scroll-target="#a-menu-of-advanced-downstream-microbiome-analyses"><strong>🫤A Menu of Advanced Downstream Microbiome Analyses🤤</strong></a>
+  <ul class="collapse">
+  <li><a href="#category-1-deeper-ecological-patterns-and-community-structure" id="toc-category-1-deeper-ecological-patterns-and-community-structure" class="nav-link" data-scroll-target="#category-1-deeper-ecological-patterns-and-community-structure"><strong>Category 1: Deeper Ecological Patterns and Community Structure🥵</strong></a></li>
+  <li><a href="#category-2-advanced-functional-and-genomic-analysis-shotgun-specific" id="toc-category-2-advanced-functional-and-genomic-analysis-shotgun-specific" class="nav-link" data-scroll-target="#category-2-advanced-functional-and-genomic-analysis-shotgun-specific"><strong>Category 2: Advanced Functional and Genomic Analysis (Shotgun Specific)🤨</strong></a></li>
+  <li><a href="#category-3-multi-omics-integration-and-predictive-modeling" id="toc-category-3-multi-omics-integration-and-predictive-modeling" class="nav-link" data-scroll-target="#category-3-multi-omics-integration-and-predictive-modeling"><strong>Category 3: Multi-omics Integration and Predictive Modeling🫡</strong></a></li>
+  </ul></li>
   </ul>
 </nav>
 </div>
@@ -1935,8 +1941,8 @@ bowtie2 -p 8 -x /path/to/mm10 \
 <li><p><strong>Action:</strong> Run this final analysis chunk.</p></li>
 <li><p><strong>Verification:</strong> The printed tables are your final, key results.</p>
 <ol type="1">
-<li><p>The significant_taxa table gives you the list of specific species that increase or decrease in response to the high-fat diet.</p></li>
-<li><p>The significant_functions table gives you the list of specific KEGG Orthologs (and by extension, pathways) that are changing. This is where you can make powerful connections, as described in the Core Concepts.</p></li>
+<li><p>The <code>significant_taxa</code> table gives you the <strong><em>list of specific species that increase or decrease in response to the high-fat diet.</em></strong></p></li>
+<li><p>The <code>significant_functions</code> table gives you the <strong><em>list of specific KEGG Orthologs (and by extension, pathways) that are changing.</em></strong> This is where you can make powerful connections, as described in the Core Concepts.</p></li>
 </ol></li>
 </ul>
 </section>
@@ -1945,13 +1951,100 @@ bowtie2 -p 8 -x /path/to/mm10 \
 <h3 class="anchored" data-anchor-id="grand-conclusion-of-the-entire-microbiome-curriculum"><strong>Grand Conclusion of the Entire Microbiome Curriculum</strong></h3>
 <p>We have completed the full journey through both major methods of microbiome analysis.</p>
 <ol type="1">
-<li><p><strong>16S Analysis:</strong> We learned it is a powerful and cost-effective method for getting a <strong>community census</strong> (“who is there”). We mastered the modern, ASV-based dada2 workflow for upstream processing and the phyloseq ecosystem for downstream ecological analysis.</p></li>
+<li><p><strong>16S Analysis:</strong> We learned it is a powerful and cost-effective method for getting a <strong>community census</strong> (“who is there”). We mastered the modern, ASV-based <code>dada2</code> workflow for upstream processing and the <code>phyloseq</code> ecosystem for downstream ecological analysis.</p></li>
 <li><p><strong>Shotgun Metagenomics:</strong> We then advanced to the more comprehensive shotgun method, which provides a <strong>functional blueprint</strong> (“what can they do”). We learned about the formidable upstream bioinformatics challenges on the command line (QC, host removal, assembly, gene prediction) and saw how the downstream analysis converges, allowing us to apply the same robust statistical tools to both the taxonomic and functional profiles.</p></li>
 </ol>
 <p><strong>The Final Integrated Hypothesis:</strong><br>
 By combining the results from this last lesson, you can now form a truly powerful and complete hypothesis:</p>
-<p>“A high-fat diet significantly alters the gut microbial community structure in mice (Taxonomic PERMANOVA, p&lt;0.05). This shift is characterized by a significant depletion of the species Faecalibacterium prausnitzii (DESeq2, padj&lt;0.1). Functionally, this corresponds to a significant depletion of genes in the butyrate production pathway (e.g., KO K00922; DESeq2, padj&lt;0.1), a key anti-inflammatory metabolite. This suggests that the detrimental effects of a high-fat diet may be mediated, in part, by the loss of key butyrate-producing species and their associated functions.”</p>
+<p>“<strong><em><code>A high-fat diet significantly alters the gut microbial community structure in mice (Taxonomic PERMANOVA, p&lt;0.05). This shift is characterized by a significant depletion of the species Faecalibacterium prausnitzii (DESeq2, padj&lt;0.1). Functionally, this corresponds to a significant depletion of genes in the butyrate production pathway (e.g., KO K00922; DESeq2, padj&lt;0.1), a key anti-inflammatory metabolite. This suggests that the detrimental effects of a high-fat diet may be mediated, in part, by the loss of key butyrate-producing species and their associated functions.</code></em></strong>”</p>
+<p>That is an outstanding question. You have successfully learned the “standard pipeline,” which is the essential foundation for any microbiome study. Now you are asking the question that a real researcher asks: <strong>“What else can I do? What are the deeper, more interesting questions I can ask of this rich dataset?”</strong></p>
+<p>The downstream analyses we performed (diversity, differential abundance) are just the beginning. They tell you <em>what</em> changed. The more advanced analyses we will discuss now help you understand <em>how</em> and <em>why</em>, and allow you to explore the data from many different creative angles.</p>
+<p>Let’s structure this as a menu of advanced downstream research avenues, extending the knowledge from our previous lessons。</p>
+<hr>
 </section>
+</section>
+</section>
+<section id="a-menu-of-advanced-downstream-microbiome-analyses" class="level1">
+<h1><strong>🫤A Menu of Advanced Downstream Microbiome Analyses🤤</strong></h1>
+<hr>
+<section id="category-1-deeper-ecological-patterns-and-community-structure" class="level2">
+<h2 class="anchored" data-anchor-id="category-1-deeper-ecological-patterns-and-community-structure"><strong>Category 1: Deeper Ecological Patterns and Community Structure🥵</strong></h2>
+<p><em>These analyses go beyond simple beta diversity to understand the relationships</em> between* microbes.*</p>
+<ol type="1">
+<li><strong>Co-occurrence Network Analysis</strong>
+<ul>
+<li><strong>The Question:</strong> Which microbes are consistently <strong><em>found together</em></strong> (“friends”) and which are <strong><em>never found</em></strong> <strong><em>together</em></strong> (“foes”) across my samples? Do these relationships change between my Control and High-Fat Diet groups?</li>
+<li><strong>The Logic:</strong> You calculate the <strong><em>correlation</em></strong> (e.g., SparCC, Spearman) between the abundance of every microbe and every other microbe. <strong><em>A strong positive correlation implies a potential synergistic or co-dependent relationship. A strong negative correlation implies competition or niche exclusion(利基排斥).</em></strong></li>
+<li><strong>The Output:</strong> A <strong><em>network graph where microbes are nodes and significant correlations are edges</em></strong>. This can reveal “keystone species” (highly connected nodes) or “guilds” (tightly clustered groups of microbes that may perform a similar function).</li>
+<li><strong>Tools:</strong> R packages like <code>SpiecEasi</code>, <code>NetCoMi</code>.</li>
+</ul></li>
+<li><strong>Longitudinal Analysis (Time-Series Data)</strong>
+<ul>
+<li><strong>The Question:</strong> If my experiment <strong><em>took place over time</em></strong> (e.g., samples taken every week), how does the community change? How stable is it? How does it respond to a perturbation(干扰) (like a course of antibiotics) and does it recover?</li>
+<li><strong>The Logic:</strong> Instead of just comparing two static groups, you use statistical models that account for the time component. <strong><em>This allows you to analyze trajectories of change</em></strong>.</li>
+<li><strong>The Output:</strong> Plots showing how diversity or the abundance of specific microbes changes over time. You can identify microbes that are “early responders” vs.&nbsp;“late responders.”</li>
+<li><strong>Tools:</strong> R packages like <code>lme4</code> (for linear mixed-effects models), <code>metageNRA</code>.</li>
+</ul></li>
+<li><strong>Source Tracking Analysis</strong>
+<ul>
+<li><p><strong>The Question:</strong> Where did the microbes in my samples come from? For example, in a study of a baby’s gut microbiome, how much of it came from the mother’s gut, the mother’s skin, or the hospital environment?</p></li>
+<li><p><strong>The Logic:</strong> You provide a set of “source” samples (e.g., mother’s skin) and “sink” samples (e.g., baby’s gut). The algorithm uses a statistical model to estimate the proportion of the community in each sink sample that can be attributed to each source.</p></li>
+<li><p><strong>The Output:</strong> A bar chart showing the breakdown of microbial sources for each of your samples.</p></li>
+<li><p><strong>Tools:</strong> R packages like <code>FEAST</code>, <code>SourceTracker</code>.</p></li>
+</ul></li>
+</ol>
+</section>
+<section id="category-2-advanced-functional-and-genomic-analysis-shotgun-specific" class="level2">
+<h2 class="anchored" data-anchor-id="category-2-advanced-functional-and-genomic-analysis-shotgun-specific"><strong>Category 2: Advanced Functional and Genomic Analysis (Shotgun Specific)🤨</strong></h2>
+<p><em>These analyses leverage the unique power of shotgun data to go beyond just pathway names.</em></p>
+<ol type="1">
+<li><strong>Metagenome-Assembled Genome (MAG) Analysis</strong>
+<ul>
+<li><strong>The Question:</strong> <strong><em>Can I reconstruct the full genomes of the most important (or even novel) bacteria in my samples?</em></strong> What unique functional capabilities do these specific organisms have?</li>
+<li><strong>The Logic:</strong> As we discussed, this involves “binning” your assembled contigs into putative genomes (MAGs). <strong><em>Once you have a high-quality MAG, it’s like having the complete blueprint for that organism.</em></strong></li>
+<li><strong>The Output:</strong> You can run specialized analyses on each MAG to find, for example, antibiotic resistance gene clusters, pathways for producing novel antibiotics or vitamins (<code>antiSMASH</code>), or their complete metabolic map. This is a discovery-driven analysis.</li>
+</ul></li>
+<li><strong>Strain-Level Analysis</strong>
+<ul>
+<li><strong>The Question:</strong> I see <em>E. coli</em> is abundant in both my Control and High-Fat Diet groups. But is it the <em>exact same strain</em> of <em>E. coli</em>, or have different strains taken over?</li>
+<li><strong>The Logic:</strong> <strong><em>This requires very high-resolution tools that look at the pattern of single nucleotide polymorphisms (SNPs)</em></strong> within the genomes of specific species.</li>
+<li><strong>The Output:</strong> <strong><em>A profile of the different strains present in each sample</em></strong>. This is critical for epidemiological studies (tracking an infection) or for understanding if functional differences are occurring at the sub-species level.</li>
+<li><strong>Tools:</strong> <code>StrainPhlAn</code>, <code>inStrain</code>, <code>PanPhlAn</code>.</li>
+</ul></li>
+<li><strong>Metabolic Pathway Reconstruction</strong>
+<ul>
+<li><strong>The Question:</strong> Instead of just getting a list of enriched KEGG pathways, can I build a complete, community-wide metabolic model? Can I predict which metabolites the community should be able to produce or consume?</li>
+<li><strong>The Logic:</strong> Tools like <code>HUMAnN</code> (The HMP Unified Metabolic Analysis Network) are designed for this. <strong><em>They not only identify which pathways are present but also how complete they are and which species are contributing to each step.</em></strong></li>
+<li><strong>The Output:</strong> A highly detailed profile of community-wide metabolic potential that can be directly linked to metabolomics data.</li>
+</ul></li>
+</ol>
+<hr>
+</section>
+<section id="category-3-multi-omics-integration-and-predictive-modeling" class="level2">
+<h2 class="anchored" data-anchor-id="category-3-multi-omics-integration-and-predictive-modeling"><strong>Category 3: Multi-omics Integration and Predictive Modeling🫡</strong></h2>
+<p><em>This is the frontier, where you connect the microbiome to other data types to build a holistic, systems-level understanding.</em></p>
+<ol type="1">
+<li><strong>Microbiome + Metabolomics Integration</strong>
+<ul>
+<li><strong>The Question:</strong> We found that the species <em>F. prausnitzii</em> went down and the metabolite butyrate also went down. Are these events statistically linked?</li>
+<li><strong>The Logic:</strong> <strong><em>You use correlation analysis (e.g., Spearman correlation) to build a network that connects specific microbes to specific metabolites.</em></strong></li>
+<li><strong>The Output:</strong> A “multi-omic” network that might show a strong positive correlation between the abundance of <em>F. prausnitzii</em> and the concentration of butyrate, providing a strong mechanistic hypothesis.</li>
+<li><strong>Tools:</strong> R packages like <code>mixOmics</code>.</li>
+</ul></li>
+<li><strong>Microbiome + Host Transcriptomics Integration</strong>
+<ul>
+<li><strong>The Question:</strong> <strong><em>How did the host’s gut cells respond to the change in the microbiome?</em></strong></li>
+<li><strong>The Logic:</strong> You correlate the abundance of specific microbes with the expression levels of host genes (from an RNA-seq experiment on the same samples).</li>
+<li><strong>The Output:</strong> <strong><em>You might find that the abundance of an inflammatory bacterium is strongly correlated with the upregulation of host immune response genes</em></strong> (like interleukins(白细胞介素) or TNF-alpha), demonstrating the direct impact of the microbiome on the host.</li>
+</ul></li>
+<li><strong>Machine Learning and Biomarker Discovery</strong>
+<ul>
+<li><strong>The Question:</strong> <strong><em>Can I use the microbiome profile to predict if a person is healthy or has a disease? Can I identify a small panel of microbes that could serve as a diagnostic biomarker?</em></strong></li>
+<li><strong>The Logic:</strong> You use your microbiome data (either taxonomic or functional profiles) as “features” to train a machine learning model (e.g., <strong><em>Random Forest, LASSO regression</em></strong>). You train the model on a “training set” of samples and then test its predictive accuracy on a separate “testing set.”</li>
+<li><strong>The Output:</strong> A predictive model and a measure of its accuracy (e.g., an AUC curve). <strong><em>The model can also report which microbes were the most important “features” for making the prediction, revealing your top biomarker candidates.</em></strong></li>
+</ul></li>
+</ol>
+<p>This menu of downstream analyses shows that our standard pipeline is really just the entry point. The real power and excitement come from using the processed data to explore these deeper ecological, functional, and integrative questions.</p>
 </section>
 </section>
      </main>

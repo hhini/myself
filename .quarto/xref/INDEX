@@ -15,9 +15,23 @@
     "proteomic-preview.html": "aa3cda03"
   },
   "GSNA.qmd": {
-    "GSNA-preview.html": "0a7dc327"
+    "GSNA-preview.html": "0a7dc327",
+    "GSNA.embed.ipynb": "dd9f8d31",
+    "GSNA.out.ipynb": "286b715a"
   },
   "metabolim.qmd": {
-    "metabolim-preview.html": "ada4a93c"
+    "metabolim-preview.html": "ada4a93c",
+    "metabolim.embed.ipynb": "ca0cae40",
+    "metabolim.out.ipynb": "b2e9d1b2"
+  },
+  "docking.qmd": {
+    "docking.embed.ipynb": "947b3e6a",
+    "docking.out.ipynb": "aa77ea09",
+    "docking-preview.html": "bff4af96"
+  },
+  "networkpharma.qmd": {
+    "networkpharma.embed.ipynb": "fc722ac7",
+    "networkpharma.out.ipynb": "5071498c",
+    "networkpharma-preview.html": "3d586cbf"
   }
 }

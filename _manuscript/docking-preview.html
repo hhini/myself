@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="generator" content="quarto-1.8.24">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+    <title>分子对接教程</title>
+    <style>
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      div.columns{display: flex; gap: min(4vw, 1.5em);}
+      div.column{flex: auto; overflow-x: auto;}
+      div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+      ul.task-list{list-style: none;}
+      ul.task-list li input[type="checkbox"] {
+        width: 0.8em;
+        margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+        vertical-align: middle;
+      }
+      /* CSS for syntax highlighting */
+      html { -webkit-text-size-adjust: 100%; }
+      pre > code.sourceCode { white-space: pre; position: relative; }
+      pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+      pre > code.sourceCode > span:empty { height: 1.2em; }
+      .sourceCode { overflow: visible; }
+      code.sourceCode > span { color: inherit; text-decoration: inherit; }
+      div.sourceCode { margin: 1em 0; }
+      pre.sourceCode { margin: 0; }
+      @media screen {
+      div.sourceCode { overflow: auto; }
+      }
+      @media print {
+      pre > code.sourceCode { white-space: pre-wrap; }
+      pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+      }
+      pre.numberSource code
+        { counter-reset: source-line 0; }
+      pre.numberSource code > span
+        { position: relative; left: -4em; counter-increment: source-line; }
+      pre.numberSource code > span > a:first-child::before
+        { content: counter(source-line);
+          position: relative; left: -1em; text-align: right; vertical-align: baseline;
+          border: none; display: inline-block;
+          -webkit-touch-callout: none; -webkit-user-select: none;
+          -khtml-user-select: none; -moz-user-select: none;
+          -ms-user-select: none; user-select: none;
+          padding: 0 4px; width: 4em;
+        }
+      pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+      div.sourceCode
+        {   }
+      @media screen {
+      pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+      }
+    </style>
+
+    <style>
+      body.hypothesis-enabled #quarto-embed-header {
+        padding-right: 36px;
+      }
+
+      #quarto-embed-header {
+        height: 3em;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: solid 1px;
+      }
+
+      #quarto-embed-header h6 {
+        font-size: 1.1em;
+        padding-top: 0.6em;
+        margin-left: 1em;
+        margin-right: 1em;
+        font-weight: 400;
+      }
+
+      #quarto-embed-header a.quarto-back-link,
+      #quarto-embed-header a.quarto-download-embed {
+        font-size: 0.8em;
+        margin-top: 1em;
+        margin-bottom: 1em;
+        margin-left: 1em;
+        margin-right: 1em;
+      }
+
+      .quarto-back-container {
+        padding-left: 0.5em;
+        display: flex;
+      }
+
+      .headroom {
+          will-change: transform;
+          transition: transform 200ms linear;
+      }
+
+      .headroom--pinned {
+          transform: translateY(0%);
+      }
+
+      .headroom--unpinned {
+          transform: translateY(-100%);
+      }      
+    </style>
+
+    <script>
+    window.document.addEventListener("DOMContentLoaded", function () {
+
+      var header = window.document.querySelector("#quarto-embed-header");
+      const titleBannerEl = window.document.querySelector("body > #title-block-header");
+      if (titleBannerEl) {
+        titleBannerEl.style.paddingTop = header.clientHeight + "px";
+      }
+      const contentEl = window.document.getElementById('quarto-content');
+      for (const child of contentEl.children) {
+        child.style.paddingTop = header.clientHeight + "px";
+        child.style.marginTop = "1em";
+      }
+
+      // Use the article root if the `back` call doesn't work. This isn't perfect
+      // but should typically work
+      window.quartoBackToArticle = () => {
+        var currentUrl = window.location.href;
+        window.history.back();
+        setTimeout(() => {
+            // if location was not changed in 100 ms, then there is no history back
+            if(currentUrl === window.location.href){              
+                // redirect to site root
+                window.location.href = "index.html";
+            }
+        }, 100);
+      }
+
+      const headroom = new window.Headroom(header, {
+        tolerance: 5,
+        onPin: function () {
+        },
+        onUnpin: function () {
+        },
+      });
+      headroom.init();
+    });
+    </script>
+
+    
+<script src="site_libs/manuscript-notebook/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dc55a5b9e770e841cd82e46aadbfb9b0.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-4d7f0bce1131f3e5f9547cd857cfbfc8.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+     <script async="" src="https://hypothes.is/embed.js"></script>
+<script>
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    document.body.classList.add('hypothesis-enabled');
+  });
+</script>  
+      </head>
+
+  <body class="quarto-notebook quarto-light">
+    <div id="quarto-embed-header" class="headroom fixed-top bg-primary">
+      
+      <a onclick="window.quartoBackToArticle(); return false;" class="btn btn-primary quarto-back-link" href=""><i class="bi bi-caret-left"></i> Back to Article</a>
+      <h6><i class="bi bi-journal-code"></i> 分子对接教程</h6>
+
+            <a href="./docking.qmd" class="btn btn-primary quarto-download-embed" download="docking.qmd">Download Source</a>
+          </div>
+
+     <header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">分子对接教程</h1>
+          </div>
+
+    
+    <div class="quarto-title-meta-container">
+      <div class="quarto-title-meta-column-start">
+            <div class="quarto-title-meta-author">
+          <div class="quarto-title-meta-heading">Author</div>
+          <div class="quarto-title-meta-heading">Affiliation</div>
+          
+                <div class="quarto-title-meta-contents">
+            <p class="author">JAYZ </p>
+          </div>
+                <div class="quarto-title-meta-contents">
+                    <p class="affiliation">
+                        The University OF Myself
+                      </p>
+                  </div>
+                    </div>
+        
+        <div class="quarto-title-meta">
+
+                      
+          
+                
+              </div>
+      </div>
+      <div class="quarto-title-meta-column-end quarto-other-formats-target">
+      </div>
+    </div>
+
+
+
+    <div class="quarto-other-links-text-target">
+    </div>  </div>
+</header><div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
+<div id="quarto-sidebar-toc-left" class="sidebar toc-left">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#molecular-docking-教程" id="toc-molecular-docking-教程" class="nav-link active" data-scroll-target="#molecular-docking-教程">🛫Molecular Docking 教程🛫</a>
+  <ul class="collapse">
+  <li><a href="#part-1-the-conceptual-foundations-of-structural-bioinformatics" id="toc-part-1-the-conceptual-foundations-of-structural-bioinformatics" class="nav-link" data-scroll-target="#part-1-the-conceptual-foundations-of-structural-bioinformatics">🎃<strong>Part 1: The Conceptual Foundations of Structural Bioinformatics</strong>🎃</a>
+  <ul class="collapse">
+  <li><a href="#lesson-1-the-core-concepts---receptors-ligands-and-binding-pockets结合口袋" id="toc-lesson-1-the-core-concepts---receptors-ligands-and-binding-pockets结合口袋" class="nav-link" data-scroll-target="#lesson-1-the-core-concepts---receptors-ligands-and-binding-pockets结合口袋"><strong>Lesson 1: The Core Concepts - Receptors, Ligands, and Binding Pockets(结合口袋)</strong>🍔</a></li>
+  <li><a href="#lesson-1-summary-status-check" id="toc-lesson-1-summary-status-check" class="nav-link" data-scroll-target="#lesson-1-summary-status-check"><strong>Lesson 1: Summary &amp; Status Check</strong></a></li>
+  <li><a href="#lesson-2-the-building-blocks---3d-molecular-structures" id="toc-lesson-2-the-building-blocks---3d-molecular-structures" class="nav-link" data-scroll-target="#lesson-2-the-building-blocks---3d-molecular-structures"><strong>Lesson 2: The Building Blocks - 3D Molecular Structures</strong>🥸</a></li>
+  <li><a href="#lesson-2-summary-status-check" id="toc-lesson-2-summary-status-check" class="nav-link" data-scroll-target="#lesson-2-summary-status-check"><strong>Lesson 2: Summary &amp; Status Check</strong></a></li>
+  <li><a href="#lesson-3-the-physics-of-docking---scoring-functions" id="toc-lesson-3-the-physics-of-docking---scoring-functions" class="nav-link" data-scroll-target="#lesson-3-the-physics-of-docking---scoring-functions"><strong>Lesson 3: The Physics of Docking - Scoring Functions</strong>🥶</a></li>
+  <li><a href="#lesson-3-summary-status-check" id="toc-lesson-3-summary-status-check" class="nav-link" data-scroll-target="#lesson-3-summary-status-check"><strong>Lesson 3: Summary &amp; Status Check</strong></a></li>
+  <li><a href="#the-critical-importance-of-preparing-your-protein-and-ligand" id="toc-the-critical-importance-of-preparing-your-protein-and-ligand" class="nav-link" data-scroll-target="#the-critical-importance-of-preparing-your-protein-and-ligand"><strong>The Critical Importance of Preparing Your Protein and Ligand</strong>🤖</a></li>
+  <li><a href="#summary-of-the-why" id="toc-summary-of-the-why" class="nav-link" data-scroll-target="#summary-of-the-why"><strong>Summary of the “Why”</strong></a></li>
+  </ul></li>
+  <li><a href="#part-2-a-practical-docking-project-workflow" id="toc-part-2-a-practical-docking-project-workflow" class="nav-link" data-scroll-target="#part-2-a-practical-docking-project-workflow">🤨<strong>Part 2: A Practical Docking Project Workflow</strong>🤨</a></li>
+  <li><a href="#project-predicting-the-binding-mode-of-quercetin-to-the-kinase-domain-of-the-src-protein-预测槲皮素与-src-蛋白激酶结构域的结合模式" id="toc-project-predicting-the-binding-mode-of-quercetin-to-the-kinase-domain-of-the-src-protein-预测槲皮素与-src-蛋白激酶结构域的结合模式" class="nav-link" data-scroll-target="#project-predicting-the-binding-mode-of-quercetin-to-the-kinase-domain-of-the-src-protein-预测槲皮素与-src-蛋白激酶结构域的结合模式">🤤<strong>Project: Predicting the Binding Mode of Quercetin to the Kinase Domain of the SRC Protein 预测槲皮素与 SRC 蛋白激酶结构域的结合模式</strong>🤤</a>
+  <ul class="collapse">
+  <li><a href="#lesson-4-step-1---data-preparation-the-receptor" id="toc-lesson-4-step-1---data-preparation-the-receptor" class="nav-link" data-scroll-target="#lesson-4-step-1---data-preparation-the-receptor"><strong>Lesson 4: Step 1 - Data Preparation: The Receptor</strong>😗</a></li>
+  <li><a href="#lesson-4-summary-status-check" id="toc-lesson-4-summary-status-check" class="nav-link" data-scroll-target="#lesson-4-summary-status-check"><strong>Lesson 4: Summary &amp; Status Check</strong></a></li>
+  <li><a href="#lesson-4-revised-step-1---data-preparation-the-receptor-command-line-workflow" id="toc-lesson-4-revised-step-1---data-preparation-the-receptor-command-line-workflow" class="nav-link" data-scroll-target="#lesson-4-revised-step-1---data-preparation-the-receptor-command-line-workflow"><strong>Lesson 4 (Revised): Step 1 - Data Preparation: The Receptor (Command-Line Workflow)</strong>🫡</a></li>
+  <li><a href="#lesson-4-revised-summary-status-check" id="toc-lesson-4-revised-summary-status-check" class="nav-link" data-scroll-target="#lesson-4-revised-summary-status-check"><strong>Lesson 4 (Revised): Summary &amp; Status Check</strong></a></li>
+  <li><a href="#lesson-5-step-1-cont.---data-preparation-the-ligand-command-line-workflow" id="toc-lesson-5-step-1-cont.---data-preparation-the-ligand-command-line-workflow" class="nav-link" data-scroll-target="#lesson-5-step-1-cont.---data-preparation-the-ligand-command-line-workflow"><strong>Lesson 5: Step 1 (cont.) - Data Preparation: The Ligand (Command-Line Workflow)</strong>😃</a></li>
+  <li><a href="#lesson-5-revised-summary-status-check" id="toc-lesson-5-revised-summary-status-check" class="nav-link" data-scroll-target="#lesson-5-revised-summary-status-check"><strong>Lesson 5 (Revised): Summary &amp; Status Check</strong></a></li>
+  <li><a href="#lesson-6-step-2---defining-the-search-space-the-grid-box" id="toc-lesson-6-step-2---defining-the-search-space-the-grid-box" class="nav-link" data-scroll-target="#lesson-6-step-2---defining-the-search-space-the-grid-box"><strong>Lesson 6: Step 2 - Defining the Search Space: The Grid Box</strong>🤐</a></li>
+  <li><a href="#lesson-6-summary-status-check" id="toc-lesson-6-summary-status-check" class="nav-link" data-scroll-target="#lesson-6-summary-status-check"><strong>Lesson 6: Summary &amp; Status Check</strong></a></li>
+  <li><a href="#lesson-7-step-3---running-the-docking-simulation" id="toc-lesson-7-step-3---running-the-docking-simulation" class="nav-link" data-scroll-target="#lesson-7-step-3---running-the-docking-simulation"><strong>Lesson 7: Step 3 - Running the Docking Simulation</strong>😒</a></li>
+  <li><a href="#lesson-7-summary-status-check" id="toc-lesson-7-summary-status-check" class="nav-link" data-scroll-target="#lesson-7-summary-status-check"><strong>Lesson 7: Summary &amp; Status Check</strong></a></li>
+  <li><a href="#lesson-8-step-4---analyzing-the-results" id="toc-lesson-8-step-4---analyzing-the-results" class="nav-link" data-scroll-target="#lesson-8-step-4---analyzing-the-results"><strong>Lesson 8: Step 4 - Analyzing the Results</strong>😎</a></li>
+  <li><a href="#grand-conclusion-of-the-molecular-docking-project" id="toc-grand-conclusion-of-the-molecular-docking-project" class="nav-link" data-scroll-target="#grand-conclusion-of-the-molecular-docking-project"><strong>Grand Conclusion of the Molecular Docking Project</strong></a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+</nav>
+</div>
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+</div>
+<main class="content quarto-banner-title-block" id="quarto-document-content">      
+
+       <section id="molecular-docking-教程" class="level1">
+<h1>🛫Molecular Docking 教程🛫</h1>
+<hr>
+<section id="part-1-the-conceptual-foundations-of-structural-bioinformatics" class="level2">
+<h2 class="anchored" data-anchor-id="part-1-the-conceptual-foundations-of-structural-bioinformatics">🎃<strong>Part 1: The Conceptual Foundations of Structural Bioinformatics</strong>🎃</h2>
+<hr>
+<section id="lesson-1-the-core-concepts---receptors-ligands-and-binding-pockets结合口袋" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-1-the-core-concepts---receptors-ligands-and-binding-pockets结合口袋"><strong>Lesson 1: The Core Concepts - Receptors, Ligands, and Binding Pockets(结合口袋)</strong>🍔</h3>
+<p><strong>Goal:</strong> <strong><em><code>To define the fundamental components of a molecular docking problem and to understand the key theoretical models that describe how they interact.</code></em></strong></p>
+<section id="the-characters-of-our-play-receptor-and-ligand" class="level4">
+<h4 class="anchored" data-anchor-id="the-characters-of-our-play-receptor-and-ligand"><strong>1. The “Characters” of Our Play: Receptor and Ligand</strong></h4>
+<p>Every docking simulation involves two main players.</p>
+<ul>
+<li><p><strong>The Receptor:</strong></p>
+<ul>
+<li><p><strong>Definition:</strong> The receptor is the large biological molecule, the “macro-molecule(大分子),” that we are studying. In almost all drug discovery and network pharmacology contexts, the <strong>receptor is a protein</strong>.</p></li>
+<li><p><strong>Function:</strong> Its function is determined by its unique, complex three-dimensional shape. It might be an enzyme with an active site, a cell surface receptor waiting for a signal, or a structural protein.</p></li>
+<li><p><strong>Our Role:</strong> We treat the receptor as a large, relatively rigid entity. Our primary job is to find a high-quality 3D structure for it.</p></li>
+</ul></li>
+<li><p><strong>The Ligand(配体):</strong></p>
+<ul>
+<li><p><strong>Definition:</strong> The ligand is the <strong><em>small molecule</em></strong> that binds to the receptor. In our context, the <strong>ligand is our drug</strong> or <strong><em>chemical compound</em></strong> (like Quercetin).</p></li>
+<li><p><strong>Function:</strong> The ligand’s function is to <strong><em>find and fit into a specific pocket on the receptor</em></strong>, thereby altering the receptor’s activity. This change in activity is what produces the therapeutic effect.</p></li>
+<li><p><strong>Our Role:</strong> We treat the ligand as small and flexible. The <strong><em>docking software will be allowed to twist and turn the ligand’s rotatable bonds to find the best possible fit.</em></strong></p></li>
+</ul></li>
+</ul>
+</section>
+<section id="the-stage-the-binding-site" class="level4">
+<h4 class="anchored" data-anchor-id="the-stage-the-binding-site"><strong>2. The “Stage”: The Binding Site</strong></h4>
+<p>The interaction between a receptor and a ligand doesn’t just happen anywhere. <strong><em>It occurs at a very specific location on the protein’s surface.</em></strong></p>
+<ul>
+<li><p><strong>The Binding Site (or Binding Pocket, Active Site, Binding Cleft):</strong></p>
+<ul>
+<li><p><strong>Definition:</strong> This is a specific groove(凹槽), cleft(裂缝), or pocket on the 3D surface of the protein.</p></li>
+<li><p><strong>Properties:</strong> Its shape and chemical properties are exquisitely tailored(设计) to recognize and bind its specific ligand(s). <strong><em>The lining of the pocket(口袋内壁0 is made up of specific amino acid residues that form the contacts with the ligand.</em></strong></p></li>
+<li><p><strong>Analogy:</strong> The binding site is the <strong>“keyhole”</strong> on the lock (the protein). The ligand is the “key.” <strong><em>Our entire docking experiment is a computational attempt to figure out the precise way the key fits into the keyhole.</em></strong></p></li>
+</ul></li>
+</ul>
+</section>
+<section id="the-plot-how-do-they-interact" class="level4">
+<h4 class="anchored" data-anchor-id="the-plot-how-do-they-interact"><strong>3. The “Plot”: How Do They Interact?</strong></h4>
+<p>Scientists have developed two key models to describe the physics of the interaction.</p>
+<ul>
+<li><p><strong>Model 1: The “Lock and Key” Hypothesis (Emil Fischer, 1894)</strong></p>
+<ul>
+<li><p><strong>The Concept:</strong> This is the classic, intuitive model. It proposes that the binding site of the receptor (the lock) and the shape of the ligand (the key) are perfectly complementary and rigid. They are made to fit each other exactly, like a specific key fits into a specific lock.</p></li>
+<li><p><strong>What it explains well:</strong> This model brilliantly explains the <strong>specificity</strong> of biological interactions. It explains why one enzyme will only bind to one specific substrate(底物), or why one antibody will only recognize one specific antigen.</p></li>
+</ul></li>
+<li><p><strong>Model 2: The “Induced Fit(诱导契合)” Hypothesis (Daniel Koshland, 1958)</strong></p>
+<ul>
+<li><p><strong>The Concept:</strong> This is a more refined and accurate model that builds upon the lock and key idea. It proposes that the receptor’s binding site is not perfectly rigid, but is slightly <strong>flexible</strong>.</p></li>
+<li><p><strong>The Process:</strong></p>
+<ol type="1">
+<li><p>The ligand makes initial contact with the binding site.</p></li>
+<li><p>This initial binding event <strong>induces a conformational change</strong> in the protein. <strong><em>The binding site subtly shifts and molds itself around the ligand to create a tighter, more optimal fit.</em></strong></p></li>
+</ol></li>
+<li><p><strong>The Analogy:</strong> This is like a hand (the ligand) fitting into a glove (the receptor). The glove is not a rigid, pre-formed shape. As you slide your hand in, the glove changes its shape to conform perfectly to your hand.</p></li>
+<li><p><strong>Why it’s important:</strong> The induced fit model is a more accurate representation of the <strong><em>dynamic reality of protein</em></strong>s. Most modern docking algorithms try to account for this. While they often keep the protein backbone rigid for computational speed, t<strong><em>hey allow the <code>amino acid side chains</code> within the binding pocket to have some flexibility, and they always allow the ligand to be fully flexible.</em></strong></p></li>
+</ul></li>
+</ul>
+</section>
+<section id="the-ultimate-goal-what-we-are-trying-to-predict" class="level4">
+<h4 class="anchored" data-anchor-id="the-ultimate-goal-what-we-are-trying-to-predict"><strong>4. The Ultimate Goal: What We Are Trying to Predict</strong></h4>
+<p>When we run a molecular docking simulation, we are asking the computer to predict two primary things:</p>
+<ol type="1">
+<li><p><strong>The Binding Pose(结合姿势):</strong></p>
+<ul>
+<li><p><strong>Definition:</strong> The final, most stable three-dimensional orientation and conformation of the ligand when it is settled inside the binding pocket.</p></li>
+<li><p><strong>The Importance:</strong> Knowing the pose is everything. <strong><em>It tells us exactly which amino acids in the protein are making contact with which atoms of the drug</em></strong>. This is the information that allows us to understand the mechanism of binding at an atomic level.</p></li>
+</ul></li>
+<li><p><strong>The Binding Affinity(结合亲和力):</strong></p>
+<ul>
+<li><p><strong>Definition:</strong> A numerical score that <strong>estimates</strong> the <strong><em>strength of the interaction between the ligand and the receptor.</em></strong></p></li>
+<li><p><strong>The Units:</strong> This score is usually expressed in units of energy, typically <strong>kilocalories per mole (kcal/mol)</strong>. It is an approximation of the Gibbs free energy of binding (ΔG).</p></li>
+<li><p><strong>The Interpretation:</strong> In this energetic context, <strong>a more negative number is better<em>. A more negative score implies a more spontaneous and stronger binding interaction.</em></strong> For example, a predicted affinity of -9.5 kcal/mol is significantly better (stronger) than -6.5 kcal/mol.</p></li>
+</ul></li>
+</ol>
+</section>
+</section>
+<section id="lesson-1-summary-status-check" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-1-summary-status-check"><strong>Lesson 1: Summary &amp; Status Check</strong></h3>
+<ul>
+<li><p><strong>Conceptually</strong>, we have defined our core components: the <strong>Receptor</strong> (protein), the <strong>Ligand</strong> (drug), and the <strong>Binding Site</strong> (the stage).</p></li>
+<li><p>We have learned the two key models that describe their interaction: the foundational <strong>“Lock and Key”</strong> model explaining specificity, and the more accurate <strong>“Induced Fit”</strong> model explaining the dynamic nature of binding.</p></li>
+<li><p><strong>Crucially</strong>, we have clearly defined the two outputs we want from our future simulation: the <strong>Binding Pose</strong> (the 3D structure of the interaction) and the <strong>Binding Affinity</strong> (the score that estimates its strength).</p></li>
+</ul>
+<hr>
+</section>
+<section id="lesson-2-the-building-blocks---3d-molecular-structures" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-2-the-building-blocks---3d-molecular-structures"><strong>Lesson 2: The Building Blocks - 3D Molecular Structures</strong>🥸</h3>
+<p><strong>Goal:</strong> <strong><em><code>To understand what a 3D molecular structure file is, to learn about the Protein Data Bank (PDB) as the central repository for these files, and to become familiar with the basic structure of a PDB file.</code></em></strong></p>
+<section id="core-concept-representing-3d-shapes-as-text" class="level4">
+<h4 class="anchored" data-anchor-id="core-concept-representing-3d-shapes-as-text"><strong>1. Core Concept: Representing 3D Shapes as Text</strong></h4>
+<p>How can you describe a complex, three-dimensional shape like a protein using only text? The answer is simple but powerful: <strong>coordinate geometry</strong>.</p>
+<ul>
+<li><p><strong>The Principle:</strong> Every atom in a molecule can be precisely located in 3D space with a set of X, Y, and Z coordinates.</p></li>
+<li><p><strong>The Data File:</strong> A molecular structure file is, at its core, a simple text file that acts as a long list<strong><em>. For every single atom in the molecule</em></strong>, it has a line that specifies:</p>
+<ol type="1">
+<li><p><strong><em>What element the atom is</em></strong> (e.g., Carbon, Oxygen).</p></li>
+<li><p><strong><em>Which amino acid it belongs to.</em></strong></p></li>
+<li><p><strong><em>Its unique X, Y, and Z coordinates.</em></strong></p></li>
+</ol></li>
+<li><p><strong>The Visualization Software’s Job:</strong> When you open one of these files in a molecular viewer like PyMOL or UCSF Chimera, the software reads this long list of coordinates and uses it to draw a 3D representation of the molecule on your screen. It connects the atoms with bonds based on standard chemical rules.</p></li>
+</ul>
+</section>
+<section id="the-central-library-the-protein-data-bank-pdb" class="level4">
+<h4 class="anchored" data-anchor-id="the-central-library-the-protein-data-bank-pdb"><strong>2. The Central Library: The Protein Data Bank (PDB)</strong></h4>
+<p>Where do we get these precious structure files? There is one single, global archive for all experimentally determined macromolecular structures.</p>
+<ul>
+<li><p><strong>What it is:</strong> The <strong>Protein Data Bank (PDB)</strong> (<a href="https://www.google.com/url?sa=E&amp;q=https%3A%2F%2Fwww.rcsb.org%2F"><strong>https://www.rcsb.org/</strong></a>) is the world’s repository for 3D structural data of proteins, nucleic acids (DNA/RNA), and complex assemblies.</p></li>
+<li><p><strong>A Public Resource:</strong> When a scientist determines a new protein structure, they are required to deposit the coordinate data into the PDB before their research can be published. This makes the data freely available to the entire world.</p></li>
+<li><p><strong>The PDB ID:</strong> Every single entry in the PDB is given a unique 4-character alphanumeric identifier, the <strong>PDB ID</strong>. For example, 1HCL is the PDB ID for the structure of a specific HIV protease. 2SRC is a structure of our target, the SRC kinase. <strong><em>Knowing the PDB ID is the fastest way to find a structure.</em></strong></p></li>
+</ul>
+</section>
+<section id="extending-knowledge-how-are-structures-determined-the-experimental-methods" class="level4">
+<h4 class="anchored" data-anchor-id="extending-knowledge-how-are-structures-determined-the-experimental-methods"><strong>3. Extending Knowledge: How are Structures Determined? (The Experimental Methods)</strong></h4>
+<p>It’s crucial to understand that the structures in the PDB are not theoretical models; they are the results of incredibly sophisticated and difficult lab experiments. Knowing the method used gives you clues about the quality and nature of the structure.</p>
+<ul>
+<li><p><strong>Method 1: X-ray Crystallography(X射线晶体学) (The Workhorse)</strong></p>
+<ul>
+<li><p><strong>The Process:</strong> Scientists purify a large amount of a protein and then try to coax it into forming a highly ordered crystal (like a salt or sugar crystal, but made of protein). They then shoot a high-powered X-ray beam at this crystal. The X-rays diffract off the atoms, creating a complex “diffraction pattern.” By using complex mathematics (Fourier transforms), <strong><em>they can work backward from this pattern to calculate the positions of the atoms and thus the protein’s structure.</em></strong></p></li>
+<li><p><strong>Characteristics:</strong> This is the most common method and often produces very <strong>high-resolution</strong> structures. However, the structure is of the protein in a solid crystal state, <strong><em>which is not its natural environment, and it provides a static, averaged snapshot.</em></strong></p></li>
+</ul></li>
+<li><p><strong>Method 2: Nuclear Magnetic Resonance (NMR) Spectroscopy(核磁共振光谱法)</strong></p>
+<ul>
+<li><p><strong>The Process:</strong> The protein is studied in a solution, which is much closer to its natural state. It’s placed in a very strong magnetic field, and radio waves are used to probe the nuclei of the atoms.</p></li>
+<li><p><strong>Characteristics:</strong> The key advantage is that it can reveal the <strong>dynamics and flexibility</strong> of the protein in solution. NMR structures are often deposited in the PDB as an “ensemble” of 10-20 slightly different models that represent this flexibility. They are typically of lower resolution than crystal structures.</p></li>
+</ul></li>
+<li><p><strong>Method 3: Cryo-Electron Microscopy (Cryo-EM)(低温电子显微镜) (The Revolution)</strong></p>
+<ul>
+<li><p><strong>The Process:</strong> The protein solution is flash-frozen in a thin layer of ice, trapping the molecules in their native conformations. A powerful electron microscope then takes hundreds of thousands of “pictures” of individual molecules from different angles. These 2D images are then computationally combined to reconstruct a 3D model.</p></li>
+<li><p><strong>Characteristics:</strong> This method has revolutionized structural biology in the last decade. It is perfect for studying <strong>very large, complex, and flexible molecular machines</strong> (like the ribosome or viral spikes) that are nearly impossible to crystallize. The resolution is rapidly improving and can now rival X-ray crystallography for many targets.</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="practical-application-the-pdb-file-format" class="level4">
+<h4 class="anchored" data-anchor-id="practical-application-the-pdb-file-format"><strong>4. Practical Application: The PDB File Format</strong></h4>
+<p>Let’s look inside an actual PDB file to demystify it. The format is old and has a strict, column-based structure. The most important line type is the ATOM record.</p>
+<p>Here is a single ATOM record from a PDB file:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ATOM</span>      1  N   MET A   1      28.360  31.597  22.585  1.00 17.65           N</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Let’s dissect this line piece by piece:</p>
+<ul>
+<li><p>ATOM: This just tells us it’s an atom record.</p></li>
+<li><p>1: The serial number of the atom (Atom #1).</p></li>
+<li><p>N: The name of the atom (this is the main peptide backbone Nitrogen).</p></li>
+<li><p>MET: The amino acid residue it belongs to (Methionine).</p></li>
+<li><p>A: The chain identifier (this protein has only one chain, Chain A).</p></li>
+<li><p>1: The residue sequence number (this is the first amino acid in the chain).</p></li>
+<li><p>28.360: <strong>The X-coordinate in Angstroms.</strong></p></li>
+<li><p>31.597: <strong>The Y-coordinate in Angstroms.</strong></p></li>
+<li><p>22.585: <strong>The Z-coordinate in Angstroms.</strong></p></li>
+<li><p>1.00: The “occupancy” (usually 1.0).</p></li>
+<li><p>17.65: The “B-factor” or “temperature factor.” <strong>This is an important measure of quality.</strong> <strong><em>A low B-factor means the atom’s position is very well-determined and stable. A high B-factor means it was flexible or disordered in the crystal.</em></strong></p></li>
+<li><p>N: The element symbol (Nitrogen).</p></li>
+</ul>
+<p>When you download a PDB file, <strong><em>it will contain thousands of these ATOM lines, which together provide the complete 3D blueprint for the protein</em></strong>. It will also contain header information describing the experiment, the publication, and the sequence.</p>
+</section>
+</section>
+<section id="lesson-2-summary-status-check" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-2-summary-status-check"><strong>Lesson 2: Summary &amp; Status Check</strong></h3>
+<ul>
+<li><p><strong>Conceptually</strong>, we now understand that a 3D structure is represented computationally as a long list of <strong>atomic coordinates (X, Y, Z)</strong>.</p></li>
+<li><p>We have identified the <strong>Protein Data Bank (PDB)</strong> as the single, authoritative source for these experimental structures, and we know that each structure has a unique <strong>PDB ID</strong>.</p></li>
+<li><p><strong>Crucially</strong>, we have learned about the main experimental methods used to determine these structures (X-ray, NMR, Cryo-EM) and understand that they provide different types of information and have different levels of resolution.</p></li>
+<li><p><strong>Practically</strong>, we have demystified the <strong>PDB file format</strong> itself, understanding that the ATOM records are the heart of the file, containing the essential coordinate data.</p></li>
+</ul>
+<hr>
+</section>
+<section id="lesson-3-the-physics-of-docking---scoring-functions" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-3-the-physics-of-docking---scoring-functions"><strong>Lesson 3: The Physics of Docking - Scoring Functions</strong>🥶</h3>
+<p><strong>Goal:</strong> <strong><em><code>To understand that a scoring function is a mathematical equation used to estimate the binding affinity of a ligand to a receptor, and to learn about the key physical forces that this equation tries to approximate.</code></em></strong></p>
+<section id="core-concept-the-scoring-function-as-a-computational-judge" class="level4">
+<h4 class="anchored" data-anchor-id="core-concept-the-scoring-function-as-a-computational-judge"><strong>1. Core Concept: The Scoring Function as a “Computational Judge”</strong></h4>
+<ul>
+<li><p><strong>The Problem:</strong> During a docking simulation, <strong><em>the program will generate thousands, or even millions, of different possible binding poses for the ligand within the binding pocket. We need a fast and reliable way to rank these poses from best to worst.</em></strong></p></li>
+<li><p><strong>The Solution: The Scoring Function.</strong> A scoring function is a computationally inexpensive mathematical equation that takes the 3D coordinates of a single binding pose (the positions of all the receptor and ligand atoms) as input and outputs a single number—the <strong>score</strong>. This score is an <strong>estimation of the binding free energy(结合自由能) (ΔG)</strong>.</p></li>
+<li><p><strong>The Goal:</strong> The ultimate goal of the docking algorithm is to find the pose that results in the l<strong><em>owest possible score (the most negative ΔG)</em></strong>, as this represents the most stable and therefore most probable binding conformation.</p></li>
+<li><p><strong>The Analogy:</strong> The scoring function is like the judge in a diving competition. The diver (the ligand) can perform many different dives (poses). For each dive, the judge (the scoring function) holds up a single score. The docking algorithm is the diver trying to find the specific dive that will earn them the highest score (or, in our case, the lowest energy value).</p></li>
+</ul>
+</section>
+<section id="extending-knowledge-the-forces-of-interaction" class="level4">
+<h4 class="anchored" data-anchor-id="extending-knowledge-the-forces-of-interaction"><strong>2. Extending Knowledge: The Forces of Interaction</strong></h4>
+<p>What does the scoring function’s equation actually look at? It tries to <strong><em>model the fundamental physical and chemical forces that govern how molecules recognize and bind to each other</em></strong>. A good binding pose is one that maximizes favorable interactions and minimizes unfavorable ones. Let’s break down the key components.</p>
+<ul>
+<li><p><strong>Component 1: Shape Complementarity(形状互补力) (Van der Waals Forces)</strong></p>
+<ul>
+<li><p><strong>The Physics:</strong> This is the “lock and key” part of the interaction. <strong><em>Atoms cannot be in the same place at the same time. If two atoms are too close, there is a massive energetic penalty</em></strong> called <strong>steric clash(空间位阻冲突)</strong> (repulsion(排斥力)). <strong><em>If they are at an optimal distance (just touching), there is a weak, favorable attraction (the Van der Waals force).</em></strong></p></li>
+<li><p><strong>What the Scoring Function Does:</strong> It has a term that heavily penalizes any pose where ligand atoms and protein atoms overlap. It gives a small energetic reward for every atom pair that is at an ideal “touching” distance. This term ensures the ligand fits snugly into the pocket without bumping into the walls.</p></li>
+<li><p><strong>The Analogy:</strong> Packing a suitcase. You get a good score for a tight fit with no empty space, but a huge penalty if you try to force in an object that is too big, causing the suitcase to bulge.</p></li>
+</ul></li>
+<li><p><strong>Component 2: Electrostatics(静电)</strong></p>
+<ul>
+<li><p><strong>The Physics:</strong> Atoms have partial positive and negative charges. The principle is simple: <strong>opposites attract, and like charges repel.</strong> <strong><em>A positively charged part of the ligand will be strongly attracted to a negatively charged amino acid (like Aspartate or Glutamate) in the binding pocket.</em></strong></p></li>
+<li><p><strong>What the Scoring Function Does:</strong> It has a term that calculates the <strong><em>electrostatic energy based on Coulomb’s Law</em></strong>. It gives a large energetic reward for favorable charge-charge interactions and a large penalty for repulsive interactions.</p></li>
+</ul></li>
+<li><p><strong>Component 3: Hydrogen Bonds(氢键) (The Most Important Specific Interaction)</strong></p>
+<ul>
+<li><p><strong>The Physics:</strong> This is a <strong><em>special, stronger-than-usual type of electrostatic interaction</em></strong>. It occurs when a hydrogen atom that is bonded to an electronegative atom(电负性原子) (like Oxygen or Nitrogen, called the <strong>donor(供体)</strong>) is shared with another nearby electronegative atom (the <strong>acceptor</strong>).(当一个氢原子与一个电负性原子（如氧或氮，称为供体 ）结合时，它与另一个附近的电负性原子（ 称为受体 ） 共享结合位点 。)</p></li>
+<li><p><strong>What the Scoring Function Does:</strong> It has a highly specific term that looks for the perfect geometry of a hydrogen bond (the ideal distance and angle between the donor, the hydrogen, and the acceptor). It gives a very large energetic reward for each well-formed hydrogen bond it finds.</p></li>
+<li><p><strong>The Importance:</strong> Hydrogen bonds are what give a binding interaction its <strong>specificity and directionality</strong>. <strong><em>A good binding pose is often one that maximizes the number of hydrogen bonds between the drug and the protein</em></strong>. This will be a primary focus of our visual analysis in the later lessons.</p></li>
+</ul></li>
+<li><p><strong>Component 4: Solvation Effects (The Role of Water)</strong></p>
+<ul>
+<li><p><strong>The Physics:</strong> This is the most complex but crucial component. The protein and ligand are not in a vacuum; they are surrounded by water molecules. When the ligand binds to the protein, it must push these water molecules out of the way.</p></li>
+<li><p><strong>The “Hydrophobic Effect(疏水效应)”:</strong> <strong><em>Non-polar, “greasy” parts of the ligand and the binding pocket do not like interacting with water.</em></strong> There is an energetic reward for burying these greasy surfaces together, away from the water. This is a major driving force for binding.</p></li>
+<li><p><strong>Desolvation Penalty(脱溶惩罚):</strong> Conversely, if a charged part of the ligand or protein that was happily interacting with water is forced to be buried in a greasy pocket, there is an energetic penalty.</p></li>
+<li><p><strong>What the Scoring Function Does:</strong> It uses a simplified, empirical model to estimate the net energetic cost or benefit of removing water molecules from the binding interface.</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="the-big-picture-a-sum-of-parts" class="level4">
+<h4 class="anchored" data-anchor-id="the-big-picture-a-sum-of-parts"><strong>3. The Big Picture: A Sum of Parts</strong></h4>
+<p>The final score for a given pose is essentially a weighted sum of all these different terms:</p>
+<p><strong>Score ≈ (Van der Waals term) + (Electrostatics term) + (Hydrogen Bond term) + (Solvation term) + …</strong></p>
+<ul>
+<li><p><strong>The Trade-off:</strong> No scoring function is perfect. They are all <strong>approximations</strong> of the true, complex physics. Different docking programs (like <code>AutoDock Vina</code>, <code>Glide</code>, <code>GOLD</code>) <strong><em>use different scoring functions, with different mathematical forms and weightings.</em></strong> This is why different programs can sometimes give slightly different results.</p></li>
+<li><p><strong>Our Job:</strong> As users, we don’t need to write the scoring function, but we must <strong>understand the principles</strong> behind it. This allows us to look at a final docked pose and critically evaluate it. We can ask: “Does this pose make chemical sense? Do I see the hydrogen bonds and shape complementarity that the high score is telling me are there?”</p></li>
+</ul>
+</section>
+</section>
+<section id="lesson-3-summary-status-check" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-3-summary-status-check"><strong>Lesson 3: Summary &amp; Status Check</strong></h3>
+<ul>
+<li><p><strong>Conceptually</strong>, we understand that a <strong>scoring function</strong> is the computational “judge” in a docking simulation, providing a numerical estimate of binding affinity for any given pose.</p></li>
+<li><p>We have dissected the scoring function and learned about the <strong>four key physical forces</strong> it models: <strong>shape complementarity (Van der Waals), electrostatics, hydrogen bonding, and solvation effects.</strong></p></li>
+<li><p><strong>Crucially</strong>, we understand that <strong>hydrogen bonds</strong> are the key to specific recognition and that the <strong>hydrophobic effect</strong> is a major driving force for binding. We also recognize that all scoring functions are approximations and that our job is to use our chemical intuition to interpret the results.</p></li>
+</ul>
+<hr>
+</section>
+<section id="the-critical-importance-of-preparing-your-protein-and-ligand" class="level3">
+<h3 class="anchored" data-anchor-id="the-critical-importance-of-preparing-your-protein-and-ligand"><strong>The Critical Importance of Preparing Your Protein and Ligand</strong>🤖</h3>
+<p>Let’s break down why we can’t just download a PDB file and a ligand file and throw them at the docking program.</p>
+<section id="why-we-must-prepare-the-protein-the-receptor" class="level4">
+<h4 class="anchored" data-anchor-id="why-we-must-prepare-the-protein-the-receptor"><strong>1. Why We Must Prepare the Protein (The Receptor)</strong></h4>
+<p>A raw file downloaded from the Protein Data Bank (PDB) is <strong><em>an experimental result</em></strong>, <strong><em>not a simulation-ready file</em></strong>. It <strong><em>contains a lot of information that is irrelevant or even harmful to a docking calculation, and it’s often missing information that is essential.</em></strong></p>
+<p>Here’s what we need to fix:</p>
+<ul>
+<li><p><strong>Removing Unwanted “Stuff”:</strong></p>
+<ul>
+<li><p><strong>Water Molecules:</strong> Crystal structures are full of <strong><em>water molecules</em></strong> (HOH). While water is critical for the protein’s overall structure and function, most simple scoring functions are not designed to handle explicit water molecules in the binding site. <strong><em>They can get in the way and create steric clashes. We must remove them.</em></strong></p></li>
+<li><p><strong>Other Ligands/Ions:</strong> The PDB file often c<strong><em>ontains the structure of the protein already bound to its natural ligand, or it might contain ions (like sulfate(硫酸盐), phosphate(磷酸盐))</em></strong> and cofactors(辅因子) from the crystallization buffer. If we are trying to dock our own ligand, we must first remove the one that is already there. The empty pocket is our target.</p></li>
+<li><p><strong>Extra Protein Chains:</strong> Some PDB files <strong><em>contain multiple copies of the same protein</em></strong> (a dimer(单聚体) or tetramer(多聚体)). If we are only interested in docking to one of them, we should remove the others to simplify the calculation.</p></li>
+</ul></li>
+<li><p><strong>Adding Missing Information:</strong></p>
+<ul>
+<li><p><strong>Hydrogen Atoms:</strong> This is the most critical point. X-ray crystallography is good at seeing heavy atoms (Carbon, Oxygen, Nitrogen) but is <strong><em>very bad at seeing tiny hydrogen atoms</em></strong>. As a result, <strong>most PDB files from X-ray crystallography are missing all hydrogen atoms.</strong> However, as we learned in the last lesson, <strong>hydrogen bonds are the single most important specific interaction for drug binding!</strong> We cannot calculate them if the hydrogen atoms aren’t there. Therefore, a mandatory preparation step is to use software to <strong><em>add all the missing hydrogen atoms in their chemically correct positions.</em></strong></p></li>
+<li><p><strong>Atomic Charges:</strong> The scoring function needs to know the <strong><em>partial charge on every single atom to calculate the electrostatic interactions</em></strong>. A standard PDB file does not contain this information. <strong><em>The preparation process involves using a computational chemistry model (like Gasteiger charges) to calculate and assign these charges to each atom.</em></strong></p></li>
+</ul></li>
+<li><p><strong>Creating the Final Format (PDBQT):</strong></p>
+<ul>
+<li>The AutoDock suite of tools uses a special file format called <strong>PDBQT</strong>. This format is a <strong><em>standard PDB file plus extra information.</em></strong> The “Q” stands for the atomic <strong>charge</strong>, and the “T” stands for the <strong>atom type</strong> used by the AutoDock scoring function. The preparation process culminates in converting our clean, hydrogen-added, charge-added protein into this final, simulation-ready format.</li>
+</ul></li>
+</ul>
+</section>
+<section id="why-we-must-prepare-the-ligand" class="level4">
+<h4 class="anchored" data-anchor-id="why-we-must-prepare-the-ligand"><strong>2. Why We Must Prepare the Ligand</strong></h4>
+<p>Similarly, a 2D or even a simple 3D structure of our ligand (e.g., from PubChem) is <strong><em>not ready for docking.</em></strong></p>
+<ul>
+<li><p><strong>Generating a 3D Conformation:</strong> Often, <strong><em>we start with a 2D drawing or a SMILES string</em></strong>. The first step is to use a chemistry program to convert this into a plausible(合理的), low-energy 3D structure with all its hydrogen atoms present.</p></li>
+<li><p><strong>Defining Flexibility (Torsions):</strong> This is the most important step for the ligand. A drug molecule is not a rigid rock. It has rotatable single bonds. <strong><em>The docking program needs to know exactly which bonds it is allowed to twist and turn during the simulation to find the best fit.</em></strong> This is called defining the “torsional degrees of freedom.(扭转自由度)” The preparation step involves identifying all the rotatable (non-ring, single) bonds and flagging them.</p></li>
+<li><p><strong>Assigning Charges and Atom Types:</strong> Just like the protein, <strong><em>the ligand also needs to have charges and atom types assigned to every atom for the scoring function to work</em></strong>. This is also done during the preparation step.</p></li>
+<li><p><strong>Creating the Final Format (PDBQT):</strong> The process ends by saving the 3D, flexible, charge-added ligand into the final PDBQT format required by AutoDock Vina.</p></li>
+</ul>
+</section>
+</section>
+<section id="summary-of-the-why" class="level3">
+<h3 class="anchored" data-anchor-id="summary-of-the-why"><strong>Summary of the “Why”</strong></h3>
+<p>In short, the raw data files are like the raw ingredients for a complex recipe. The data preparation phase is the <strong>“mise en place”</strong>—the careful chopping, measuring, and pre-cooking of every ingredient. If you skip this and just throw everything into the pot, you will get an inedible, meaningless result.</p>
+<ul>
+<li><p><strong>For the Protein, we prepare by:</strong></p>
+<ul>
+<li><p>Cleaning (removing water, old ligands).</p></li>
+<li><p>Completing (adding hydrogens).</p></li>
+<li><p>Formatting (calculating charges and saving as PDBQT).</p></li>
+</ul></li>
+<li><p><strong>For the Ligand, we prepare by:</strong></p>
+<ul>
+<li><p>Generating a 3D structure.</p></li>
+<li><p>Completing (adding hydrogens).</p></li>
+<li><p>Defining flexibility (detecting rotatable bonds).</p></li>
+<li><p>Formatting (calculating charges and saving as PDBQT).</p></li>
+</ul></li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="part-2-a-practical-docking-project-workflow" class="level2">
+<h2 class="anchored" data-anchor-id="part-2-a-practical-docking-project-workflow">🤨<strong>Part 2: A Practical Docking Project Workflow</strong>🤨</h2>
+<hr>
+</section>
+<section id="project-predicting-the-binding-mode-of-quercetin-to-the-kinase-domain-of-the-src-protein-预测槲皮素与-src-蛋白激酶结构域的结合模式" class="level2">
+<h2 class="anchored" data-anchor-id="project-predicting-the-binding-mode-of-quercetin-to-the-kinase-domain-of-the-src-protein-预测槲皮素与-src-蛋白激酶结构域的结合模式">🤤<strong>Project: Predicting the Binding Mode of Quercetin to the Kinase Domain of the SRC Protein 预测槲皮素与 SRC 蛋白激酶结构域的结合模式</strong>🤤</h2>
+<hr>
+<section id="lesson-4-step-1---data-preparation-the-receptor" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-4-step-1---data-preparation-the-receptor"><strong>Lesson 4: Step 1 - Data Preparation: The Receptor</strong>😗</h3>
+<p>We will need two key pieces of free software for this:</p>
+<ol type="1">
+<li><p>A molecular visualizer. <strong>UCSF ChimeraX</strong> is modern, powerful, and recommended. (<a href="https://www.google.com/url?sa=E&amp;q=https%3A%2F%2Fwww.cgl.ucsf.edu%2Fchimerax%2F"><strong>https://www.cgl.ucsf.edu/chimerax/</strong></a>)</p></li>
+<li><p>The docking preparation software. <strong>AutoDock Tools (ADT)</strong>, which is part of the MGLTools suite. (<a href="https://www.google.com/url?sa=E&amp;q=https%3A%2F%2Fccsb.scripps.edu%2Fmgltools%2Fdownloads%2F"><strong>https://ccsb.scripps.edu/mgltools/downloads/</strong></a>)</p></li>
+</ol>
+<p><strong>Goal:</strong> <strong><em>To find a suitable 3D structure of our target protein (SRC), clean it of all non-essential molecules, add the missing hydrogen atoms, and convert it into the simulation-ready PDBQT format.</em></strong></p>
+<section id="chunk-1-finding-and-downloading-the-protein-structure" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-1-finding-and-downloading-the-protein-structure"><strong>Chunk 1: Finding and Downloading the Protein Structure</strong></h4>
+<p><strong>Explanation:</strong> Our first task is to be a structural detective. <strong><em>We need to find a high-quality, experimentally determined 3D structure of our target, the human SRC protein kinase</em></strong>. The Protein Data Bank (PDB) is our source. We are looking for a structure that is of high resolution and, ideally, has a ligand already bound in the active site, as this helps us identify where the binding pocket is.</p>
+<p><strong>Action:</strong></p>
+<ol type="1">
+<li><p>Go to the <strong>RCSB PDB</strong> website: <a href="https://www.google.com/url?sa=E&amp;q=https%3A%2F%2Fwww.rcsb.org%2F"><strong>https://www.rcsb.org/</strong></a></p></li>
+<li><p>In the top search bar, type <strong>“SRC human kinase”</strong> and press Enter.</p></li>
+<li><p>You will get a list of many different structures. We need to choose a good one. Look for:</p>
+<ul>
+<li><p><strong>High Resolution:</strong> The “Resolution” column should have a small number (e.g., &lt; 2.5 Ångstroms is good).</p></li>
+<li><p><strong>A Bound Ligand:</strong> The entry should mention that it is a “complex with an inhibitor.”</p></li>
+</ul></li>
+<li><p>A great candidate for our project is the PDB ID <strong>2SRC</strong>. It’s a classic structure of human SRC kinase at 2.0 Å resolution, in a complex with an inhibitor. Click on 2SRC.</p></li>
+<li><p>On the structure’s page, click the <strong>“Download Files”</strong> button and select <strong>“PDB Format”</strong>.</p></li>
+<li><p>Save the file <code>2SRC.pdb</code> to a new project folder on your computer (e.g., <code>Project_Docking_Quercetin_SRC</code>). Inside this folder, create a subfolder called <code>input_files</code>. Save <code>2SRC.pdb</code> there.</p></li>
+</ol>
+<ul>
+<li><strong>Verification:</strong> You have successfully downloaded the raw, experimental coordinate file for our receptor.</li>
+</ul>
+</section>
+<section id="chunk-2-initial-inspection-and-cleaning-with-ucsf-chimerax" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-2-initial-inspection-and-cleaning-with-ucsf-chimerax"><strong>Chunk 2: Initial Inspection and Cleaning with UCSF ChimeraX</strong></h4>
+<p><strong>Explanation:</strong> We will now use a visualizer to look at our protein for the first time. This allows us to see what needs to be cleaned. The goal is to isolate just the single protein chain we want to dock into and remove everything else.</p>
+<p><strong>Action:</strong></p>
+<ol type="1">
+<li><p>Launch <strong>UCSF ChimeraX</strong>.</p></li>
+<li><p>In the command line at the bottom of the ChimeraX window, type open 2SRC and press Enter. (ChimeraX can fetch PDB files directly).</p></li>
+<li><p>You will see the protein structure appear. You’ll see the protein chains, but also small red dots (water) and a molecule in the active site (the co-crystallized inhibitor).</p></li>
+<li><p>Let’s perform the cleaning with commands:</p>
+<ul>
+<li><p><strong>Remove water:</strong> Type <code>delete ~protein &amp; ~ligand</code> and press Enter. This command deletes everything that is NOT the protein and NOT the ligand. The red water molecules will disappear.</p></li>
+<li><p><strong>Remove the original ligand:</strong> Now we need to remove the inhibitor that came with the structure to make the pocket empty. Type <code>delete ligand</code> and press Enter. The molecule in the binding pocket will disappear.</p></li>
+<li><p><strong>Isolate one chain (if necessary):</strong> The 2SRC structure is simple, with only one protein chain (Chain A). If it had multiple chains (A, B, C, etc.), you would select and delete the ones you don’t need (e.g., delete /B).</p></li>
+</ul></li>
+<li><p>Now we save our “clean” PDB file. Go to the menu: <strong><code>File &gt; Save...</code></strong><code>.</code></p>
+<ul>
+<li><p>Choose a location (<code>your input_files folder</code>).</p></li>
+<li><p>Set the “Save format” to <strong>“PDB (*.pdb)”</strong>.</p></li>
+<li><p>Name the file <code>2SRC_clean.pdb.</code></p></li>
+</ul></li>
+</ol>
+<ul>
+<li><strong>Verification:</strong> You now have a new PDB file, <code>2SRC_clean.pdb</code>, which contains the coordinates for <strong>only the protein atoms</strong>. You have successfully prepared a clean, “apo” (empty) receptor structure.</li>
+</ul>
+</section>
+<section id="chunk-3-final-preparation-with-autodock-tools-adt" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-3-final-preparation-with-autodock-tools-adt"><strong>Chunk 3: Final Preparation with AutoDock Tools (ADT)</strong></h4>
+<p><strong>Explanation:</strong> This is the final and most critical preparation step. <strong><em>We will use AutoDock Tools (ADT) to perform the essential tasks of adding hydrogens, calculating atomic charges</em></strong>, and saving the final file in the required PDBQT format.</p>
+<p><strong>Action:</strong></p>
+<ol type="1">
+<li><p>Launch <strong>AutoDockTools</strong> (it will appear as a program called adt).</p></li>
+<li><p>Go to the menu: <strong><code>File &gt; Read Molecule</code></strong>. Select your <code>2SRC_clean.pdb</code> file. The protein will appear in the viewer.</p></li>
+<li><p><strong>Add Hydrogens:</strong> Go to the menu: <strong><code>Edit &gt; Hydrogens &gt; Add</code></strong><code>.</code></p>
+<ul>
+<li><p>A dialog will pop up. The default option “All Hydrogens” is correct. Click <strong><code>"OK"</code></strong><code>.</code></p></li>
+<li><p>The program will now calculate and add all the missing hydrogen atoms. This is a crucial step.</p></li>
+</ul></li>
+<li><p><strong>Calculate Charges:</strong> Go to the menu: <strong><code>Edit &gt; Charges &gt; Compute Gasteiger</code></strong><code>.</code></p>
+<ul>
+<li>This will calculate the <code>partial charge</code> for every atom in the protein.</li>
+</ul></li>
+<li><p><strong>Save as PDBQT:</strong> Go to the menu: <strong><code>Grid &gt; Macromolecule &gt; Choose...</code></strong><code>.</code></p>
+<ul>
+<li><p>A “Choose Macromolecule” dialog will appear. Select the <code>2SRC_clean</code> molecule and click <strong><code>"Select Molecule"</code></strong>.</p></li>
+<li><p>A file browser will pop up, prompting you to save the output. It will default to the correct format (<code>.pdbqt</code>).</p></li>
+<li><p>Name the file <code>2SRC_receptor.pdbqt</code> and save it in your <code>input_files</code> folder.</p></li>
+<li><p>An alert will pop up saying it saved the file and that charges were added. Click <strong><code>"OK"</code></strong>.</p></li>
+</ul></li>
+</ol>
+<ul>
+<li><p><strong>Verification:</strong> Open your new <code>2SRC_receptor.pdbqt</code> file with a simple text editor. Scroll down past the header information to the ATOM records. You will now see two key differences from your old PDB file:</p>
+<ol type="1">
+<li><p>There are many new lines for the <strong>hydrogen atoms</strong> (e.g., HD1, HE2).</p></li>
+<li><p>The last two columns of every single ATOM record are now populated. The second to last column is the <strong>partial charge</strong> (e.g., 0.054), and the last column is the <strong>AutoDock atom type</strong> (e.g., HD, OA).<br>
+This confirms you have successfully created a complete, simulation-ready receptor file.</p></li>
+</ol></li>
+</ul>
+</section>
+</section>
+<section id="lesson-4-summary-status-check" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-4-summary-status-check"><strong>Lesson 4: Summary &amp; Status Check</strong></h3>
+<ul>
+<li><p><strong>Conceptually</strong>, we understand the critical necessity of cleaning a raw PDB file and adding essential information like hydrogen atoms and atomic charges before it can be used for docking.</p></li>
+<li><p><strong>Practically</strong>, we have executed a complete, multi-tool workflow:</p>
+<ol type="1">
+<li><p>We identified and downloaded a suitable PDB structure from the <strong>RCSB PDB</strong>.</p></li>
+<li><p>We used <strong>UCSF ChimeraX</strong> for initial visualization and cleaning (removing water/ligands).</p></li>
+<li><p>We used <strong>AutoDock Tools</strong> to perform the final, critical steps of adding hydrogens, computing charges, and saving the structure in the required <strong>PDBQT format</strong>.</p></li>
+</ol></li>
+<li><p><strong>Crucially</strong>, we have followed the “Trust, but Verify” principle by visually inspecting the structure and by manually inspecting the final output file to confirm that the new hydrogen and charge information has been correctly added.</p></li>
+</ul>
+<p>Our receptor is now fully prepared. The “lock” is ready. The next step is to prepare the “key.”</p>
+<hr>
+</section>
+<section id="lesson-4-revised-step-1---data-preparation-the-receptor-command-line-workflow" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-4-revised-step-1---data-preparation-the-receptor-command-line-workflow"><strong>Lesson 4 (Revised): Step 1 - Data Preparation: The Receptor (Command-Line Workflow)</strong>🫡</h3>
+<p><strong>Goal:</strong> <strong><em><code>To perform the entire receptor preparation process—cleaning, adding hydrogens, and converting to PDBQT format—using a scripted, reproducible command-line workflow.</code></em></strong></p>
+<p><strong>Our New Tools:</strong></p>
+<ul>
+<li><p><strong>pdb_prep scripts:</strong> We will use simple command-line utilities. A tool like <code>pdbtools</code> is a great example of a <strong><em>Python-based command-line suite for simple PDB manipulations.</em></strong></p></li>
+<li><p><strong>PDB2PQR:</strong> A powerful command-line tool for <strong><em>adding hydrogens and optimizing their network.</em></strong></p></li>
+<li><p><strong>Meeko (or AutoDock’s prepare_receptor script):</strong> A modern Python-based tool <strong><em>for converting PDB files into the final PDBQT format.</em></strong> Meeko is newer and often easier to install and use.</p></li>
+</ul>
+<section id="chunk-1-download-and-initial-cleaning" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-1-download-and-initial-cleaning"><strong>Chunk 1: Download and Initial Cleaning</strong></h4>
+<p><strong>Explanation:</strong> The first step is to download the PDB file and perform a rough cleaning by stripping out unwanted lines like <code>HETATM</code> (which represent water, ligands, ions) and <strong><em>keeping only the ATOM records for a specific chain</em></strong>. We can do this with simple but powerful Unix command-line tools like <code>wget</code>, <code>grep</code>, and <code>sed</code>.</p>
+<p><strong>Action (in your Linux/macOS terminal):</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># We will work in our project's 'input_files' directory</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> input_files</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 1. Download the PDB file ---</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 'wget' is a command-line tool to download files from the web</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">wget</span> https://files.rcsb.org/download/2SRC.pdb</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 2. Clean the PDB file ---</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># We will create a clean PDB containing only the ATOM records for Chain A.</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 'grep' is a tool for finding lines that match a pattern.</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># We are selecting only lines that start with "ATOM" and contain " A ".</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co"># The output is redirected to a new file.</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="st">"^ATOM.* A "</span> 2SRC.pdb <span class="op">&gt;</span> 2SRC_chainA.pdb</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co"># (Optional but good practice) Re-number the atoms sequentially</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co"># We can use a tool like pdb-tools for this</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co"># pdb_renumber 2SRC_chainA.pdb &gt; 2SRC_clean.pdb</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co"># For now, we will proceed with the grep'd file. Let's name it consistently.</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="fu">mv</span> 2SRC_chainA.pdb 2SRC_clean.pdb</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><strong>Verification:</strong> Use the <code>less 2SRC_clean.pdb</code> command to inspect your new file. You will see that it contains <strong>only</strong> the ATOM records for a single protein chain. <strong><em>All the header information, water molecules (HETATM), and the original ligand are gone.</em></strong> This is our clean starting point.</li>
+</ul>
+</section>
+<section id="chunk-2-add-hydrogens-with-pdb2pqr" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-2-add-hydrogens-with-pdb2pqr"><strong>Chunk 2: Add Hydrogens with <code>PDB2PQR</code></strong></h4>
+<p><strong>Explanation:</strong> This is the most critical step. <code>PDB2PQR</code> is a robust tool that <strong><em>not only adds missing hydrogens but also intelligently optimizes the hydrogen-bonding network and assigns atomic charges and radii based on a chosen force field.</em></strong></p>
+<p><strong>Action (in your terminal):</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 3. Add Hydrogens and Assign Parameters ---</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># We run pdb2pqr.</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># --ff=AMBER : Use the robust AMBER force field for parameterization.</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># --with-ph=7.4 : Protonate the protein as it would be at physiological pH.</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 2SRC_clean.pdb : Our input file.</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 2SRC_protonated.pqr : Our output file.</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="ex">pdb2pqr</span> <span class="at">--ff</span><span class="op">=</span>AMBER <span class="at">--with-ph</span><span class="op">=</span>7.4 2SRC_clean.pdb 2SRC_protonated.pqr</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><p><strong>Action:</strong> Run this command. PDB2PQR will perform the <strong><em>protonation and optimization.(质子化和优化)</em></strong></p></li>
+<li><p><strong>Verification:</strong> The main output is the <strong><em><code>2SRC_protonated.pqr</code></em></strong> file. The <strong><em><code>.pqr</code></em></strong> format is similar to PDB, but the last columns contain the <strong>Charge (Q)</strong> and <strong>Radius (R)</strong> for each atom. You can inspect this file with less to verify that hydrogens have been added (e.g., atoms named HE1, HD21) and that the final columns are now populated with numbers. You have successfully created a physically realistic, protonated model of your receptor.</p></li>
+</ul>
+</section>
+<section id="chunk-3-convert-to-pdbqt-with-meeko" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-3-convert-to-pdbqt-with-meeko"><strong>Chunk 3: Convert to PDBQT with <code>Meeko</code></strong></h4>
+<p><strong>Explanation:</strong> The final step is to convert our protonated and charged <code>.pqr</code> file into the specific <code>.pdbqt</code> format that AutoDock Vina requires. The <strong><code>Meeko package</code></strong> is a modern Python library designed for this.</p>
+<p><strong>Action (in your terminal):</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># First, ensure you have Meeko installed (e.g., via pip or conda)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># pip install meeko</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 4. Prepare the Receptor for Vina ---</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Use the 'mk_prepare_receptor' command from Meeko.</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># -i : input file</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># -o : output file</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="ex">mk_prepare_receptor</span> <span class="at">-i</span> 2SRC_protonated.pqr <span class="at">-o</span> 2SRC_receptor.pdbqt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><p><strong>Action:</strong> Run this command. <code>Meeko</code> will read the PQR file, assign the specific AutoDock 4 atom types that Vina’s scoring function needs, and write the final output.</p></li>
+<li><p><strong>Verification:</strong> This is the same verification as in the GUI workflow. Open the final <code>2SRC_receptor.pdbqt</code> file with a text editor (<code>less 2SRC_receptor.pdbqt</code>). Scroll to the ATOM records. You will see the coordinates, the partial charge (from the PQR file), and a final column with the AutoDock atom type (e.g., HD, OA, C). The presence of this final column is the definitive proof that you have a simulation-ready receptor file.</p></li>
+</ul>
+</section>
+</section>
+<section id="lesson-4-revised-summary-status-check" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-4-revised-summary-status-check"><strong>Lesson 4 (Revised): Summary &amp; Status Check</strong></h3>
+<p>You have brilliantly guided this lesson towards a much more powerful and professional workflow.</p>
+<ul>
+<li><p><strong>Conceptually</strong>, the goals are identical to the GUI workflow: clean the structure, add hydrogens and charges, and convert to the final format.</p></li>
+<li><p><strong>Practically</strong>, we have now executed this entire process using a <strong>scriptable, command-line toolchain</strong> (<code>grep</code>, <code>pdb2pqr</code>, <code>meeko</code>).</p></li>
+<li><p><strong>Crucially</strong>, we have followed the “Trust, but Verify” principle at each step by inspecting the output files (<code>.pdb</code>, <code>.pqr</code>, <code>.pdbqt</code>) to confirm that each command had the desired effect.</p></li>
+</ul>
+<hr>
+</section>
+<section id="lesson-5-step-1-cont.---data-preparation-the-ligand-command-line-workflow" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-5-step-1-cont.---data-preparation-the-ligand-command-line-workflow"><strong>Lesson 5: Step 1 (cont.) - Data Preparation: The Ligand (Command-Line Workflow)</strong>😃</h3>
+<p><strong>Goal:</strong> <strong><em><code>To take a simple representation of our ligand (a SMILES string), convert it into a 3D structure, add hydrogens, assign charges and atom types, define its flexibility, and save it in the simulation-ready PDBQT format, all using command-line tools.</code></em></strong></p>
+<section id="core-concepts" class="level4">
+<h4 class="anchored" data-anchor-id="core-concepts"><strong>1. Core Concepts</strong></h4>
+<ul>
+<li><p><strong>From 2D to 3D:</strong> Our most convenient starting point is a <strong><em>SMILES string, which is a 1D (text) representation of the 2D chemical graph.</em></strong> The first and most important step is to use a computational chemistry tool to convert this into a plausible, low-energy 3D conformation. This is not a trivial step; <strong><em>a molecule can have many possible 3D shapes (conformers), and we need a good starting point.</em></strong></p></li>
+<li><p><strong>Protonation State:</strong> Just like with the protein, the <strong><em>pH of the environment matters</em></strong>. For a molecule like Quercetin, we need to ensure it has the correct protonation state for physiological pH (~7.4). This means acidic groups should be deprotonated and basic groups should be protonated.(酸性条件去质子，碱性条件加质子)</p></li>
+<li><p><strong>Defining Flexibility (Torsions(扭转)):</strong> This is the key step for the ligand. The docking program, <code>AutoDock Vina</code>, will treat the ligand as flexible, but only along bonds that we define as “rotatable.” The preparation software’s job is to <strong><em>automatically detect all the rotatable single bonds</em></strong> (e.g., the bond connecting a phenyl(苯环) ring to the rest of the molecule) and mark them. <strong><em>This “torsional tree” defines how the ligand is allowed to flex and twist inside the binding pocket.</em></strong></p></li>
+</ul>
+</section>
+<section id="our-new-tools" class="level4">
+<h4 class="anchored" data-anchor-id="our-new-tools"><strong>2. Our New Tools</strong></h4>
+<ul>
+<li><p><strong>Open Babel (<code>obabel</code>):</strong> This is the “Swiss Army knife” of cheminformatics. It is a command-line tool that is exceptionally good at <strong><em>converting between dozens of different chemical file formats.</em></strong> We will use it to convert our <strong><em>SMILES string into an initial 3D structure</em></strong> (<strong><em>.sdf</em></strong> or <strong><em>.mol2</em></strong> format).</p></li>
+<li><p><strong>Meeko (<code>mk_prepare_ligand</code>):</strong> We will use the <code>Meeko</code> package again. Its ligand preparation script is brilliant because it handles all the key steps in one go: <strong><em>it correctly protonates the molecule for a given pH, finds the rotatable bonds, and generates the final PDBQT file.</em></strong></p></li>
+</ul>
+</section>
+<section id="practical-application-the-command-line-workflow" class="level4">
+<h4 class="anchored" data-anchor-id="practical-application-the-command-line-workflow"><strong>3. Practical Application: The Command-Line Workflow</strong></h4>
+<p>We will continue working in our <code>input_files</code> directory from the terminal.</p>
+</section>
+<section id="chunk-1-create-the-input-file" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-1-create-the-input-file"><strong>Chunk 1: Create the Input File</strong></h4>
+<p><strong>Explanation:</strong> While we could pass the SMILES string directly to some tools, the most robust way to work is to save it in a file. A simple <code>.smi</code> file is perfect for this.</p>
+<p><strong>Action (in your terminal):</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 5. Prepare the Ligand ---</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># We will use the 'echo' command to create a simple SMILES file.</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># The format is: SMILES_string  Molecule_Name</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"C1=CC(=C(C=C1C2=C(C(=O)C3=C(C=C(C=C3O2)O)O)O)O)O QUERCETIN"</span> <span class="op">&gt;</span> quercetin.smi</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><strong>Verification:</strong> Use the cat <code>quercetin.smi</code> command. You should see the single line containing the SMILES string and the name of your molecule.</li>
+</ul>
+</section>
+<section id="chunk-2-convert-2d-smiles-to-an-initial-3d-structure" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-2-convert-2d-smiles-to-an-initial-3d-structure"><strong>Chunk 2: Convert 2D SMILES to an Initial 3D Structure</strong></h4>
+<p><strong>Explanation:</strong> We will use Open Babel to convert the 1D SMILES file into a 3D structure format (<code>.sdf</code>). The –<code>gen3d</code> flag tells <strong><em>obabel</em></strong> to use its internal algorithms to generate a reasonable 3D conformation.</p>
+<p><strong>Action (in your terminal):</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Use Open Babel to convert .smi to .sdf and generate 3D coordinates</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># -i smi : The input format is SMILES</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># -o sdf : The output format is SDF</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># --gen3d : The key command to generate a 3D structure</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="ex">obabel</span> <span class="at">-i</span> smi quercetin.smi <span class="at">-o</span> sdf <span class="at">--gen3d</span> <span class="op">&gt;</span> quercetin_3d.sdf</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><strong>Action:</strong> Run this command.</li>
+<li><strong>Verification:</strong> The <code>quercetin_3d.sdf</code> file is a standard chemical structure file. You can verify it was created by listing the files (<code>ls -l</code>). You could also open this file in a visualizer like ChimeraX to see the initial 3D structure it generated.</li>
+</ul>
+</section>
+<section id="chunk-3-the-final-preparation-with-meeko" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-3-the-final-preparation-with-meeko"><strong>Chunk 3: The Final Preparation with <code>Meeko</code></strong></h4>
+<p><strong>Explanation:</strong> This is the main event. We will now feed our initial 3D structure to <code>Meeko</code>’s ligand preparation script. It will <strong><em>automatically perform all the critical final steps</em></strong>:</p>
+<ol type="1">
+<li><p>Check and correct the protonation state for pH 7.4.</p></li>
+<li><p>Assign Gasteiger partial charges.</p></li>
+<li><p>Identify all the rotatable bonds (torsions).</p></li>
+<li><p>Convert the file to the final <code>PDBQT</code> format that Vina needs.</p></li>
+</ol>
+<p><strong>Action (in your terminal):</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Use Meeko's ligand preparation script</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># -i : input SDF file</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># -o : output PDBQT file</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># --pH 7.4 : (Optional but good practice) Explicitly set the pH for protonation.</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="ex">mk_prepare_ligand</span> <span class="at">-i</span> quercetin_3d.sdf <span class="at">-o</span> quercetin_ligand.pdbqt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><p><strong>Action:</strong> Run this command. Meeko will process the file.</p></li>
+<li><p><strong>Verification:</strong> This is the most important verification step. Open your new <code>quercetin_ligand.pdbqt</code> file with a text editor (<code>less quercetin_ligand.pdbqt</code>). You will see a file with a specific structure:</p>
+<ul>
+<li><p><strong>Header:</strong> At the top, it will <strong><em>explicitly state the number of active torsions it detected(检测出主动扭转的次数))</em></strong> (e.g., REMARK 5 active torsions). This is your proof that the flexibility has been defined.</p></li>
+<li><p><strong>Coordinates:</strong> It will have ATOM records with coordinates, just like a PDB file.</p></li>
+<li><p><strong>Torsion Tree Definition:</strong> At the bottom, you will see special <code>BRANCH</code> and <code>ENDBRANCH</code> records. This section defines the “torsion tree”—the machine-readable instructions that tell Vina exactly <strong><em>which bonds it is allowed to rotate during the simulation.</em></strong></p></li>
+</ul>
+<p>The presence of the “<code>active torsions</code>” remark and the “<code>BRANCH</code>” records is your definitive proof that you have created a valid, flexible ligand file ready for docking.</p></li>
+</ul>
+</section>
+</section>
+<section id="lesson-5-revised-summary-status-check" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-5-revised-summary-status-check"><strong>Lesson 5 (Revised): Summary &amp; Status Check</strong></h3>
+<ul>
+<li><p><strong>Conceptually</strong>, we understand that preparing a ligand involves more than just getting a 3D structure. It critically requires defining its <strong>flexibility</strong> by identifying all rotatable bonds, as well as assigning the correct protonation state and atomic charges.</p></li>
+<li><p><strong>Practically</strong>, we have executed a clean, two-step command-line workflow using gold-standard tools. We used <strong>Open Babel</strong> for the initial 2D-to-3D conversion and the powerful <strong>Meeko</strong> package to handle all the complex final preparation steps in one go.</p></li>
+<li><p><strong>Crucially</strong>, we have followed the “Trust, but Verify” principle by defining a clear verification method: inspecting the final output <code>quercetin_ligand.pdbqt</code> file to confirm that the <strong>torsional tree</strong> has been correctly defined.</p></li>
+</ul>
+<p><strong>We have now successfully prepared both of our “actors.”</strong> The lock (<code>2SRC_receptor.pdbqt</code>) and the key (<code>quercetin_ligand.pdbqt</code>) are fully prepared, physically realistic, and in the exact format our simulation engine requires.</p>
+<hr>
+</section>
+<section id="lesson-6-step-2---defining-the-search-space-the-grid-box" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-6-step-2---defining-the-search-space-the-grid-box"><strong>Lesson 6: Step 2 - Defining the Search Space: The Grid Box</strong>🤐</h3>
+<p><strong>Goal:</strong> <strong><em><code>To identify the precise location of the binding pocket on our receptor and to define a 3D bounding box (the "grid box") that encloses this pocket. This box will constrain the docking search, dramatically increasing its efficiency and accuracy.</code></em></strong></p>
+<section id="core-concepts-1" class="level4">
+<h4 class="anchored" data-anchor-id="core-concepts-1"><strong>1. Core Concepts</strong></h4>
+<ul>
+<li><p><strong>The Problem: A Needle in a Haystack(大海捞针).</strong> A protein is a massive molecule. If we were to ask the docking program to search the entire surface of the protein for the best binding spot, it would be an <strong><em>astronomically huge and inefficient calculation</em></strong>. <strong><em>The chances of finding the true, deep binding pocket would be very low. This is called a “blind docking” and is only used when you have absolutely no idea where the binding site is.</em></strong></p></li>
+<li><p><strong>The Solution: Focused Docking.</strong> In nearly all cases, we have a very good idea of where the binding site is. <strong><em>It might be the known active site of an enzyme, or a pocket where a natural ligand is known to bind</em></strong>. A <strong>focused docking</strong> simulation restricts the search to a small 3D box centered on this specific pocket.</p></li>
+<li><p><strong>The Grid Box:</strong></p>
+<ul>
+<li><p><strong>Definition:</strong> The grid box is an imaginary cube in 3D space. We define it by specifying its <strong>center coordinates (X, Y, Z)</strong> and its <strong>dimensions (size in X, Y, Z)</strong> in Ångstroms.</p></li>
+<li><p><strong>Its Function:</strong> The docking algorithm (AutoDock Vina) will only attempt to place and score the ligand in poses that are entirely contained within this box. <strong><em>Any part of the ligand that falls outside the box is immediately rejected.</em></strong> This turns the “needle in a haystack” problem into a much more manageable “needle in a small box” problem.</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="extending-knowledge-how-do-we-find-the-binding-site" class="level4">
+<h4 class="anchored" data-anchor-id="extending-knowledge-how-do-we-find-the-binding-site"><strong>2. Extending Knowledge: How Do We Find the Binding Site?</strong></h4>
+<p>This is the key intellectual step. How do we know where to place our grid box? There are several common strategies, from easiest to most complex.</p>
+<ol type="1">
+<li><p><strong>Use a Co-crystallized Ligand (The Best and Easiest Way):</strong> This is the <strong><em><code>gold standard</code></em></strong>. We intentionally chose a <strong><em>PDB structure (2SRC) that was solved with an inhibitor already bound in the active site</em></strong>. Even though we deleted that inhibitor from our simulation-ready file, we can use the original 2SRC<code>.pdb</code> file as a reference map. <strong><em>We simply center our grid box on the exact location where that original ligand was sitting.</em></strong> This is the most reliable way to define the correct binding pocket.</p></li>
+<li><p><strong>Use Homology(同源性):</strong> If our protein structure is “apo” (empty), we can <strong><em>find another, closely related protein in the PDB that does have a ligand bound.</em></strong> We can then structurally align our protein with the ligand-bound one and use the position of the ligand in the aligned structure to guide the placement of our box.</p></li>
+<li><p><strong>Use Literature:</strong> <strong><em>Scientific papers describing the protein will often explicitly state the key amino acid residues that make up the active site</em></strong> (e.g., “the ATP-binding site is formed by residues Lys295, Met341…”). We can highlight these residues in our visualizer and place the grid box to enclose them.</p></li>
+<li><p><strong>Use Blind Docking or Pocket Prediction Servers:</strong> If we have no prior information, <strong><em>we can use web servers (like CASTp or DoGSiteScorer) that analyze the protein’s surface topology to predict where the most likely “pockets” are. We can then use these predictions to guide our box placement.</em></strong></p></li>
+</ol>
+<p>For our project, we will use the easiest and best method: <strong>Strategy #1</strong>.</p>
+</section>
+<section id="practical-application-defining-the-grid-box-with-a-visualizer" class="level4">
+<h4 class="anchored" data-anchor-id="practical-application-defining-the-grid-box-with-a-visualizer"><strong>3. Practical Application: Defining the Grid Box with a Visualizer</strong></h4>
+<p>While this can be done from the command line, this is one step where using a GUI is vastly more intuitive and reliable. It allows you to visually confirm that your box is in the right place and is the right size. We will use <strong>AutoDock Tools (ADT)</strong> for this, as it is specifically designed to generate the configuration file Vina needs.</p>
+</section>
+<section id="chunk-1-load-the-molecules-into-adt" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-1-load-the-molecules-into-adt"><strong>Chunk 1: Load the Molecules into ADT</strong></h4>
+<p><strong>Explanation:</strong> We need to load two molecules into ADT: our prepared receptor (<code>2SRC_receptor.pdbqt</code>) and the original, unclean PDB file (<code>2SRC.pdb</code>) which still contains the reference ligand we need to see.</p>
+<p><strong>Action:</strong></p>
+<ol type="1">
+<li><p>Launch <strong>AutoDockTools (adt)</strong>.</p></li>
+<li><p>Go to <code>File &gt; Read Molecule</code> and open your prepared receptor: <code>input_files/2SRC_receptor.pdbqt.</code></p></li>
+<li><p>Go to <code>File &gt; Read Molecule</code> again and open the original PDB file: <code>input_files/2SRC.pdb.</code></p></li>
+<li><p>In the viewer, you will see both structures superimposed. The original PDB will likely show up as simple lines, including the reference ligand (<strong><em><code>named "STI"</code></em></strong>) in the binding pocket.</p></li>
+</ol>
+</section>
+<section id="chunk-2-set-up-the-grid-box" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-2-set-up-the-grid-box"><strong>Chunk 2: Set up the Grid Box</strong></h4>
+<p><strong>Explanation:</strong> We will now use ADT’s “GridBox” tool. It will allow us to interactively place and size the box.</p>
+<p><strong>Action:</strong></p>
+<ol type="1">
+<li><p>Go to the menu: <strong>Grid &gt; Grid Box…</strong>.</p></li>
+<li><p>A new dialog box and a 3D grid box will appear in the viewer.</p></li>
+<li><p><strong>The Goal:</strong> We need to adjust the <strong>center</strong> and <strong>dimensions</strong> of this box so that it is:</p>
+<ul>
+<li><p><strong>Centered</strong> on the reference ligand (STI).</p></li>
+<li><p><strong>Large enough</strong> to completely enclose the reference ligand, with a little extra space (about 4-5 Å) on all sides to allow our flexible Quercetin molecule to move around.</p></li>
+</ul></li>
+<li><p><strong>How to do it:</strong></p>
+<ul>
+<li><p>In the Grid Box dialog, you will see sliders and input fields for “Center Grid Box” (X, Y, Z) and “Number of points in each dimension”.</p></li>
+<li><p>You can manually drag the sliders to move and resize the box. Watch the 3D viewer to see the effect.</p></li>
+<li><p>An easier way: Select the reference ligand. Go to the menu <code>Grid &gt; Set Map Types &gt; Set by Ligand/Substrate...</code> This will often auto-center the box for you.</p></li>
+<li><p>Fine-tune the size. A good starting size is often around <strong>25 x 25 x 25 Å</strong> (which corresponds to 50 x 50 x 50 points if the spacing is 0.5 Å). Adjust until the box looks right.</p></li>
+</ul></li>
+</ol>
+</section>
+<section id="chunk-3-save-the-configuration-file" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-3-save-the-configuration-file"><strong>Chunk 3: Save the Configuration File</strong></h4>
+<p><strong>Explanation:</strong> Once you are happy with the box’s position and size, you need to save this information. ADT will write a simple text file that contains the coordinates and dimensions that Vina will need.</p>
+<p><strong>Action:</strong></p>
+<ol type="1">
+<li><p>In the Grid Box dialog, go to the menu: <strong>File &gt; Output Grid Dimension File…</strong>.</p></li>
+<li><p>Save the file in your main project directory as <code>grid_config.txt.</code></p></li>
+</ol>
+<ul>
+<li><p><strong>Verification:</strong> This is the most important verification step. Open the <code>grid_config.txt</code> file you just created with a text editor. It will contain the exact information that Vina needs. It will look something like this:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">size_x</span> = 50.0</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="ex">size_y</span> = 50.0</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="ex">size_z</span> = 50.0</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="ex">center_x</span> = 15.123</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="ex">center_y</span> = 35.456</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="ex">center_z</span> = <span class="at">-5.789</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<li><p>This text file is the <strong>final piece of input</strong> we need. It verifiably contains the precise definition of our search space.</p></li>
+</ul>
+</section>
+</section>
+<section id="lesson-6-summary-status-check" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-6-summary-status-check"><strong>Lesson 6: Summary &amp; Status Check</strong></h3>
+<ul>
+<li><p><strong>Conceptually</strong>, we understand that a <strong>focused docking</strong> search is far superior to a blind one, and that we define this focus using a <strong>Grid Box</strong>. We know that the best way to place this box is by using the location of a known co-crystallized ligand.</p></li>
+<li><p><strong>Practically</strong>, we have used the visual interface of <strong>AutoDock Tools</strong> to interactively place a grid box that encloses the known binding site of the SRC kinase.</p></li>
+<li><p><strong>Crucially</strong>, we have followed the “Trust, but Verify” principle by saving the box parameters to a configuration file (grid_config.txt) and inspecting this file. This text file is our reproducible and verifiable record of the search space.</p></li>
+</ul>
+<p><strong>We are now fully prepared.</strong> All of our input files are ready:</p>
+<ol type="1">
+<li><p>The prepared receptor: <code>2SRC_receptor.pdbqt</code></p></li>
+<li><p>The prepared ligand: <code>quercetin_ligand.pdbqt</code></p></li>
+<li><p>The search space definition: <code>grid_config.txt</code></p></li>
+</ol>
+<hr>
+</section>
+<section id="lesson-7-step-3---running-the-docking-simulation" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-7-step-3---running-the-docking-simulation"><strong>Lesson 7: Step 3 - Running the Docking Simulation</strong>😒</h3>
+<p><strong>Goal:</strong> <strong><em><code>To use the AutoDock Vina program from the command line to perform the molecular docking simulation, providing it with our three prepared input files and specifying an output file to store the results.</code></em></strong></p>
+<section id="core-concepts-what-vina-is-doing-under-the-hood" class="level4">
+<h4 class="anchored" data-anchor-id="core-concepts-what-vina-is-doing-under-the-hood"><strong>1. Core Concepts: What Vina is Doing “Under the Hood”</strong></h4>
+<p>When we run the <code>vina</code> command, it’s not just doing one simple calculation. It’s performing a sophisticated, multi-stage search and optimization process. Understanding this process is key to trusting the results.</p>
+<ul>
+<li><p><strong>The “Search Algorithm”:</strong> Vina needs a clever way to explore the vast number of possible ligand conformations within the grid box. It can’t possibly test them all. Instead, it uses a <strong>stochastic (random-based) global search algorithm</strong>.</p>
+<ol type="1">
+<li><p>It starts by generating a number of <strong><em>random starting poses for the ligand within the box.</em></strong></p></li>
+<li><p>It then <strong><em>iteratively improves these poses using a method inspired by genetics and evolution</em></strong> (a type of <strong>Iterated Local Search</strong>). It takes a pose, makes small random changes (like rotating a bond or shifting the molecule slightly), and uses the <strong>scoring function</strong> to decide if the new pose is “better” (has a lower energy score).</p></li>
+<li><p>It does this many, many times, <strong><em>exploring the energy landscape to find the most favorable “valleys” or energy minima.</em></strong></p></li>
+</ol></li>
+<li><p><strong>The “Exhaustiveness”:</strong> Vina has a key parameter called exhaustiveness. This tells the algorithm how hard to try.</p>
+<ul>
+<li><p>A higher exhaustiveness value means it will perform more independent search runs and spend more time refining the poses. This increases the chance of finding the true lowest-energy pose, but it also takes much longer to run.</p></li>
+<li><p>The default value (usually 8) is a good balance for most standard docking jobs.</p></li>
+</ul></li>
+<li><p><strong>The Output:</strong> Vina does not just return the single best pose it found. Because the search is stochastic, it might find several different, low-energy binding modes. By default, it will save a specified number of the top-ranked poses (e.g., the top 9) in the output file, ordered from best score (most negative) to worst. This allows us to inspect not just the #1 hit, but also other plausible binding modes.</p></li>
+</ul>
+</section>
+<section id="practical-application-the-command-line-workflow-1" class="level4">
+<h4 class="anchored" data-anchor-id="practical-application-the-command-line-workflow-1"><strong>2. Practical Application: The Command-Line Workflow</strong></h4>
+<p>We are now back in our terminal, in the main directory of our docking project (Project_Docking_Quercetin_SRC).</p>
+</section>
+<section id="chunk-1-assemble-the-vina-command" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-1-assemble-the-vina-command"><strong>Chunk 1: Assemble the vina Command</strong></h4>
+<p><strong>Explanation:</strong> The <code>vina</code> program is a single executable that we call from the command line. We provide all our inputs and outputs using specific flags.</p>
+<p>Let’s break down the command we will use:</p>
+<ul>
+<li><p><code>vina</code>: The name of the program.</p></li>
+<li><p>-<code>-receptor input_files/2SRC_receptor.pdbqt</code>: Specifies the path to our prepared protein file.</p></li>
+<li><p><code>--ligand input_files/quercetin_ligand.pdbqt</code>: Specifies the path to our prepared ligand file.</p></li>
+<li><p><code>--config grid_config.txt</code>: Specifies the path to our grid box configuration file.</p></li>
+<li><p><code>--out results/quercetin_SRC_docking_output.pdbqt</code>: Specifies the path and filename for the <strong>output file</strong> that will contain the docked poses.</p></li>
+<li><p><code>--log results/quercetin_SRC_docking_log.txt</code>: Specifies the path and filename for a <strong>log file</strong> that will store the numerical scores.</p></li>
+<li><p><code>--exhaustiveness 8</code>: (Optional) We can explicitly set the exhaustiveness. We will use the default.</p></li>
+<li><p><code>--cpu 4</code>: (Optional) Tell Vina how many CPU cores to use to speed up the calculation.</p></li>
+</ul>
+<p><strong>Action:</strong></p>
+<ol type="1">
+<li><p>First, create a new directory to store our results.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> results</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<li><p>Now, construct and run the full <code>vina</code> command.</p></li>
+</ol>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- 6. Run AutoDock Vina Simulation ---</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="ex">vina</span> <span class="at">--receptor</span> input_files/2SRC_receptor.pdbqt <span class="dt">\</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">--ligand</span> input_files/quercetin_ligand.pdbqt <span class="dt">\</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">--config</span> grid_config.txt <span class="dt">\</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">--out</span> results/quercetin_SRC_docking_output.pdbqt <span class="dt">\</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">--log</span> results/quercetin_SRC_docking_log.txt <span class="dt">\</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">--cpu</span> 4</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><p><strong>Action:</strong> Run this command in your terminal.</p></li>
+<li><p><strong>The Process:</strong> Vina will now start the simulation. You will see a progress bar as it works through the calculation. For a standard system like ours, this should only take a couple of minutes.</p></li>
+</ul>
+</section>
+<section id="verification-inspecting-the-output-files" class="level4">
+<h4 class="anchored" data-anchor-id="verification-inspecting-the-output-files"><strong>3. Verification: Inspecting the Output Files</strong></h4>
+<p><strong>Explanation:</strong> The “Trust, but Verify” principle is essential here. We must check the output files to confirm that the simulation ran successfully and to see our top-level results.</p>
+<p><strong>Action:</strong></p>
+<ol type="1">
+<li><p><strong>Check the Log File:</strong> The log file contains the most important numerical results. Use the cat or less command to view it.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> results/quercetin_SRC_docking_log.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><p><strong>Verification:</strong> The log file will contain a table that looks like this:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">-----+------------+----------+----------</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Mode</span> <span class="kw">|</span> <span class="ex">Affinity</span>   <span class="kw">|</span> <span class="ex">dist</span> from best mode</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>     <span class="kw">|</span> <span class="kw">(</span><span class="ex">kcal/mol</span><span class="kw">)</span> <span class="kw">|</span> <span class="ex">rmsd</span> l.b.  <span class="kw">|</span> <span class="ex">rmsd</span> u.b.</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="ex">-----+------------+----------+----------</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>   <span class="ex">1</span> <span class="kw">|</span>       <span class="ex">-8.5</span> <span class="kw">|</span>      <span class="ex">0.000</span> <span class="kw">|</span>      <span class="ex">0.000</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>   <span class="ex">2</span> <span class="kw">|</span>       <span class="ex">-8.2</span> <span class="kw">|</span>      <span class="ex">1.532</span> <span class="kw">|</span>      <span class="ex">2.109</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>   <span class="ex">3</span> <span class="kw">|</span>       <span class="ex">-8.1</span> <span class="kw">|</span>      <span class="ex">1.874</span> <span class="kw">|</span>      <span class="ex">2.543</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="ex">...</span> <span class="er">(</span><span class="ex">up</span> to 9 modes<span class="kw">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>This table is your primary numerical result. The <code>Affinity</code> column contains the binding scores calculated by Vina’s scoring function. The first mode is the best-scoring pose. <strong><em>The fact that this file was created and contains a ranked list of negative energy values is your proof that the simulation completed successfully.</em></strong></p></li>
+</ul></li>
+<li><p><strong>Check the Output Pose File:</strong> The <code>quercetin_SRC_docking_output.pdbqt</code> file <strong><em>contains the actual 3D coordinates for the poses listed in the log file.</em></strong></p></li>
+<li><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">less</span> results/quercetin_SRC_docking_output.pdbqt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><strong>Verification:</strong> This file will look like a <code>PDBQT</code> file, but it will be structured with MODEL 1, ENDMDL, MODEL 2, ENDMDL, etc. <strong><em>Each MODEL block contains the atomic coordinates for one of the predicted binding poses.</em></strong> This confirms that Vina has successfully generated and saved the structural results.</li>
+</ul></li>
+</ol>
+</section>
+</section>
+<section id="lesson-7-summary-status-check" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-7-summary-status-check"><strong>Lesson 7: Summary &amp; Status Check</strong></h3>
+<ul>
+<li><p><strong>Conceptually</strong>, we understand what the AutoDock Vina program is doing “under the hood”: it’s using a <strong>stochastic search algorithm</strong> guided by a <strong>scoring function</strong> to find the lowest-energy binding poses within our defined grid box.</p></li>
+<li><p><strong>Practically</strong>, we have successfully executed a docking simulation from the command line by providing Vina with our three essential inputs (receptor, ligand, and config) and specifying our output files.</p></li>
+<li><p><strong>Crucially</strong>, we have followed the “Trust, but Verify” principle by inspecting the two key output files:</p>
+<ol type="1">
+<li><p>The <strong>log file</strong>, to verify the successful completion and see the ranked binding affinity scores.</p></li>
+<li><p>The <strong>output PDBQT file</strong>, to verify that the 3D coordinates of the predicted poses have been saved.</p></li>
+</ol></li>
+</ul>
+<hr>
+</section>
+<section id="lesson-8-step-4---analyzing-the-results" class="level3">
+<h3 class="anchored" data-anchor-id="lesson-8-step-4---analyzing-the-results"><strong>Lesson 8: Step 4 - Analyzing the Results</strong>😎</h3>
+<p><strong>Goal:</strong> <strong><em><code>To use a molecular visualization program to load our docked poses, visually inspect the top-ranked binding mode, and identify the specific atomic interactions (like hydrogen bonds) that stabilize the drug-protein complex.</code></em></strong></p>
+<p><strong>Our Tool:</strong> We will use <strong>UCSF ChimeraX</strong> for this, as it is modern, powerful, and has excellent tools for this exact purpose.</p>
+<section id="core-concepts-what-are-we-looking-for" class="level4">
+<h4 class="anchored" data-anchor-id="core-concepts-what-are-we-looking-for"><strong>1. Core Concepts: What Are We Looking For?</strong></h4>
+<p>When we analyze the top-ranked pose, we are acting as structural detectives. We are looking for specific, verifiable evidence that explains the good binding score. A good docked pose is not just one that “fits”; <em>it’s one that makes <strong>chemical and physical sense</strong>.</em></p>
+<p>We are primarily looking for:</p>
+<ol type="1">
+<li><p><strong>Hydrogen Bonds:</strong> <strong><em>These are the most important specific interactions</em></strong>. We are looking for <strong><em>well-formed hydrogen bonds between the drug’s hydrogen bond donors/acceptors</em></strong> (like the -OH groups on Quercetin) and complementary amino acid residues in the protein’s binding pocket (like the backbone amides or the side chains of Asp, Glu, Gln, Asn, Ser, Thr). <strong><em>Finding 2-4 strong hydrogen bonds is a hallmark(主要贡献者) of a high-quality, specific interaction.</em></strong></p></li>
+<li><p><strong>Hydrophobic(疏水作用) Interactions:</strong> We are looking for the non-polar, “greasy” parts of our ligand (like the carbon rings of Quercetin) to be buried in a pocket lined with non-polar amino acid residues (like Leu, Ile, Val, Phe). This is driven by the hydrophobic effect and is a major contributor to binding affinity.</p></li>
+<li><p><strong>Absence of Red Flags:</strong> We are also looking for problems. A major red flag would be a <strong>steric clash</strong> (atoms overlapping) or an <strong>unfavorable electrostatic interaction</strong> (a positively charged part of the ligand being forced next to a positive residue). The scoring function should have penalized these, but it’s always good to check visually.</p></li>
+</ol>
+</section>
+<section id="practical-application-visualization-and-analysis-in-chimerax" class="level4">
+<h4 class="anchored" data-anchor-id="practical-application-visualization-and-analysis-in-chimerax"><strong>2. Practical Application: Visualization and Analysis in ChimeraX</strong></h4>
+</section>
+<section id="chunk-1-load-the-receptor-and-the-docked-poses" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-1-load-the-receptor-and-the-docked-poses"><strong>Chunk 1: Load the Receptor and the Docked Poses</strong></h4>
+<p><strong>Explanation:</strong> The first step is to load our molecules into the visualizer. We will load our prepared receptor and the output file from <code>Vina,</code> which contains all 9 predicted binding poses for our ligand.</p>
+<p><strong>Action:</strong></p>
+<ol type="1">
+<li><p>Launch <strong>UCSF ChimeraX</strong>.</p></li>
+<li><p>Go to the menu: <strong>File &gt; Open…</strong>.</p></li>
+<li><p>Select your prepared receptor file: <code>input_files/2SRC_receptor.pdbqt.</code> Click “Open”.</p></li>
+<li><p>The protein will appear. Now, go to <strong>File &gt; Open…</strong> again.</p></li>
+<li><p>This time, select your <code>Vina</code> output file: <code>results/quercetin_SRC_docking_output.pdbqt.</code></p></li>
+<li><p>A dialog box will ask how to open this multi-model file. The default is correct (“Read as: multiple models…”). Click “OK”.</p></li>
+</ol>
+<ul>
+<li><strong>Result:</strong> You will now see your protein receptor, and superimposed inside the binding pocket, you will see all 9 predicted poses of Quercetin. <em>They will likely be shown as a confusing jumble of lines.</em></li>
+</ul>
+</section>
+<section id="chunk-2-isolate-and-focus-on-the-top-ranked-pose" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-2-isolate-and-focus-on-the-top-ranked-pose"><strong>Chunk 2: Isolate and Focus on the Top-Ranked Pose</strong></h4>
+<p><strong>Explanation:</strong> We are only interested in analyzing the best pose right now (Mode 1 from our log file). ChimeraX loads the different poses as different “models”. <strong><em>We need to hide the other 8 poses to reduce the clutter.</em></strong></p>
+<p><strong>Action:</strong></p>
+<ol type="1">
+<li><p>In the <code>ChimeraX</code> command line at the bottom, we can control the models. The receptor is model #1, and the 9 ligand poses are models #2.1 through #2.9.</p></li>
+<li><p><strong>Hide poses 2-9:</strong> Type the command <code>hide #2.2-9</code> and press <code>Enter.</code></p></li>
+<li><p><strong>Focus the view:</strong> Type the command <code>view #2.1</code> and press <code>Enter.</code></p></li>
+<li><p><strong>Change the representation:</strong> The default “<code>wireframe</code>” is hard to see. Let’s change it. Type <code>style #2.1 stick</code> to make the ligand atoms and bonds thicker.</p></li>
+</ol>
+<ul>
+<li><strong>Verification:</strong> You now have a clean view. You can see your protein (likely as a ribbon diagram) and a single, clear “stick” representation of your top-ranked Quercetin pose nestled within the binding pocket.</li>
+</ul>
+</section>
+<section id="chunk-3-the-key-analysis---finding-hydrogen-bonds" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-3-the-key-analysis---finding-hydrogen-bonds"><strong>Chunk 3: The Key Analysis - Finding Hydrogen Bonds</strong></h4>
+<p><strong>Explanation:</strong> This is the most important analytical step. We will use ChimeraX’s built-in tool to <strong><em>automatically find and display the hydrogen bonds between our ligand and the receptor.</em></strong></p>
+<p><strong>Action:</strong></p>
+<ol type="1">
+<li><p>Go to the menu: <strong><code>Tools &gt; Structure Analysis &gt; Hydrogen Bonds</code></strong><code>.</code></p></li>
+<li><p>A dialog box will open. The default settings are usually fine.</p></li>
+<li><p>Click <strong>“OK”</strong>.</p></li>
+</ol>
+<ul>
+<li><p><strong>Result and Verification:</strong> <strong><em>ChimeraX will analyze the structure and draw dashed lines (often green or yellow) between the atoms that are participating in a hydrogen bond.</em></strong> This is your most critical piece of evidence.</p>
+<ul>
+<li><p><strong>Inspect the view:</strong> Look at the binding pocket. You should now see several dashed lines connecting specific atoms on your Quercetin molecule to specific amino acid residues of the SRC protein.</p></li>
+<li><p><strong>Hover to get details:</strong> If you hover your mouse cursor over one of the hydrogen bonds, a pop-up label will tell you exactly which atoms are involved and the distance of the bond. For example: <strong><code>ASN:301@OD1 -- QUERCETIN:1@H21 2.01Å</code></strong>. This is a verifiable, quantitative result.</p></li>
+<li><p><strong>Label the key residues:</strong> To make a good figure, you can label the amino acids that are forming these H-bonds. Select one of these residues (e.g., by Ctrl+Click on one of its atoms) and then type the command <code>label sel residues.</code></p></li>
+</ul></li>
+</ul>
+</section>
+<section id="chunk-4-creating-a-publication-quality-figure" class="level4">
+<h4 class="anchored" data-anchor-id="chunk-4-creating-a-publication-quality-figure"><strong>Chunk 4: Creating a Publication-Quality Figure</strong></h4>
+<p><strong>Explanation:</strong> To communicate our findings, we need a clear 2D diagram in addition to our 3D view. Many tools can do this. <code>LigPlot+</code> is a classic, but many visualizers have built-in tools. ChimeraX has a “2D Viewer”.</p>
+<p><strong>Action (Example in ChimeraX):</strong></p>
+<ol type="1">
+<li><p>Go to the menu: <strong><code>Tools &gt; Structure Analysis &gt; 2D Viewer</code></strong>.</p></li>
+<li><p>This tool will automatically generate a 2D schematic of your ligand and the interacting protein residues. <strong><em>It will clearly show the hydrogen bonds and hydrophobic contacts.</em></strong></p></li>
+<li><p>You can save this image. I<strong><em>t is the perfect summary figure to include in a presentation or publication.</em></strong></p></li>
+</ol>
+</section>
+</section>
+<section id="grand-conclusion-of-the-molecular-docking-project" class="level3">
+<h3 class="anchored" data-anchor-id="grand-conclusion-of-the-molecular-docking-project"><strong>Grand Conclusion of the Molecular Docking Project</strong></h3>
+<p>We have completed the entire workflow. Let’s synthesize our results into the final hypothesis, just as we did for network pharmacology.</p>
+<p><strong>The Final Hypothesis:</strong></p>
+<ol type="1">
+<li><p><strong>Recall the Score:</strong> From our log file in Lesson 7, we found that the top-ranked pose for Quercetin binding to SRC had a predicted binding affinity of <strong>-8.5 kcal/mol</strong>, suggesting a strong and favorable interaction.</p></li>
+<li><p><strong>Describe the Pose:</strong> From our visualization in this lesson, we can describe the binding mode. “T<strong><em>he top-ranked pose places the chromenone core of Quercetin deep within the ATP-binding pocket of the SRC kinase</em></strong>.(排名最高的姿势将槲皮素的色原酮核心置于 SRC 激酶的 ATP 结合位点深处)”</p></li>
+<li><p><strong>Detail the Key Interactions:</strong> “The binding is stabilized by a network of three crucial <strong>hydrogen bonds</strong>: two between the hydroxyl groups on the ligand’s catechol ring and the backbone amide of <strong>Methionine 341</strong>, and one between the ligand’s C4-keto group and the side-chain amine of the key catalytic residue <strong>Lysine 295</strong>.(两个位于配体的儿茶酚环上的羟基与蛋氨酸 341 的主链酰胺之间，一个位于配体的 C4-酮基与关键催化残基赖氨酸 295 的侧链胺之间)”</p></li>
+<li><p><strong>State the Conclusion:</strong> “This predicted binding mode, which mimics the hydrogen bonding pattern of the natural substrate ATP, provides a robust structural hypothesis for the inhibitory mechanism of Quercetin against SRC kinase.”</p></li>
+</ol>
+</section>
+</section>
+</section>
+     </main>
+<!-- /main column -->  <script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>  </div> <!-- /content --> 
+  
+</body></html>
