@@ -784,15 +784,15 @@ While this can be done from the command line, this is one step where using a GUI
 
 #### **1. Core Concepts: What Vina is Doing "Under the Hood"**
 
-When we run the vina command, it's not just doing one simple calculation. It's performing a sophisticated, multi-stage search and optimization process. Understanding this process is key to trusting the results.
+When we run the `vina` command, it's not just doing one simple calculation. It's performing a sophisticated, multi-stage search and optimization process. Understanding this process is key to trusting the results.
 
 -   **The "Search Algorithm":** Vina needs a clever way to explore the vast number of possible ligand conformations within the grid box. It can't possibly test them all. Instead, it uses a **stochastic (random-based) global search algorithm**.
 
-    1.  It starts by generating a number of random starting poses for the ligand within the box.
+    1.  It starts by generating a number of ***random starting poses for the ligand within the box.***
 
-    2.  It then iteratively improves these poses using a method inspired by genetics and evolution (a type of **Iterated Local Search**). It takes a pose, makes small random changes (like rotating a bond or shifting the molecule slightly), and uses the **scoring function** to decide if the new pose is "better" (has a lower energy score).
+    2.  It then ***iteratively improves these poses using a method inspired by genetics and evolution*** (a type of **Iterated Local Search**). It takes a pose, makes small random changes (like rotating a bond or shifting the molecule slightly), and uses the **scoring function** to decide if the new pose is "better" (has a lower energy score).
 
-    3.  It does this many, many times, exploring the energy landscape to find the most favorable "valleys" or energy minima.
+    3.  It does this many, many times, ***exploring the energy landscape to find the most favorable "valleys" or energy minima.***
 
 -   **The "Exhaustiveness":** Vina has a key parameter called exhaustiveness. This tells the algorithm how hard to try.
 
@@ -808,25 +808,25 @@ We are now back in our terminal, in the main directory of our docking project (P
 
 #### **Chunk 1: Assemble the vina Command**
 
-**Explanation:** The vina program is a single executable that we call from the command line. We provide all our inputs and outputs using specific flags.
+**Explanation:** The `vina` program is a single executable that we call from the command line. We provide all our inputs and outputs using specific flags.
 
 Let's break down the command we will use:
 
--   vina: The name of the program.
+-   `vina`: The name of the program.
 
--   --receptor input_files/2SRC_receptor.pdbqt: Specifies the path to our prepared protein file.
+-   \-`-receptor input_files/2SRC_receptor.pdbqt`: Specifies the path to our prepared protein file.
 
--   --ligand input_files/quercetin_ligand.pdbqt: Specifies the path to our prepared ligand file.
+-   `--ligand input_files/quercetin_ligand.pdbqt`: Specifies the path to our prepared ligand file.
 
--   --config grid_config.txt: Specifies the path to our grid box configuration file.
+-   `--config grid_config.txt`: Specifies the path to our grid box configuration file.
 
--   --out results/quercetin_SRC_docking_output.pdbqt: Specifies the path and filename for the **output file** that will contain the docked poses.
+-   `--out results/quercetin_SRC_docking_output.pdbqt`: Specifies the path and filename for the **output file** that will contain the docked poses.
 
--   --log results/quercetin_SRC_docking_log.txt: Specifies the path and filename for a **log file** that will store the numerical scores.
+-   `--log results/quercetin_SRC_docking_log.txt`: Specifies the path and filename for a **log file** that will store the numerical scores.
 
--   --exhaustiveness 8: (Optional) We can explicitly set the exhaustiveness. We will use the default.
+-   `--exhaustiveness 8`: (Optional) We can explicitly set the exhaustiveness. We will use the default.
 
--   --cpu 4: (Optional) Tell Vina how many CPU cores to use to speed up the calculation.
+-   `--cpu 4`: (Optional) Tell Vina how many CPU cores to use to speed up the calculation.
 
 **Action:**
 
@@ -836,7 +836,7 @@ Let's break down the command we will use:
     mkdir results
     ```
 
-2.  Now, construct and run the full vina command.
+2.  Now, construct and run the full `vina` command.
 
 ``` bash
 # --- 6. Run AutoDock Vina Simulation ---
@@ -878,9 +878,9 @@ vina --receptor input_files/2SRC_receptor.pdbqt \
         ... (up to 9 modes)
         ```
 
-        This table is your primary numerical result. The Affinity column contains the binding scores calculated by Vina's scoring function. The first mode is the best-scoring pose. The fact that this file was created and contains a ranked list of negative energy values is your proof that the simulation completed successfully.
+        This table is your primary numerical result. The `Affinity` column contains the binding scores calculated by Vina's scoring function. The first mode is the best-scoring pose. ***The fact that this file was created and contains a ranked list of negative energy values is your proof that the simulation completed successfully.***
 
-2.  **Check the Output Pose File:** The quercetin_SRC_docking_output.pdbqt file contains the actual 3D coordinates for the poses listed in the log file.
+2.  **Check the Output Pose File:** The `quercetin_SRC_docking_output.pdbqt` file ***contains the actual 3D coordinates for the poses listed in the log file.***
 
 3.  
 
@@ -888,7 +888,7 @@ vina --receptor input_files/2SRC_receptor.pdbqt \
     less results/quercetin_SRC_docking_output.pdbqt
     ```
 
-    -   **Verification:** This file will look like a PDBQT file, but it will be structured with MODEL 1, ENDMDL, MODEL 2, ENDMDL, etc. Each MODEL block contains the atomic coordinates for one of the predicted binding poses. This confirms that Vina has successfully generated and saved the structural results.
+    -   **Verification:** This file will look like a `PDBQT` file, but it will be structured with MODEL 1, ENDMDL, MODEL 2, ENDMDL, etc. ***Each MODEL block contains the atomic coordinates for one of the predicted binding poses.*** This confirms that Vina has successfully generated and saved the structural results.
 
 ### **Lesson 7: Summary & Status Check**
 
@@ -901,3 +901,107 @@ vina --receptor input_files/2SRC_receptor.pdbqt \
     1.  The **log file**, to verify the successful completion and see the ranked binding affinity scores.
 
     2.  The **output PDBQT file**, to verify that the 3D coordinates of the predicted poses have been saved.
+
+------------------------------------------------------------------------
+
+### **Lesson 8: Step 4 - Analyzing the Results**😎
+
+**Goal:** ***`To use a molecular visualization program to load our docked poses, visually inspect the top-ranked binding mode, and identify the specific atomic interactions (like hydrogen bonds) that stabilize the drug-protein complex.`***
+
+**Our Tool:** We will use **UCSF ChimeraX** for this, as it is modern, powerful, and has excellent tools for this exact purpose.
+
+#### **1. Core Concepts: What Are We Looking For?**
+
+When we analyze the top-ranked pose, we are acting as structural detectives. We are looking for specific, verifiable evidence that explains the good binding score. A good docked pose is not just one that "fits"; *it's one that makes **chemical and physical sense**.*
+
+We are primarily looking for:
+
+1.  **Hydrogen Bonds:** ***These are the most important specific interactions***. We are looking for ***well-formed hydrogen bonds between the drug's hydrogen bond donors/acceptors*** (like the -OH groups on Quercetin) and complementary amino acid residues in the protein's binding pocket (like the backbone amides or the side chains of Asp, Glu, Gln, Asn, Ser, Thr). ***Finding 2-4 strong hydrogen bonds is a hallmark(主要贡献者) of a high-quality, specific interaction.***
+
+2.  **Hydrophobic(疏水作用) Interactions:** We are looking for the non-polar, "greasy" parts of our ligand (like the carbon rings of Quercetin) to be buried in a pocket lined with non-polar amino acid residues (like Leu, Ile, Val, Phe). This is driven by the hydrophobic effect and is a major contributor to binding affinity.
+
+3.  **Absence of Red Flags:** We are also looking for problems. A major red flag would be a **steric clash** (atoms overlapping) or an **unfavorable electrostatic interaction** (a positively charged part of the ligand being forced next to a positive residue). The scoring function should have penalized these, but it's always good to check visually.
+
+#### **2. Practical Application: Visualization and Analysis in ChimeraX**
+
+#### **Chunk 1: Load the Receptor and the Docked Poses**
+
+**Explanation:** The first step is to load our molecules into the visualizer. We will load our prepared receptor and the output file from `Vina,` which contains all 9 predicted binding poses for our ligand.
+
+**Action:**
+
+1.  Launch **UCSF ChimeraX**.
+
+2.  Go to the menu: **File \> Open...**.
+
+3.  Select your prepared receptor file: `input_files/2SRC_receptor.pdbqt.` Click "Open".
+
+4.  The protein will appear. Now, go to **File \> Open...** again.
+
+5.  This time, select your `Vina` output file: `results/quercetin_SRC_docking_output.pdbqt.`
+
+6.  A dialog box will ask how to open this multi-model file. The default is correct ("Read as: multiple models..."). Click "OK".
+
+-   **Result:** You will now see your protein receptor, and superimposed inside the binding pocket, you will see all 9 predicted poses of Quercetin. *They will likely be shown as a confusing jumble of lines.*
+
+#### **Chunk 2: Isolate and Focus on the Top-Ranked Pose**
+
+**Explanation:** We are only interested in analyzing the best pose right now (Mode 1 from our log file). ChimeraX loads the different poses as different "models". ***We need to hide the other 8 poses to reduce the clutter.***
+
+**Action:**
+
+1.  In the `ChimeraX` command line at the bottom, we can control the models. The receptor is model #1, and the 9 ligand poses are models #2.1 through #2.9.
+
+2.  **Hide poses 2-9:** Type the command `hide #2.2-9` and press `Enter.`
+
+3.  **Focus the view:** Type the command `view #2.1` and press `Enter.`
+
+4.  **Change the representation:** The default "`wireframe`" is hard to see. Let's change it. Type `style #2.1 stick` to make the ligand atoms and bonds thicker.
+
+-   **Verification:** You now have a clean view. You can see your protein (likely as a ribbon diagram) and a single, clear "stick" representation of your top-ranked Quercetin pose nestled within the binding pocket.
+
+#### **Chunk 3: The Key Analysis - Finding Hydrogen Bonds**
+
+**Explanation:** This is the most important analytical step. We will use ChimeraX's built-in tool to ***automatically find and display the hydrogen bonds between our ligand and the receptor.***
+
+**Action:**
+
+1.  Go to the menu: **`Tools > Structure Analysis > Hydrogen Bonds`**`.`
+
+2.  A dialog box will open. The default settings are usually fine.
+
+3.  Click **"OK"**.
+
+-   **Result and Verification:** ***ChimeraX will analyze the structure and draw dashed lines (often green or yellow) between the atoms that are participating in a hydrogen bond.*** This is your most critical piece of evidence.
+
+    -   **Inspect the view:** Look at the binding pocket. You should now see several dashed lines connecting specific atoms on your Quercetin molecule to specific amino acid residues of the SRC protein.
+
+    -   **Hover to get details:** If you hover your mouse cursor over one of the hydrogen bonds, a pop-up label will tell you exactly which atoms are involved and the distance of the bond. For example: **`ASN:301@OD1 -- QUERCETIN:1@H21 2.01Å`**. This is a verifiable, quantitative result.
+
+    -   **Label the key residues:** To make a good figure, you can label the amino acids that are forming these H-bonds. Select one of these residues (e.g., by Ctrl+Click on one of its atoms) and then type the command `label sel residues.`
+
+#### **Chunk 4: Creating a Publication-Quality Figure**
+
+**Explanation:** To communicate our findings, we need a clear 2D diagram in addition to our 3D view. Many tools can do this. `LigPlot+` is a classic, but many visualizers have built-in tools. ChimeraX has a "2D Viewer".
+
+**Action (Example in ChimeraX):**
+
+1.  Go to the menu: **`Tools > Structure Analysis > 2D Viewer`**.
+
+2.  This tool will automatically generate a 2D schematic of your ligand and the interacting protein residues. ***It will clearly show the hydrogen bonds and hydrophobic contacts.***
+
+3.  You can save this image. I***t is the perfect summary figure to include in a presentation or publication.***
+
+### **Grand Conclusion of the Molecular Docking Project**
+
+We have completed the entire workflow. Let's synthesize our results into the final hypothesis, just as we did for network pharmacology.
+
+**The Final Hypothesis:**
+
+1.  **Recall the Score:** From our log file in Lesson 7, we found that the top-ranked pose for Quercetin binding to SRC had a predicted binding affinity of **-8.5 kcal/mol**, suggesting a strong and favorable interaction.
+
+2.  **Describe the Pose:** From our visualization in this lesson, we can describe the binding mode. "T***he top-ranked pose places the chromenone core of Quercetin deep within the ATP-binding pocket of the SRC kinase***.(排名最高的姿势将槲皮素的色原酮核心置于 SRC 激酶的 ATP 结合位点深处)"
+
+3.  **Detail the Key Interactions:** "The binding is stabilized by a network of three crucial **hydrogen bonds**: two between the hydroxyl groups on the ligand's catechol ring and the backbone amide of **Methionine 341**, and one between the ligand's C4-keto group and the side-chain amine of the key catalytic residue **Lysine 295**.(两个位于配体的儿茶酚环上的羟基与蛋氨酸 341 的主链酰胺之间，一个位于配体的 C4-酮基与关键催化残基赖氨酸 295 的侧链胺之间)"
+
+4.  **State the Conclusion:** "This predicted binding mode, which mimics the hydrogen bonding pattern of the natural substrate ATP, provides a robust structural hypothesis for the inhibitory mechanism of Quercetin against SRC kinase."
